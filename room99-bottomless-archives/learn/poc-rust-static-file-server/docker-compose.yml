@@ -1,0 +1,12 @@
+version: '3.4'
+
+services:
+  static-serve:
+    build:
+      context: .
+      target: latest
+    restart: unless-stopped
+    volumes:
+      - /home/kuro/www:/var/www:ro
+    ports:
+      - 8080:80

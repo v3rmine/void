@@ -1,0 +1,16 @@
+[package]
+name = "static-file-server"
+version = "0.1.0"
+authors = ["v3rmine <v3rmine@astriiid.fr>"]
+edition = "2018"
+
+[dependencies]
+actix-web = { version = "3.3", features = ["compress"], default-features = false }
+actix-files = "0.4"
+num_cpus = "1.13"
+
+[profile.release]
+lto = true
+codegen-units = 1
+opt-level = 's'
+panic = 'abort'
