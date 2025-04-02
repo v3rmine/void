@@ -1,0 +1,6 @@
+os = ["manjaro"]
+
+[packages.base]
+packages = [
+	"yay"
+]

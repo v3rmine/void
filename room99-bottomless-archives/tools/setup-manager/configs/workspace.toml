@@ -1,0 +1,79 @@
+[packages.base]
+packages = [
+	"curl",
+	"bash",
+	"zsh",
+	"@custom/build-essential",
+	"@custom/asdf",
+	"@custom/asdf-node",
+	"@custom/asdf-python",
+	"@custom/asdf-ruby",
+	"fzf"
+]
+
+[packages.code]
+optional = true
+depends_on = ["base"]
+packages = [
+	"@custom/neovim",
+	"@custom/git",
+	"difftastic",
+	"@custom/git-extras",
+	"@custom/iosevka-firacode-style",
+	"@custom/vscode",
+	"emacs",
+	"@custom/dbeaver",
+	"shellcheck"
+]
+
+[packages.virtual]
+optional = true
+depends_on = ["base"]
+packages = [
+	"@custom/qemu",
+	"@custom/docker"
+]
+
+[packages.tools]
+optional = true
+depends_on = ["base"]
+packages = [
+	"aria2",
+	"rsync",
+	"ffmpeg",
+	"imagemagick"
+]
+
+[packages.powertools]
+optional = true
+depends_on = ["code"]
+packages = [
+	"findomain",
+	"kitty",
+	"httpie",
+	"syncthing",
+	"@custom/osxcross",
+	"starship",
+	"lazygit",
+	"@custom/tealdeer",
+	"@custom/lsd",
+	"@custom/bat"
+]
+
+[packages.android]
+optional = true
+depends_on = ["base"]
+packages = [
+	"@custom/android-sdk",
+	"@custom/android-tools",
+	"@custom/android-emulator",
+	"@custom/objection"
+]
+
+[packages.communication]
+optional = true
+depends_on = ["base"]
+packages = [
+	"@custom/slack",
+	"@custom/thunderbird"
+]

@@ -1,0 +1,61 @@
+#!/bin/bash
+source "${BASH_SOURCE%/*}/libs/colors.sh"
+source "${BASH_SOURCE%/*}/libs/logger.sh"
+
+VERSION="0.1.0"
+
+function version() { echo "${VERSION}"; }
+
+function help() {
+	bold "setup-manager $VERSION"
+	echo
+	green "$(bold USAGE:)"
+	echo "	setup-manager $(gray_wrap "<" SUBCOMMAND ">") $(gray_wrap "[" OPTIONS "]")"
+	echo
+	green "$(bold SUBCOMMANDS:)"
+	echo "	install $(gray_wrap "<" config_name ">") $(gray_wrap "[" OPTIONS "]")	$(gray "Install a config")"
+	echo "	list				$(gray "List all the available configs")"
+	echo "	new-config $(gray_wrap "<" name ">")		$(gray "Create a new config file from the template")"
+	echo "	new-package $(gray_wrap "<" name ">")		$(gray "Create a new package from the template")"
+	echo
+	green "$(bold OPTIONS:)"
+	echo "	-h, --help	$(gray "Show this help")"
+	echo "	-v, --version	$(gray "Show the version")"
+	echo "	-y, --yes	$(gray "Answer yes to all questions")"
+}
+
+if [ $# -eq 0 ]; then
+	help
+	exit 0
+fi
+
+# End the script with theses params
+if grep -Eq "(-v|--version)" <<< "$@"; then
+	version
+	exit 0
+elif grep -Eq "(-h|--help)" <<< "$@"; then
+	help
+	exit 0
+fi
+
+subcommand="$1"
+is_yes=$(grep -Eq "(-y|--yes)" <<< "$@")
+
+case "$subcommand" in
+	"install")
+	warn "Not implemented"
+	;;
+	"list")
+	warn "Not implemented"
+	;;
+	"new-config")
+	warn "Not implemented"
+	;;
+	"new-package")
+	warn "Not implemented"
+	;;
+	*)
+	error "Unknown subcommand: $subcommand"
+	exit 1
+	;;
+esac
