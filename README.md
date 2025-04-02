@@ -4,7 +4,8 @@
 ![language count](https://img.shields.io/github/languages/count/v3rmine/void)
 ![repo size](https://img.shields.io/github/repo-size/v3rmine/void)
 
-Just a monorepo with all my experimental things the structure, organization, naming might change. If some project ever grow enough I might export it in his own repo. 
+Just a monorepo with all my experimental things the structure, organization, naming might change. If some project ever grow enough I might export it in his own repo.
+
 And well it's easier to move around, clone / mirror on different git providers.
 
 *Inspired by [Xe/x](https://github.com/Xe/x)*
