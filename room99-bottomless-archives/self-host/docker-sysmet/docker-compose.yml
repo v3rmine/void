@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  builder:
+    build:
+      context: .
+      target: build-tools 
+    volumes:
+      - ./build:/build-assets
+  http:
+    container_name: sysmet-http
+    restart: unless-stopped
+    build:
+      context: .
+      target: server
+    # ports:
+    #   - 9090:5000
+    volumes:
+      - ./db:/app/db
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external:
+      name: proxy
