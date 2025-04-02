@@ -1,0 +1,26 @@
+---
+type: entity
+name: project_name
+automatically_extensible: true
+use_synonyms: true
+matching_strictness: 1.0
+values:
+  - Koura
+  - [mycoaching, My Coaching]
+  - Pantheon
+
+---
+type: intent
+name: isItReadyYet
+slots:
+  - name: project
+    entity: project_name
+utterances:
+  - Bonjour ou en est l'avancement de [project_name](koura) ?
+  - Vous en etes ou de la mise en prod de [project_name](Pantheon) ?
+
+---
+type: intent
+name: Unknown
+utterances:
+  - Bonjour comment allez vous ?

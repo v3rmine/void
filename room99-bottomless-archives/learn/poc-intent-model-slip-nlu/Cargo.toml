@@ -1,0 +1,8 @@
+[package]
+name = "model-test"
+version = "0.1.0"
+authors = ["v3rmine <v3rmine@astriiid.fr>"]
+edition = "2018"
+
+[dependencies]
+snips-nlu-lib = { git = "https://github.com/snipsco/snips-nlu-rs", tag = "0.65.6" }
