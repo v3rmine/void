@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  pleroma-bot:
+    build: .
+    environment:
+      EVERY_SECONDS: 3600
+    volumes:
+      - "./config:/config:rw"
