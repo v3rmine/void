@@ -69,6 +69,9 @@
                 (builtins.attrValues customPkgs)
               ];
 
+              programs.nix-ld.enable = true;
+              # programs.nix-ld.libraries = with pkgs; [ ];
+
               networking.hostName = vmname;
 
               nix.enable = true;
