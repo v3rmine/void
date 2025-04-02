@@ -52,7 +52,9 @@
               environment.persistence.${sharedPersistencePath} = {
                 hideMounts = true;
                 directories = [ "/var/lib/nixos" ];
-                users.${user} = { directories = [ ".local/share/mise" ]; };
+                users.${user} = {
+                  directories = [ ".local/share/mise" ".config/mise" ];
+                };
               };
               environment.persistence.${uniquePersistencePath} = {
                 hideMounts = true;
@@ -105,6 +107,17 @@
               };
               users.users.root.password = "";
               users.groups.user = { };
+
+              system.userActivationScripts = {
+                createBashProfile.text = ''
+                  ${pkgs.bash}/bin/bash -c '${pkgs.coreutils}/bin/cat <<EOF > /home/${user}/.bash_profile
+                  #!${pkgs.bash}/bin/bash
+                  if command -v mise &> /dev/null; then
+                    eval "\$(mise activate bash)"
+                  fi
+                  EOF'
+                '';
+              };
 
               systemd.user.services = {
                 fix-app-mount-permissions = {
