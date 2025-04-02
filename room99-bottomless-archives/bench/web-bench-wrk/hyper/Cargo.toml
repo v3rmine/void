@@ -1,0 +1,9 @@
+[package]
+name = "hyper"
+version = "0.1.0"
+authors = ["v3rmine <v3rmine@astriiid.fr>"]
+edition = "2018"
+
+[dependencies]
+tokio = { version = "0.2.23", default-features = false, features = ["macros"] }
+hyper = { version = "0.13.9", default-features = false, features = ["tcp"] }

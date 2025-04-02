@@ -1,0 +1,8 @@
+[package]
+name = "rocket"
+version = "0.1.0"
+authors = ["v3rmine <v3rmine@astriiid.fr>"]
+edition = "2018"
+
+[dependencies]
+rocket = { git = "https://github.com/SergioBenitez/Rocket.git", rev = "bcb8b33", default-features = false, features = [] }

@@ -1,0 +1,19 @@
+[env]
+THREADS = "12"
+DEFAULT_PORT = "8080"
+
+[config]
+skip_core_tasks = true
+
+[tasks.wrk]
+command = "wrk"
+args = ["-t${THREADS}", "-c1000", "-d15s", "http://127.0.0.1:${DEFAULT_PORT}/"]
+
+[tasks.run_actix_release]
+dependencies = ["release_actix"]
+command = "./target/release/actix"
+args = ["8080"]
+
+[tasks.bench_actix]
+
+[tasks.bench]

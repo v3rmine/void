@@ -1,0 +1,2 @@
+[workspace]
+members = ["actix", "hyper", "rocket"]
