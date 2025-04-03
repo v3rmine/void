@@ -1,0 +1,38 @@
+[package]
+name = "sis-server"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+logging = { workspace = true, features = ["log_file"] }
+env.workspace = true
+
+# Async runtime
+tokio = { workspace = true, features = ["full"] }
+# HTTP server 
+tower = { workspace = true, features = ["full"] }
+tower-http = { workspace = true, features = ["trace"] }
+axum = { workspace = true, features = ["http2"] }
+# Handling errors
+eyre.workspace = true
+color-eyre.workspace = true
+tracing-futures.workspace = true
+# Bundling assets in the binary
+include_dir.workspace = true
+# Parsing command line arguments
+clap = { workspace = true, features = ["derive", "string"] }
+# Replacement for lazy_static (to store address and to compute assets hashes)
+once_cell.workspace = true
+# To get / return JSON
+serde = { workspace = true, features = ["derive"] }
+serde_json.workspace = true
+# To parse user inputed time
+humantime.workspace = true
+chrono = { workspace = true, default-features = false }
+# Helper to handle structs
+typed-builder.workspace = true
+# Computing assets SHA256 hashes
+sha2.workspace = true
+base64.workspace = true

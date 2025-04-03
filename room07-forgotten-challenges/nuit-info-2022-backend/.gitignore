@@ -1,0 +1,12 @@
+# Advisory vulnerabilities git repository location
+/.cargo/advisory-db
+
+# IDE files
+/.vscode
+/.idea
+
+# Build artifacts
+/target
+/result
+/dist
+node_modules

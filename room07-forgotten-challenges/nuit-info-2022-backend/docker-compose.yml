@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  sis-server:
+    image: sis-server
+    ports:
+      - "8080:8080"
+    volumes:
+      - sis-server-logs:/var/log/sis-server
+    environment:
+      - HOST=0.0.0.0
+      - LOG_LEVEL=info
+      - LOG_DIRECTORY=/var/log/sis-server
+
+volumes:
+  sis-server-logs:

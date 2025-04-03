@@ -1,0 +1,24 @@
+[package]
+name = "logging"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[features]
+default = ["tree"]
+
+either = ["dep:either"]
+
+log_file = ["tracing-appender", "either"]
+honeycomb = ["tracing-honeycomb", "libhoney-rust"]
+tree = ["tracing-tree"]
+
+[dependencies]
+tracing = { workspace = true, features = ["log"] }
+tracing-appender = { workspace = true, optional = true }
+tracing-subscriber = { workspace = true, features = ["env-filter"] }
+tracing-honeycomb = { workspace = true, optional = true }
+libhoney-rust = { workspace = true, optional = true }
+tracing-tree = { workspace = true, optional = true }
+either = { workspace = true, optional = true }

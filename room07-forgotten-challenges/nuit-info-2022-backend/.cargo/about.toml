@@ -1,0 +1,33 @@
+accepted = [
+    "Apache-2.0",
+    "MIT",
+    "BSD-3-Clause",
+]
+
+# Accepted licenses for dependencies
+[ring]
+accepted = [
+    "OpenSSL",
+    "ISC",
+    "NOASSERTION",
+]
+
+[untrusted]
+accepted = [
+    "ISC",
+]
+
+[webpki]
+accepted = [
+    "ISC",
+]
+
+[webpki-roots]
+accepted = [
+    "MPL-2.0",
+]
+
+[unicode-ident]
+accepted = [
+    "Unicode-DFS-2016",
+]

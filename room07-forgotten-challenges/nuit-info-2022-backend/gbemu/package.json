@@ -1,0 +1,22 @@
+{
+  "name": "gbemu",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js",
+    "lint-check": "eslint_d .",
+    "lint-fix": "eslint_d --fix ."
+  },
+  "author": "v3rmine <v3rmine@astriiid.fr>",
+  "license": "MIT",
+  "dependencies": {
+    "@grpc/grpc-js": "^1.7.3",
+    "image-to-ascii": "^3.0.13",
+    "pngjs": "^6.0.0",
+    "serverboy": "^0.0.7"
+  },
+  "devDependencies": {
+    "eslint_d": "^12.2.1"
+  }
+}

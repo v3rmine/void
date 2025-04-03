@@ -1,0 +1,25 @@
+╔════════════════════════════════╗ 
+║      Third Party Licenses      ║
+║  (generated with cargo-about)  ║
+╚════════════════════════════════╝
+
+Overview
+==================================
+{{#each overview}}
+- {{name}}: {{count}}
+{{/each}}
+{{#each licenses}}
+
+License: {{name}}
+==================================
+
+Used by
+----------------------------------
+{{#each used_by}}
+- {{crate.name}} {{crate.version}}: {{#if crate.repository}} {{crate.repository}} {{else}} https://lib.rs/{{crate.name}} {{/if}}
+{{/each}}
+
+License
+----------------------------------
+{{text}}
+{{/each}}
