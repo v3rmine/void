@@ -1,0 +1,11 @@
+{
+	"cSpell.enabled": false,
+	// "rust-analyzer.runnables.overrideCargo": "cargo-clif",
+	"rust-analyzer.checkOnSave.command": "clippy",
+	"rust-analyzer.procMacro.enable": true,
+	"rust-analyzer.diagnostics.disabled": [
+		"type-mismatch"
+	],
+	"rust-analyzer.diagnostics.experimental.enable": true,
+	"rust-analyzer.procMacro.attributes.enable": true
+}

@@ -1,0 +1,4 @@
+/target
+.env
+local_database.db
+local_database.db*
