@@ -1,0 +1,12 @@
+[package]
+name = "host-func-runner"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+host-func-abi = { path = "../host-func-abi" }
+wasm-plugins = { path = "../../lib", features = ["wasmer-rt-sys"] }
+wasmer = { version = "^2.1", default-features = false, features = [
+	"sys",
+	"sys-default",
+] }

@@ -1,0 +1,10 @@
+[package]
+name = "simple-runner"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+simple-abi = { path = "../simple-abi" }
+wasm-plugins = { path = "../../lib", features = ["wasmer-rt-sys"] }
+
+semver = "^1.0"

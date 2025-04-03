@@ -1,0 +1,2 @@
+* wasm-plugins
+WASMER Plugin system in Rust (POC)

@@ -1,0 +1,22 @@
+[package]
+name = "wasm-plugins"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+wasmer-rt = ["wasmer-rt-defaults", "wasmer"]
+wasmer-rt-sys = ["wasmer-rt", "wasmer-helpers/wasmer-sys", "wasmer/sys"]
+wasmer-rt-js = ["wasmer-rt", "wasmer-helpers/wasmer-sys", "wasmer/js"]
+wasmer-rt-defaults = ["wasmer-helpers"]
+wasmer-backend = ["wasmer-helpers-macros"]
+
+[dependencies]
+wasmer = { version = "^2.1", default-features = false, optional = true }
+
+helpers = { path = "../services/helpers" }
+helpers-macros = { path = "../services/helpers-macros" }
+wasmer-helpers = { path = "../services/wasmer-helpers", default-features = false, optional = true }
+wasmer-helpers-macros = { path = "../services/wasmer-helpers-macros", optional = true }
+
+[dev-dependencies]
+assay = "^0.1"

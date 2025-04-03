@@ -1,0 +1,17 @@
+[package]
+name = "wasmer-helpers"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+default = ["wasmer-sys"]
+wasmer-sys = ["wasmer/sys", "wasmer/sys-default"]
+wasmer-js = ["wasmer/js"]
+
+[dependencies]
+wasmer-helpers-macros = { path = "../wasmer-helpers-macros" }
+helpers = { path = "../helpers" }
+
+serde = "^1.0"
+wasmer = { version = "^2.1", default-features = false }
+typed-builder = "^0.9"

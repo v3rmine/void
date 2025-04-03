@@ -1,0 +1,10 @@
+[package]
+name = "helpers"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+helpers-macros = { path = "../helpers-macros" }
+
+serde = "^1.0"
+bincode = "^1.3"
