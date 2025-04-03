@@ -1,0 +1,7 @@
+{{name}}
+{{name | camelCase}}
+{{name | snake_case}}
+
+
+
+Ma license est {{ licence | alternatingcase }}

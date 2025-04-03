@@ -1,0 +1,7 @@
+name = "v3rmine"
+licence = [
+  "Apache Software License 2.0",
+  "MIT",
+  "GNU GPL v3.0"
+]
+test = "un autre truc"
