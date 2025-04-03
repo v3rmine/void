@@ -1,0 +1,10 @@
+---
+resources:
+- name: org-empire
+  type: git
+  source:
+    uri: https://github.com/joxcat/org-empire.git
+    branch: master
+
+jobs:
+- name: lint

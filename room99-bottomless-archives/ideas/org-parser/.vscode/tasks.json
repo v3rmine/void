@@ -1,0 +1,41 @@
+{
+	// See https://go.microsoft.com/fwlink/?LinkId=733558
+	// for the documentation about the tasks.json format
+	"version": "2.0.0",
+	"options": {
+		"env": {
+			"PATH": "${env:PATH}:${env:HOME}/.cargo/bin",
+		}
+	},
+	"tasks": [
+		{
+			"label": "clippy",
+			"type": "shell",
+			"command": "cargo clippy"
+		},
+		{
+			"label": "install nextest",
+			"type": "shell",
+			"command": "if ! command cargo-nextest -h >/dev/null 2>&1; then cd ~ && cargo install cargo-nextest; fi",
+		},
+		{
+			"label": "nextest parser",
+			"type": "shell",
+			"command": "cargo xtask nextest-parser",
+			"group": "test",
+			"dependsOn": ["install nextest"]
+		},
+		{
+			"label": "test parser",
+			"type": "shell",
+			"command": "cargo xtask test-parser",
+			"group": "test"
+		},
+		{
+			"label": "lint",
+			"type": "shell",
+			"command": "cargo xtask lint",
+			"group": "test"
+		}
+	]
+}

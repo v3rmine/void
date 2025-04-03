@@ -1,0 +1,17 @@
+[package]
+name = "span"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+miette = ["dep:miette"]
+
+[dependencies]
+located_span = { path = "../located_span" }
+parser_helpers = { path = "../parser_helpers" }
+
+nom = "^7"
+miette = { version = "^4.4", optional = true }
+
+[dev-dependencies]
+assay = "^0.1"

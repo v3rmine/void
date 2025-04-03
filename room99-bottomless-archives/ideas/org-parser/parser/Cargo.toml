@@ -1,0 +1,15 @@
+[package]
+name = "parser"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+parser_helpers = { path = "../services/parser_helpers" }
+located_span = { path = "../services/located_span" }
+span = { path = "../services/span" }
+
+nom = "^7"
+thiserror = "^1.0"
+
+[dev-dependencies]
+assay = "^0.1"
