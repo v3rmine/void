@@ -1,0 +1,15 @@
+---
+kind: pipeline
+name: default
+
+steps:
+  - name: build
+    image: plugins/docker
+    settings:
+      repo: blackksoulls/drone-check-api
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      tags:
+        - latest
