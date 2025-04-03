@@ -1,0 +1,12 @@
+[package]
+authors = ["v3rmine <v3rmine@astriiid.fr>"]
+edition = "2018"
+name = "code2d-parser"
+publish = false
+version = "0.1.0"
+[dependencies]
+thiserror = "^1.0"
+nom = "^6.2"
+
+[features]
+default = []

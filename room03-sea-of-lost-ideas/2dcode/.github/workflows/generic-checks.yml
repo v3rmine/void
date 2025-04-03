@@ -1,0 +1,23 @@
+name: generic-checks
+
+on: [push, pull_request]
+  #push:
+    #branches-ignore:
+      #- master
+      #- dev
+      #
+
+jobs:
+  clippy_check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: rustup component add clippy
+      - name: clippy
+        uses: actions-rs/clippy-check@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: build
+        run: cargo build --verbose
+      - name: test
+        run: cargo test --verbose

@@ -1,0 +1,12 @@
+[package]
+authors = ["v3rmine <v3rmine@astriiid.fr>"]
+edition = "2018"
+name = "code2d-structure"
+publish = false
+version = "0.1.0"
+[dependencies]
+thiserror = "^1.0"
+arrayref = "^0.3"
+
+[features]
+default = []
