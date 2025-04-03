@@ -1,0 +1,17 @@
+[package]
+name = "mailinblack-solver"
+version = "0.1.0"
+authors = ["v3rmine <v3rmine@astriiid.fr>"]
+edition = "2018"
+
+[dependencies]
+# Cli interface
+clap = "^2.33"
+# Parallelized image processing
+image = "^0.23"
+rayon = "^1.5"
+# OCR
+leptess = "^0.13"
+# Error handling
+human-panic = "^1.0"
+anyhow = "^1.0"
