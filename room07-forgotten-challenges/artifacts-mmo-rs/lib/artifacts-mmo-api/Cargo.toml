@@ -1,0 +1,32 @@
+[package]
+name = "artifacts-mmo-api"
+# Version is based on the Artifacts api version
+version = "1.3.0"
+edition.workspace = true
+
+[dependencies]
+# encode/decode base64
+base64.workspace = true
+# pre-bake requests
+http.workspace = true
+# newtype pattern and nutype dependencies
+nutype.workspace = true
+regex.workspace = true
+lazy_static.workspace = true
+# ez library error handling
+thiserror.workspace = true
+# logging method calls
+tracing.workspace = true
+# to parse and construct json
+serde.workspace = true
+serde_json.workspace = true
+# to manipulate dates
+chrono.workspace = true
+# serialize enums to string
+strum.workspace = true
+# ease the usage of the requests
+typed-builder.workspace = true
+
+[dev-dependencies]
+# woohoo testing things
+proptest.workspace = true
