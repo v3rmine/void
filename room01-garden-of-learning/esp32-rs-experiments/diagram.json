@@ -1,0 +1,72 @@
+{
+    "version": 1,
+    "editor": "wokwi",
+    "author": "v3rmine <v3rmine@astriiid.fr>",
+    "parts": [
+        {
+            "type": "board-esp32-c3-devkitm-1",
+            "id": "esp",
+            "top": 0,
+            "left": 0,
+            "rotate": 90,
+            "attrs": {
+                "flashSize": "16"
+            }
+        },
+        {
+            "type": "wokwi-led",
+            "id": "led",
+            "top": -80,
+            "left": 0,
+            "attrs": {
+                "color": "blue"
+            }
+        },
+        {
+            "type": "wokwi-resistor",
+            "id": "r",
+            "top": -15,
+            "rotate": 90,
+            "left": -5,
+            "attrs": {
+                "value": "220"
+            }
+        }
+    ],
+    "connections": [
+        [
+            "esp:TX",
+            "$serialMonitor:RX",
+            "",
+            []
+        ],
+        [
+            "esp:RX",
+            "$serialMonitor:TX",
+            "",
+            []
+        ],
+        [
+            "esp:GND.4",
+            "led:C",
+            "black",
+            []
+        ],
+        [
+            "led:A",
+            "r:1",
+            "blue",
+            []
+        ],
+        [
+            "r:2",
+            "esp:1",
+            "blue",
+            []
+        ]
+    ],
+    "serialMonitor": {
+        "display": "terminal",
+        "convertEol": true
+    }
+}
