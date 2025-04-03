@@ -1,0 +1,10 @@
+[package]
+name = "link-parser"
+version = "0.1.0"
+authors = ["v3rmine <v3rmine@astriiid.fr>"]
+edition = "2018"
+
+[dependencies]
+nom = "6.1.2"
+slog = "2.7.0"
+thiserror = "1.0.24"

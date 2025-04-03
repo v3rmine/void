@@ -1,0 +1,14 @@
+[package]
+name = "cli"
+version = "0.1.0"
+authors = ["v3rmine <v3rmine@astriiid.fr>"]
+edition = "2018"
+
+[dependencies]
+anyhow = "1.0.39"
+clap = "2.33.3"
+human-panic = "1.0.3"
+slog = "2.7.0"
+indicatif = "0.15.0"
+num_cpus = "1.13.0"
+signal-hook = "0.3.7"

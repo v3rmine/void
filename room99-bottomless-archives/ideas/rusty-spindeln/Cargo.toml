@@ -1,0 +1,6 @@
+[workspace]
+
+members = [
+    "link-parser",
+    "web-scraper"
+]

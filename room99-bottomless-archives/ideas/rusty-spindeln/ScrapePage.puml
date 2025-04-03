@@ -1,0 +1,37 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+skinparam handwritten false
+skinparam monochrome true
+skinparam backgroundColor white
+skinparam classBackgroundColor transparent
+skinparam style strictuml
+autonumber
+
+MainThread -> TaskScheduler: Add initial page to scrape as a Task
+MainThread -> TaskScheduler: Add /robots.txt
+MainThread -> TaskScheduler: Add /sitemap.xml
+MainThread -> TaskScheduler: Add /feed.xml
+TaskScheduler -> TaskStorage: Resume scrapping if food
+TaskStorage -> TaskScheduler: Return already scraped url
+loop
+    TaskScheduler -> TaskConsumer: Take task to scrape
+    TaskConsumer -> Target: Get root and follow redirects
+    TaskConsumer -> TaskConsumer: Store request
+    alt 2XX
+        Target -> TaskConsumer: Response
+        TaskConsumer -> TaskConsumer: Store Response
+        TaskConsumer -> TaskConsumer: Search url to scrape in body
+        TaskConsumer -> TaskScheduler: Push url to scrape
+        TaskScheduler -> TaskScheduler: Add url if not already scraped
+    else 4XX-5XX
+        Target -> TaskConsumer: Error
+        TaskConsumer -> TaskConsumer: Store Error
+    end
+    TaskConsumer --> TaskStorage: Append scraped Req & Res
+    TaskStorage -> TaskStorage: Append Req & Res in FS
+    TaskConsumer -> TaskScheduler: Mark url as scraped
+    TaskScheduler --> TaskStorage: Append url as scraped
+    TaskStorage -> TaskStorage: Append url in FS
+end
+
+@enduml

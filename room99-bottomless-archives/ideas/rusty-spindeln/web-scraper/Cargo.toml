@@ -1,0 +1,13 @@
+[package]
+name = "web-scraper"
+version = "0.1.0"
+authors = ["v3rmine <v3rmine@astriiid.fr>"]
+edition = "2018"
+
+[dependencies]
+#actix-taskqueue = "0.1.0"
+actix-web = { version = "3.3.2", features = ["compress", "rustls"], default-features = false}
+fake-useragent = "0.1.3"
+#libtor = "45.6.0"
+slog = "2.7.0"
+thiserror = "1.0.24"
