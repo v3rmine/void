@@ -1,0 +1,11 @@
+OBJET Masculin
+    — « Confinement » : Vrai ;
+    — « vaccins » : huit millions quatre mille neuf cent cinquante-huit ;
+    — « restrictions » :
+        OBJET Féminin
+            — « Écoles ouvertes » : Faux ;
+            — « départements confinés » :
+                DÉBUT « Seine-Maritime » ; « Eure » ; « Rhône » FIN.
+        TEJBO ;
+    — « motivation » : nulle.
+TEJBO
