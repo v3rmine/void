@@ -1,0 +1,30 @@
+---
+kind: pipeline
+name: default
+
+steps:
+  - name: build-stable
+    image: plugins/docker
+    settings:
+      repo: blackksoulls/cargo-kcov
+      target: stable
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      tags:
+        - latest
+        - stable
+      purge: false
+  - name: build-nightly
+    image: plugins/docker
+    settings:
+      repo: blackksoulls/cargo-kcov
+      target: nightly
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      tags:
+        - nightly
+      purge: true
