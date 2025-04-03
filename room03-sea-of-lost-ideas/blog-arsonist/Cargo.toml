@@ -1,0 +1,22 @@
+[package]
+name = "arsonist"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+tower-http = { version = "0.3", features = ["trace"] }
+axum = { version = "0.5", features = ["http2"] }
+eyre = "0.6"
+color-eyre = { version = "0.6", default-features = false }
+tracing-futures = "0.2" # needed so intrument works with async functions.
+log = { path = "services/log" }
+env = { path = "services/env" }
+
+[workspace]
+members = [".", "services/*", "xtask"]
+
+[profile.release]
+lto = "fat"
+opt-level = 3 # 's' to optimize for size or 'z' to optimize "aggressively" for size
+codegen-units = 1

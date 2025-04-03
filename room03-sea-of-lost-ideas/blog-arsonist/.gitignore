@@ -1,0 +1,6 @@
+/target
+*.db*
+.env
+**/dist
+**/node_modules
+/core

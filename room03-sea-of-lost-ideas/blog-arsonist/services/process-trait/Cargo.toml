@@ -1,0 +1,9 @@
+[package]
+name = "process-trait"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+async-trait = "0.1"
+futures = { version = "0.3.23", default-features = false, features = ["std"] }
+serde = { version = "1.0.143", features = ["derive"] }

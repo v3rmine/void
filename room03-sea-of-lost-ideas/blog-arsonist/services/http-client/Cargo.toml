@@ -1,0 +1,11 @@
+[package]
+name = "http-client"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tokio = { version = "1" }
+hyper = { version = "0.14", features = ["http1", "http2", "client"] }
+hyper-tls = "0.5"
+futures = { version = "0.3", default-features = false }
+tracing = "0.1"

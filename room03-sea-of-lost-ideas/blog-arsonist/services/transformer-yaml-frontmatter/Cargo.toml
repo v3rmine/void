@@ -1,0 +1,13 @@
+[package]
+name = "transformer-yaml-frontmatter"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tracing = "0.1"
+process-trait = { path = "../process-trait" }
+thiserror = "1.0"
+gray_matter = { version = "0.2", features = ["yaml"], default-features = false }
+async-trait = "0.1"
+assay = "0.1"
+serde_json = "1.0"

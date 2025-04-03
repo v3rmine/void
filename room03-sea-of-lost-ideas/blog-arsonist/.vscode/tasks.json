@@ -1,0 +1,41 @@
+{
+	// See https://go.microsoft.com/fwlink/?LinkId=733558
+	// for the documentation about the tasks.json format
+	"version": "2.0.0",
+	"options": {
+		"env": {
+			"PATH": "${env:PATH}:${env:HOME}/.asdf/shims:${env:HOME}/.cargo/bin",
+		}
+	},
+	"tasks": [
+		{
+			"label": "test",
+			"type": "shell",
+			"command": "echo $PATH"
+		},
+		{
+			"label": "serve",
+			"type": "shell",
+			"command": "yarn run serve",
+			"isBackground": true,
+			"problemMatcher": []
+		},
+		{
+			"label": "build",
+			"type": "shell",
+			"command": "yarn run build",
+			"group": "build"
+		},
+		{
+			"label": "clean",
+			"type": "shell",
+			"command": "yarn run clean"
+		},
+		{
+			"label": "lint",
+			"type": "shell",
+			"command": "yarn run lint-check",
+			"group": "test"
+		}
+	]
+}

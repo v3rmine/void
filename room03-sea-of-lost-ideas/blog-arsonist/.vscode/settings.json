@@ -1,0 +1,16 @@
+{
+	"rust-analyzer.server.path": "/user_home/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/rust-analyzer",
+	"cSpell.enabled": false,
+	"liveFrame.url": "https://8000.example.org",
+	// "rust-analyzer.runnables.overrideCargo": "cargo-clif",
+	"rust-analyzer.cachePriming.enable": true,
+	// "rust-analyzer.checkOnSave.enable": true,
+	"rust-analyzer.checkOnSave.command": "clippy",
+	// You only need this on mutli archs projects
+	// "rust-analyzer.checkOnSave.extraArgs": ["--target-dir=target/check"],
+	"rust-analyzer.server.extraEnv": {
+		// You only need this on mutli archs projects
+		// "CARGO_TARGET_DIR": "target/ra",
+		"RUSTC_FORCE_INCREMENTAL": "1"
+	},
+}

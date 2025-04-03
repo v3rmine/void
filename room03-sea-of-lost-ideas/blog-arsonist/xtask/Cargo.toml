@@ -1,0 +1,10 @@
+[package]
+name = "xtask"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap = { version = "^3.1", features = ["derive"] }
+tokio = { version = "1", features = ["rt-multi-thread", "process", "macros"] }
+eyre = "0.6"
+color-eyre = { version = "0.6", default-features = false }
