@@ -1,0 +1,10 @@
+#!/bin/sh
+image_name=migration-manager-dev-env
+
+docker run "$(if [ -z "$IS_NOT_TTY" ]; then echo -it; else echo -i; fi)" \
+	-e "DATABASE_URL=$DATABASE_URL" \
+	-v "$(pwd)/target/.cargo/git:/usr/local/cargo/git" \
+	-v "$(pwd)/target/.cargo/registry:/usr/local/cargo/registry" \
+	-v "$(pwd):/$(pwd)" \
+	-w "$(pwd)" \
+	--rm "$image_name" "$@"

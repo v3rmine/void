@@ -1,0 +1,2 @@
+#!/bin/sh
+"$(pwd)/.bin/exec-cmd" env TARGET_CC="x86_64-apple-darwin20.2-clang" cargo build --release --target x86_64-apple-darwin "$@"

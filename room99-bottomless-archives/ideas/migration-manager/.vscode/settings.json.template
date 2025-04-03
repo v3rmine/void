@@ -1,0 +1,7 @@
+{
+	"rust-analyzer.server.path": "{PWD}/.bin/rust-analyzer",
+	"rust-analyzer.server.extraEnv": {
+		"CARGO": "{PWD}/.bin/cargo",
+	},
+	"rust-analyzer.checkOnSave.command":  "clippy"
+}

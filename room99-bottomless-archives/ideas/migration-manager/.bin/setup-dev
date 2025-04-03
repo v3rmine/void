@@ -1,0 +1,17 @@
+#!/bin/sh
+image_name=migration-manager-dev-env
+
+fill_bin_template() {
+	name="$1"
+
+	sed "s/\$(pwd)/$(pwd | sed 's/\//\\\//g')/g" ".bin/$name.template" > ".bin/$name"
+	chmod +x ".bin/$name"
+}
+
+docker build -t "$image_name" .
+
+sed "s/{PWD}/$(pwd | sed 's/\//\\\//g')/g" .vscode/settings.json.template > .vscode/settings.json
+
+for file in .bin/*.template; do
+	fill_bin_template "$(basename "$file" | sed "s/\.template//g")"
+done

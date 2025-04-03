@@ -1,0 +1,33 @@
+[package]
+name = "migration-manager"
+version = "0.1.0"
+description = "Tool for managing migrations made by sql and shell files"
+edition = "2021"
+
+[dependencies]
+# Write the CLI tool
+clap = { version = "3.2", features = ["derive", "env"] }
+
+# Execute the migrations
+tokio = { version = "1", features = ["rt", "macros"] }
+sqlx = { version = "0.6", features = ["runtime-tokio-rustls"] }
+chrono = "0.4"
+
+# Process the migrations
+seahash = "4"
+walkdir = "2"
+rayon = "1"
+
+# Decompress the .tar.xz archives
+tar = "0.4"
+xz-decom = "0.2"
+
+# Error handling
+eyre = "0.6"
+color-eyre = "0.6"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+tracing-futures = "0.2" # needed so intrument works with async functions.
+derive_more = "0.99"

@@ -1,0 +1,5 @@
+#!/bin/sh
+image_name=migration-manager-dev-env
+
+docker image rm "$image_name"
+rm .bin/cargo .bin/exec-cmd .bin/rust-analyzer .vscode/settings.json

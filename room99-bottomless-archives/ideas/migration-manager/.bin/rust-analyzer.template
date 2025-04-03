@@ -1,0 +1,2 @@
+#!/bin/sh
+env IS_NOT_TTY=1 "$(pwd)/.bin/exec-cmd" rust-analyzer "$@"

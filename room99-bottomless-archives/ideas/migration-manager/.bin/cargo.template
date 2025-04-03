@@ -1,0 +1,7 @@
+#!/bin/sh
+if [ ! -t 1 ]; then
+	is_not_tty="env IS_NOT_TTY=1 "
+fi
+
+# shellcheck disable=SC2086
+$is_not_tty"$(pwd)/.bin/exec-cmd" cargo "$@"
