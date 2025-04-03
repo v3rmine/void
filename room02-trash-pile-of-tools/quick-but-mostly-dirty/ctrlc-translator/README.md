@@ -1,5 +1,8 @@
 # CTRL-C Translator 
 **(made in 2h so don't expect much only usefull if you need to know how to hook shortcuts on Wayland)**  
+
+Small tool to automatically translate what you CTRL-C (quality is google translate free tier but at least it works on Linux Wayland)
+
 ![app preview](preview.png)
 
 ## Build locally
