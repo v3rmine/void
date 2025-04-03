@@ -1,0 +1,24 @@
+[package]
+name = "sysmet-notify"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+log.workspace = true
+env.workspace = true
+metrics = { workspace = true, features = ["thresholds"] }
+
+# Parsing command line arguments
+clap.workspace = true
+clap-verbosity-flag.workspace = true
+# Handling errors
+color-eyre.workspace = true
+# Sending mails
+lettre.workspace = true
+# Handling dates
+chrono.workspace = true
+# To parse user inputed time
+humantime.workspace = true
+# Rounding numbers
+# TODO: Remove or justify why needed
+rust_decimal = "1.26"

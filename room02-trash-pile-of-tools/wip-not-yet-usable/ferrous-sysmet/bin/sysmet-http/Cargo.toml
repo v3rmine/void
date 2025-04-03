@@ -1,0 +1,40 @@
+[package]
+name = "sysmet-http"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+log.workspace = true
+env.workspace = true
+metrics = { workspace = true, features = ["database"] }
+
+# Async runtime
+tokio = { version = "1", features = ["full"] }
+tokio-scoped = "0.2"
+# HTTP server 
+tower = { version = "0.4", features = ["full"] }
+tower-http = { version = "0.5", features = ["trace"] }
+axum = { version = "0.7", features = ["http2"] }
+# Handling errors
+color-eyre.workspace = true
+# Logging needed so intrument works with async functions
+tracing-futures = "0.2"
+# HTML Templating
+# maud = { git = "https://github.com/lambda-fairy/maud.git", features = ["axum"] }
+maud = { version = "0.25", features = ["axum"] }
+# Bundling assets in the binary
+include_dir = { version = "0.7.2", features = ["nightly"] }
+# Parsing command line arguments
+clap.workspace = true
+# Computing assets SHA256 hashes
+sha2 = "0.10.6"
+base64 = "0.21"
+# Replacement for lazy_static (to store address and to compute assets hashes)
+once_cell = "1.15.0"
+# To parse query parameters
+serde.workspace = true
+# To parse user inputed time
+humantime.workspace = true
+chrono.workspace = true
+# Helper to handle structs
+typed-builder = "0.18"

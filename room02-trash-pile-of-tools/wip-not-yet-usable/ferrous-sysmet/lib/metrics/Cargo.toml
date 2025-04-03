@@ -1,0 +1,19 @@
+[package]
+name = "metrics"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+database = ["ciborium", "semver", "serde"]
+thresholds = []
+
+[dependencies]
+log = { path = "../log" }
+
+chrono = { version = "0.4", features = ["serde"] }
+psutil = { version = "3.2", features = ["serde"] }
+thiserror = "1.0"
+
+serde = { version = "1.0", features = ["derive"], optional = true }
+ciborium = { version = "0.2", optional = true }
+semver = { version = "1.0", optional = true }

@@ -1,0 +1,15 @@
+[package]
+name = "sysmet-update"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+log.workspace = true
+env.workspace = true
+metrics = { workspace = true, features = ["database"] }
+
+serde.workspace = true
+serde_json.workspace = true
+clap.workspace = true
+color-eyre.workspace = true
+glob.workspace = true

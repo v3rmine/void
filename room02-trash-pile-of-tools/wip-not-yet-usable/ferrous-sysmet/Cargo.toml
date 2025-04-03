@@ -1,0 +1,33 @@
+[workspace]
+members = ["bin/*", "lib/*", "xtask"]
+
+[workspace.package]
+version = "0.1.1"
+edition = "2021"
+
+[workspace.dependencies]
+log = { path = "lib/log" }
+env = { path = "lib/env" }
+metrics = { path = "lib/metrics" }
+
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+clap = { version = "4.0", features = ["derive", "env", "string"] }
+clap-verbosity-flag = "2.0"
+color-eyre = "0.6"
+chrono = { version = "0.4", default-features = false }
+humantime = "2.1"
+glob = "0.3"
+
+lettre  = { version = "0.10", features = ["builder", "smtp-transport", "hostname", "rustls-tls", "tracing"], default-features = false }
+
+[profile.release]
+lto = "fat" # Deeply optimize linking
+opt-level = 3 # 's' to optimize for size or 'z' to optimize "aggressively" for size
+codegen-units = 1
+
+[profile.release.package.sysmet-notify]
+debug = 0 # Include no debug info
+strip = true # Remove symbols
+opt-level = "s" # Optimize for size because it dont need to be fast
+codegen-units = 1 # Build on only one thread to optimize as much as possible

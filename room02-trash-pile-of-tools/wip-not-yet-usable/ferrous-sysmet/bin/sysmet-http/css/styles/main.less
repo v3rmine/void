@@ -1,0 +1,46 @@
+/* BASES */
+* {
+  box-sizing: border-box;
+}
+
+// CSS to look great everywhere
+// SOURCE: https://gist.github.com/JoeyBurzynski/617fb6201335779f8424ad9528b72c41
+main {
+  max-width: 38rem;
+  padding: 2rem;
+  margin: auto;
+}
+
+html {
+  max-width: 70ch;
+  padding: 3em 1em;
+  margin: auto;
+  line-height: 1.75;
+  font-size: 1.25em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 3em 0 1em;
+}
+
+p, ul, ol {
+  margin-bottom: 2em;
+  color: #1d1d1d;
+  font-family: sans-serif;
+}
+
+// Graph
+.chart {
+  width: 100%;
+  position: relative;
+
+  .grid {
+    stroke: #aaa;
+    stroke-dasharray: 0;
+    stroke-width: 1.5;
+  }
+
+  .x-labels text {
+    text-anchor: end;
+  }
+}
