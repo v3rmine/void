@@ -1,0 +1,9 @@
+[build]
+target = "index.html"
+release = false
+dist = "dist"
+
+[[hooks]]
+stage = "build"
+command = "yarn"
+command_arguments = ["run", "build:css"]

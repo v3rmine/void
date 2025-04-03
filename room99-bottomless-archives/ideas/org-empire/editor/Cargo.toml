@@ -1,0 +1,11 @@
+cargo-features = ["per-package-target"]
+
+[package]
+name = "editor"
+version = "0.1.0"
+edition = "2021"
+forced-target = "wasm32-unknown-unknown"
+
+[dependencies]
+sycamore = "0.8.0-beta.2"
+ehttp = "^0.2"

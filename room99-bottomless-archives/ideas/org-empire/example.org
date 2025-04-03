@@ -1,0 +1,32 @@
+:PROPERTIES:
+:ID: e8071cf4-b82c-4dc6-99cc-046f234738d2
+:END:
+#+title: Example org file
+#+date: 2022-03-01
+#+author: example
+#+email: example@example.org
+#+filetags: :example:rust:project:
+#+OPTIONS: ^:{}
+
+* Example org file [0/1]
+DEADLINE: <2022-03-10 Jeu>
+
+** TODO Something to do
+- [ ] Not done
+
+*** DONE But me I'm done [3/3]
+- [X] Me
+- [X] Me too
+- [X] Like me
+
+** Inlines
+- =verbatim=
+- ~code~
+- /italic/
+- *bold*
+- _underline_
+- +strikethrough+
+- n_{subscript}
+- n^{superscript}
+
+** Blocks

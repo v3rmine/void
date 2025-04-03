@@ -1,0 +1,56 @@
+* org-empire
+
+** org-parser
+
+#+BEGIN_SRC peg
+space: " " | "\t"
+newline: "\r"? + "\n"
+
+part: {not(newline)}*
+
+line: {part}*
+block: {block_start} {newline} ({line} {newline})* {block_end}
+
+file: ({line | block} {newline})*
+#+END_SRC
+
+*** parts
+- "*bold text*": ={bold_delim} + not(space | bold_delim)+ + {bold_delim}=
+- "/italic text/": ={italic_delim} + not(space | italic_delim)+ + {italic_delim}=
+- "~code text~": ={code_delim} + not(space | code_delim)+ + {code_delim}=
+- "=verbatim text=": ={verbatim_delim} + not(space | verbatim_delim)+ + {verbatim_delim}=
+- "_underline text_": ={underline_delim} + not(space | underline_delim)+ + {underline_delim}=
+- "+strikethrough text+": ={strikethrough_delim} + not(space | strikethrough_delim)+ + {strikethrough_delim}=
+- "_{subscript text}": ={subscript_delim} + {subscript_delim_start} + not(space | subscript_delim_end)+ + {subscript_delim_end}=
+- "^{superscript text}": ={superscript_delim} + {superscript_delim_start} + not(space | superscript_delim_end)+ + {superscript_delim_end}=
+- "[0/6]": ={counter_delim_start} + {0-9}+ + {counter_delim} + {0-9}+ {counter_delim_end}=
+- "[ ]": ={checkbox_delim_start} + {space | checkbox_checked} + {checkbox_delim_end}=
+
+*** lines
+- "* Header": ={header_char}+ + {space}+ + {part}*=
+- "DEADLINE: <2022-03-10 Jeu>": ={deadline_starter} + {space}+ {date_delim_start} + {0-9}+ + {date_separator} + {0-9}+ + {date_separator} + {0-9}+ + {space}+ + {alpha}+ + {date_delim_end}=
+- "#+title: Something": ={meta_started} + {alpha | "_"} + {":"} + {space}+ + {not(newline)}=
+- "#+tags: :TAG1:TAG2:" ={meta} + {meta_array_start} + ({not(newline)}:+) + {meta_array_end}=
+
+*** blocks
+- code
+#+BEGIN_SRC rust
+fn main() {
+		println!("Hello, world!");
+} 
+#+END_SRC
+#+BEGIN_VERBATIM 
+{code_start} {space}+ {alpha}+ ({space} + {alpha}+)+ + {newline}
+({not(code_end)})+
+{code_end}
+#+END_VERBATIM
+
+- front-matter
+:PROPERTIES:
+:ID: e8071cf4-b82c-4dc6-99cc-046f234738d2
+:END:
+#+BEGIN_VERBATIM
+{front_matter_start} {newline}
+({front_matter_key_start} + {alpha | "_"} + {front_matter_key_end} + {space}+ {not(newline)})+
+{front_matter_end}
+#+END_VERBATIM
