@@ -1,0 +1,18 @@
+#!/bin/bash
+
+OBJECT="$1"
+OPERATION="$2"
+
+if [[ $OBJECT == "win11" ]]; then
+	case "$OPERATION" in
+        	"prepare")
+                /bin/fw-vfio-up.sh 2>&1 | tee -a /var/tmp/vfio.log
+                ;;
+
+                "release")
+                /bin/fw-vfio-down.sh 2>&1 | tee -a /var/tmp/vfio.log
+                ;;
+	esac
+fi
+
+
