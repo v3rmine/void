@@ -1,0 +1,32 @@
+* prr
+** Commands
+*** TODO is-supported
+- Usage: ~prr --is-supported~
+- Options: [--quiet|-q]
+- Stdout: OS ident
+
+*** TODO define-package
+- Usage: ~prr define-package~
+- Stdin: Config
+- Stdout: Config
+- Required: [--name|-n]
+- Options: [--optional|-o;--user-defined|-u;--os;--ver|-v;--raw|-r]
+
+*** TODO prompt
+- Usage: ~prr promt~
+- Stdin: Config
+- Stdout: Config
+- Interactive: Ask for optionals or user defined values
+
+*** TODO verify
+- Usage: ~prr verify~
+- Stdin: Config
+- Stdout: Config
+- Interactive: Make the user confirm the config
+
+*** TODO install
+- Usage: ~prr install~
+- Stdin: Config
+- Env: VERIFY_CONFIG
+- Interactive: If VERIFY_CONFIG is set see `verify` command
+- Side effects: Run the commands in the configuration
