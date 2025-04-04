@@ -1,0 +1,36 @@
+#!/usr/bin/env python3
+from json import (load, loads, dumps)
+from sys import (stdin, stderr)
+from subprocess import (run)
+from requests import (get)
+
+def _check(instream):
+    payload = load(instream)
+    source = payload["source"]
+
+    token = source["token"]
+    base_url = source["base_url"]
+    compose_id = source["compose_id"] if "compose_id" in source else None
+    application_id = source["application_id"] if "application_id" in source else None
+
+    result = None
+    if (compose_id is not None):
+        res = get(f"{base_url}/deployment.allByCompose?composeId={compose_id}", headers={"Authorization": f"Bearer {token}"})
+        if (res.status_code >= 400):
+            print(f"Error: {res.status_code}: {res.text}", file=stderr)
+            exit(1)
+        result = res.json()
+    elif (application_id is not None):
+        res = get(f"{base_url}/deployment.all?applicationId={application_id}", headers={"Authorization": f"Bearer {token}"})
+        if (res.status_code >= 400):
+            print(f"Error: {res.status_code}: {res.text}", file=stderr)
+            exit(1)
+        result = res.json()
+    else:
+        print("`compose_id` or `application_id` must be set", file=stderr)
+        exit(1)
+
+    return list(map(lambda deployment: { "version": deployment["deploymentId"] }, result))
+
+if __name__ == "__main__":
+    print(dumps(_check(stdin), separators=[",", ":"]))

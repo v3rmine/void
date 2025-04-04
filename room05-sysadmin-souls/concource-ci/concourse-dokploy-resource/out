@@ -1,0 +1,101 @@
+#!/usr/bin/env python3
+from json import (load, loads, dumps)
+from sys import (stdin, stderr, argv)
+from subprocess import (run)
+from requests import (get, post)
+from time import (sleep)
+
+LOOPING_SEC = 5
+LOOPING_MAX = 24 # 24 * 5 = 120s
+
+def _out(instream, src='.'):
+    payload = load(instream)
+    source = payload["source"]
+    # TODO: Accept deployement params
+    # build-arg stringArray
+    # build-secret stringArray
+    # env stringArray
+    # only-regions strings
+    # no-cache
+    # region string
+    # strategy string
+    params = payload["params"] if "params" in payload else {}
+
+    token = source["token"]
+    base_url = source["base_url"]
+    compose_id = source["compose_id"] if "compose_id" in source else None
+    application_id = source["application_id"] if "application_id" in source else None
+
+    result = None
+    if (compose_id is not None):
+        # Deploy
+        res = post(f"{base_url}/compose.deploy", json={"composeId": compose_id}, headers={"Authorization": f"Bearer {token}"})
+        if (res.status_code >= 400):
+            print(f"error: {res.status_code}: {res.text}", file=stderr)
+            exit(1)
+        
+        # TODO: Stream logs from WS endpoints, stuck on https://github.com/Dokploy/dokploy/issues/321
+
+        # Check deployed version
+        looping_count = 0
+        while looping_count < LOOPING_MAX:
+            res = get(f"{base_url}/deployment.allByCompose?composeId={compose_id}", headers={"Authorization": f"Bearer {token}"})
+            if (res.status_code >= 400):
+                print(f"error: {res.status_code}: {res.text}", file=stderr)
+                exit(1)
+            
+            res_json = res.json()
+            if (res_json[0]["status"] == "done" or res_json[0]["status"] == "error"):
+                result = res_json
+                break
+            looping_count += 1
+
+            print(f"deployment in progress... ({looping_count * LOOPING_SEC}s, max {LOOPING_MAX * LOOPING_SEC}s)", file=stderr)
+            sleep(LOOPING_SEC)
+
+        if (looping_count == 60 and result is None):
+            print(f"deployment timeout after {LOOPING_MAX * LOOPING_SEC}s", file=stderr)
+
+    elif (application_id is not None):
+        # Deploy
+        res = post(f"{base_url}/application.deploy", json={"applicationId": application_id}, headers={"Authorization": f"Bearer {token}"})
+        if (res.status_code >= 400):
+            print(f"Error: {res.status_code}: {res.text}", file=stderr)
+            exit(1)
+
+        # TODO: Stream logs from WS endpoints, stuck on https://github.com/Dokploy/dokploy/issues/321
+
+        # Check deployed version
+        looping_count = 0
+        while looping_count < LOOPING_MAX:
+            res = get(f"{base_url}/deployment.all?applicationId={application_id}", headers={"Authorization": f"Bearer {token}"})
+            if (res.status_code >= 400):
+                print(f"error: {res.status_code}: {res.text}", file=stderr)
+                exit(1)
+            
+            res_json = res.json()
+            if (res_json[0]["status"] == "done" or res_json[0]["status"] == "error"):
+                result = res_json
+                break
+            looping_count += 1
+
+            print(f"deployment in progress... ({looping_count * LOOPING_SEC}s, max {LOOPING_MAX * LOOPING_SEC}s)", file=stderr)
+            sleep(LOOPING_SEC)
+
+        if (looping_count == 60 and result is None):
+            print("deployment timeout", file=stderr)
+    else:
+        print("`compose_id` or `application_id` must be set", file=stderr)
+        exit(1)
+
+    return {
+        "version": { "version": result[0]["deploymentId"] },
+        "metadata": result,
+    }
+    # return {
+    #     "version": { "version": str(app_status["Version"]) },
+    #     "metadata": [],
+    # }
+
+if __name__ == "__main__":
+    print(dumps(_out(stdin, argv[1]), separators=[",", ":"]))
