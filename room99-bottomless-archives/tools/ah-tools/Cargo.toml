@@ -1,0 +1,27 @@
+[package]
+name = "ah-tools"
+version = "0.1.1"
+edition = "2018"
+
+[features]
+default = ["serde","serde_json"]
+chrome = ["headless_chrome"]
+urlenc = []
+security = ["rand","openssl","openssl-probe","serde","serde_json","base64"]
+actix = ["futures","http","actix-web"]
+passwords = ["bcrypt"]
+simple-db = ["base64"]#["uuid"]
+
+[dependencies]
+serde = { version = "1.0", optional = true }
+serde_json = { version = "1.0", optional = true }
+rand = { version = "0.6", optional = true }
+base64 = { version = "0.10", optional = true }
+openssl = { version = "0.10", optional = true }
+openssl-probe = { version = "0.1", optional = true }
+headless_chrome = { git = "https://github.com/joxcat/rust-headless-chrome.git", optional = true }
+futures = { version = "0.1", optional = true }
+http = { version = "0.1", optional = true }
+actix-web = { version = "1.0", optional = true }
+bcrypt = { version = "0.5", optional = true }
+#uuid = { version = "0.7", optional = true }
