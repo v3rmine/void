@@ -1,0 +1,17 @@
+{
+  "name": "zed-stylelint-less-test-repository",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "lint-check:styles": "stylelint \"src/**/*.(less|sass|scss|css)\" --max-warnings=0 --allow-empty-input"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "postcss": "^8.5.3",
+    "postcss-less": "^6.0.0",
+    "stylelint": "^16.15.0",
+    "stylelint-config-recess-order": "^6.0.0",
+    "stylelint-config-standard-less": "^3.0.1",
+    "stylelint-less": "^3.0.1"
+  }
+}
