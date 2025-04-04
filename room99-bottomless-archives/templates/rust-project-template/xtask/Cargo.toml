@@ -1,0 +1,15 @@
+[package]
+name = "xtask"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+# Cli builder
+clap = { version = "4.0.8", features = ["derive", "env"] }
+# Error handling
+eyre = "0.6"
+color-eyre = "0.6"
+# Helper to run linux commands
+duct = "0.13"

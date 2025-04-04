@@ -1,0 +1,24 @@
+[package]
+name = "changeme_lib_name"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false # Change to publish on crates.io
+
+[lib]
+path = "src/lib.rs"
+test = true
+doctest = false
+bench = false
+doc = true
+
+# [[bin|example|test|bench]]
+# name = ""
+# path = ""
+# required-features
+
+[features]
+default = []
+
+[dependencies]
