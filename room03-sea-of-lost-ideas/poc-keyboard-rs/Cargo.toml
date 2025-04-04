@@ -1,0 +1,9 @@
+[package]
+name = "keyboard-rs"
+version = "0.1.0"
+authors = ["v3rmine <v3rmine@astriiid.fr>"]
+edition = "2018"
+
+[dependencies]
+error-chain = "^0.12"
+lazy_static = "^1.4"
