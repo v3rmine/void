@@ -1,0 +1,16 @@
+[Unit]
+Description={sa_id} SA mount Service
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=root
+StartLimitBurst=7
+StartLimitIntervalSec=10
+ExecStart={file}
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,17 @@
+alpha = _{ 'a'..'z' | 'A'..'Z' }
+digit = _{ '0'..'9' }
+alnum = _{ alpha | digit }
+
+alnum_word = @{ alnum+ }
+key = { (alnum | "_")+ }
+value = { (alnum | "." | "-" | "_" | "/" | "@")+ }
+
+header = _{ "[" ~ alnum_word ~ "]" }
+subline = { key ~ "=" ~ value }
+
+block = { header ~ NEWLINE ~ (subline ~ NEWLINE?)+ }
+
+file = { SOI ~ (block ~ NEWLINE?)* ~ EOI }
+
+WHITESPACE = _{ " " }
+NEWLINE = _{ "\n" | "\r\n" }

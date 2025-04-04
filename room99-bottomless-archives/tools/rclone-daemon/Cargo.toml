@@ -1,0 +1,19 @@
+[package]
+name = "daemon-hume"
+version = "0.1.0"
+edition = "2018"
+
+[dependencies]
+actix-web = { version = "1.0", features = ["client","ssl"] }
+actix-web-codegen = "0.1"
+log = "0.4.6"
+badlog = "1.1.1"
+serde = { version = "1.0.92", features = ["derive"] }
+serde_json = "1.0.39"
+pest = "2.1.1"
+pest_derive = "2.1.0"
+ah-tools = { git = "https://github.com/joxcat/ah-tools.git", features = ["actix","security","urlenc"] }
+futures = "0.1"
+openssl-probe = "0.1"
+bytes = "0.4"
+get_if_addrs = "0.5"
