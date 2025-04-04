@@ -1,0 +1,10 @@
+[package]
+name = "simple-server"
+version = "0.1.0"
+authors = ["v3rmine <v3rmine@astriiid.fr>"]
+edition = "2018"
+
+[dependencies]
+tokio = { version = "0.2", features = ["macros"], default-features = false }
+hyper = { version = "0.13", features = ["tcp"], default-features = false }
+base64 = "0.13"
