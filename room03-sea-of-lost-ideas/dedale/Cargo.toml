@@ -1,0 +1,125 @@
+[workspace]
+
+[package]
+name = "dedale"
+version = "0.1.0"
+edition = "2021"
+default-run = "dedale-server"
+
+[features]
+default = ["backend_docker", "client_cli"]
+backend_docker = ["dep:bollard"]
+client_cli = ["dep:clap"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[dependencies]
+migration.workspace = true
+loco-rs.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+toml.workspace = true
+eyre.workspace = true
+tokio.workspace = true
+async-trait.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+chrono.workspace = true
+validator.workspace = true
+sea-orm.workspace = true
+axum.workspace = true
+include_dir.workspace = true
+uuid.workspace = true
+fluent-templates.workspace = true
+unic-langid.workspace = true
+bollard = { workspace = true, optional = true }
+clap = { workspace = true, optional = true }
+
+# Cli framework
+
+[workspace.dependencies]
+# Database migrations
+migration = { path = "migration" }
+
+# Application framework
+loco-rs = { version = "0.5" }
+
+# Serialization/deserialization framework
+serde = { version = "1", features = ["derive"] }
+# JSON serialization/deserialization
+serde_json = "1"
+# TOML serialization/deserialization
+toml = "0.8"
+
+# Error handling (catch-all)
+eyre = "0.6"
+
+# Async framework
+tokio = { version = "1.33", default-features = false, features = ["sync"] }
+# Async shim for defining async functions in traits
+# TODO: Remove when supported by every crates
+async-trait = "0.1"
+
+# Tracing/log events framework
+tracing = "0.1"
+# Consuming the tracing events
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+
+# Better dates and times
+chrono = "0.4"
+# Common validation methods
+validator = { version = "0.16" }
+# ORM
+sea-orm = { version = "1.0.0-rc.4", features = [
+  "sqlx-sqlite",
+  "sqlx-postgres",
+  "runtime-tokio-rustls",
+  "macros",
+] }
+sea-orm-migration = "1.0.0-rc.4"
+
+# Server framework
+axum = "0.7"
+# Embed content of directory in the binary
+include_dir = "0.7"
+# Generate uuids
+uuid = { version = "1.6", features = ["v4"] }
+
+# view engine i18n
+fluent-templates = { version = "0.8", features = ["tera"] }
+unic-langid = "0.9"
+# /view engine
+
+# Cli framework
+clap = { version = "4.5.4", features = ["env", "derive"] }
+
+# backends
+# Docker client
+bollard = "0.16"
+# /backends
+
+# HACK: https://github.com/launchbadge/sqlx/issues/3189
+time = "=0.3.34"
+
+[[bin]]
+name = "dedale-server"
+path = "src/bin/dedale_server.rs"
+required-features = []
+
+[[bin]]
+name = "dedalectl"
+path = "src/bin/dedalectl/main.rs"
+required-features = ["client_cli"]
+
+[dev-dependencies]
+serial_test = "2.0"
+rstest = "0.18"
+loco-rs = { workspace = true, features = ["testing"] }
+insta = { version = "1.34", features = ["redactions", "yaml", "filters"] }
+
+# proxy
+[dependencies.pingora]
+# git = "https://github.com/cloudflare/pingora.git"
+git = "https://github.com/joxcat/pingora.git"
+version = "0.2"
+features = ["proxy"]
+# /proxy
