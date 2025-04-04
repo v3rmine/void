@@ -1,0 +1,12 @@
+image: archlinux
+packages:
+  - rustup
+tasks:
+  - cargo-setup: |
+      rustup toolchain add stable-x86_64-unknown-linux-gnu
+  - deps-setup: |
+      cd microbit-vm
+      cargo xtask setup
+  - check: |
+      cd microbit-vm
+      cargo xtask ci
