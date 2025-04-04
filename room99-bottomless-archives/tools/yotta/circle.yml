@@ -1,0 +1,36 @@
+version: 2
+
+jobs:
+  build:
+    working_directory: ~/ARMmbed/yotta
+    parallelism: 1
+    shell: /bin/bash --login
+    environment:
+      CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
+      PYTHONIOENCODING: UTF-8
+    docker:
+      - image: circleci/build-image:ubuntu-14.04-XXL-upstart-1189-5614f37
+        command: /sbin/init
+    steps:
+      - checkout
+
+      # set up SSH and yotta
+      - run: bash ci_init.sh
+
+      # get an up-to-date CMake
+      - run: sudo apt-get remove -y cmake
+      - run: curl -fsSL http://www.cmake.org/files/v3.2/cmake-3.2.3-Linux-i386.sh > /tmp/install-cmake.sh
+      - run: chmod +x /tmp/install-cmake.sh
+      - run: sudo /tmp/install-cmake.sh --prefix=/usr/local --exclude-subdir
+
+      # install Ninja
+      - run: sudo apt-get install ninja-build
+
+      # we use tox to run tests:
+      - run: sudo pip install tox
+      - run: pyenv local 2.7.12 3.4.4 3.5.3 3.6.1
+      - run: tox
+      - run: mkdir -p $CIRCLE_TEST_REPORTS/junit
+      - run: find . -name "*nosetests.xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
+      - store_test_results:
+          path: $CIRCLE_TEST_REPORTS
