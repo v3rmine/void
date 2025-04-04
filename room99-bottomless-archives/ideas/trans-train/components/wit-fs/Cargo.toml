@@ -1,0 +1,9 @@
+[package]
+name = "wit-fs"
+version = "0.1.0"
+edition.workspace = true
+
+[dependencies]
+wit-bindgen.workspace = true
+wit-log.workspace = true
+thiserror.workspace = true

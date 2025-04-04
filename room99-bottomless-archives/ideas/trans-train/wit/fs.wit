@@ -1,0 +1,24 @@
+interface fs {
+  variant file-handle {
+    read(string),
+    read-and-write(string),
+  }
+
+  enum error {
+    permission-denied,
+    io
+  }
+  
+  close: func(file: file-handle) -> option<error>
+  read: func(handle: file-handle) -> result<tuple<list<u8>, u32>, error>
+
+  open-input: func(path: string) -> result<file-handle, error>
+
+  open-output: func(path: string) -> result<file-handle, error>
+  write: func(handle: file-handle, content: list<u8>) -> result<u32, error>
+  flush: func(handle: file-handle) -> option<error>
+}
+
+default world fs-world {
+  import fs: self.fs
+}

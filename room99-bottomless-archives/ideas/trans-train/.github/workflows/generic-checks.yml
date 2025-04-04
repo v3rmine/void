@@ -1,0 +1,19 @@
+name: generic-checks
+
+on: [push, pull_request]
+  #push:
+    #branches-ignore:
+      #- master
+      #- dev
+      #
+
+jobs:
+  rust_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup
+        run: cargo xtask setup
+      - name: Test
+        run: cargo xtask ci

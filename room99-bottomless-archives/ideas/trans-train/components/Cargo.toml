@@ -1,0 +1,23 @@
+[workspace]
+members = [
+    # Modules
+    "./hello-world-transformer",
+
+    # Libs
+    "./wit-fs",
+    "./wit-log",
+    "./wit-sys",
+    "./wit-transformer-utils",
+]
+
+[workspace.package]
+edition = "2021"
+
+[workspace.dependencies]
+wit-bindgen = "0.6.0"
+thiserror = "1.0"
+
+wit-transformer-utils = { path = "./wit-transformer-utils" }
+wit-fs = { path = "./wit-fs" }
+wit-log = { path = "./wit-log" }
+wit-sys = { path = "./wit-sys" }

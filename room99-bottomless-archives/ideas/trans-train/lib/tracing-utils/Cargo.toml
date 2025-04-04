@@ -1,0 +1,15 @@
+[package]
+name = "tracing-utils"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+default = ["file", "tree"]
+file = []
+tree = []
+
+[dependencies]
+tracing.workspace = true
+tracing-appender.workspace = true
+tracing-subscriber.workspace = true
+tracing-tree.workspace = true

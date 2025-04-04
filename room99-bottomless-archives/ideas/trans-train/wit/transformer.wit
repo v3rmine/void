@@ -1,0 +1,30 @@
+// Sauce: https://github.com/WebAssembly/component-model/blob/main/design/mvp/WIT.md
+
+interface transformer {
+  record transformer-definition {
+    name: string,
+    version: string,
+    required-permissions: list<string>,
+    supported-version: string,
+  }
+  
+  enum permissions {
+    inputs, outputs,
+    local-filesystem, global-filesystem,
+    env, kv-store, network,
+    whole-config,
+  }
+  
+  init: func(permissions: list<permissions>)
+  get-definition: func() -> transformer-definition
+  call: func()
+}
+
+interface config {
+  get-config: func(key: string) -> string
+  get-whole-transformer-config: func() -> string
+}
+
+default world transformer-world {
+  export transformer: self.transformer
+}

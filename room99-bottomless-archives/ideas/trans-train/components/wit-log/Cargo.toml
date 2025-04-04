@@ -1,0 +1,8 @@
+[package]
+name = "wit-log"
+version = "0.1.0"
+edition.workspace = true
+
+[dependencies]
+wit-bindgen.workspace = true
+log = { version = "0.4", features = ["std"] }

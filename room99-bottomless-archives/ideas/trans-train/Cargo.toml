@@ -1,0 +1,40 @@
+[workspace]
+members = [
+    "xtask",
+    "lib/*",
+    "bin/*",
+]
+default-members = ["lib/*", "bin/*"]
+resolver = "2"
+
+[workspace.dependencies]
+tracing-utils = { path = "./lib/tracing-utils" }
+
+serde = { version = "1.0", features = ["derive"] }
+toml = "0.7"
+clap = { version = "4.0.8", features = ["derive", "env", "cargo"] }
+tokio = { version = "1", features = ["full"] }
+async-trait = "0.1"
+wasmtime = { version = "9.0.4", features = ["component-model"] }
+semver = "1.0"
+eyre = "0.6"
+color-eyre = "0.6"
+miette = "5.9"
+uuid = { version = "1.3.4", features = ["v4", "fast-rng", "macro-diagnostics" ] }
+tracing = "0.1"
+tracing-appender = { version = "0.2", features = ["parking_lot"] }
+tracing-subscriber = { version = "0.3", features = ["parking_lot", "env-filter"] }
+tracing-tree = "0.2"
+rand = "0.8"
+
+[workspace.package]
+authors = ["v3rmine <v3rmine@astriiid.fr>"]
+version = "0.1.0"
+edition = "2021"
+license = "MPL-2.0"
+license-file = "LICENSE"
+
+[profile.release]
+lto = 'fat'
+opt-level = 's'
+debug-assertions = false

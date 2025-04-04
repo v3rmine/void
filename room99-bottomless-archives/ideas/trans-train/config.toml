@@ -1,0 +1,17 @@
+[lifecycle.input]
+params = [
+	{ glob = "content/**", depends_on = ["config", "templates/**"] },
+	{ glob = "templates/**" },
+	{ path = "config.toml", as = "config" },
+]
+
+[lifecycle]
+dependency = { requires = ["input"] }
+build = { requires = ["dependency"] }
+export = { requires = ["build", "dependency"] } # Build or dependency
+
+[user]
+# User config should not be used by plugins
+
+[plugins]
+# Plugins config, that should be used by plugins

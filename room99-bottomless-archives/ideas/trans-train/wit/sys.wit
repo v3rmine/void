@@ -1,0 +1,8 @@
+interface sys {
+  rand-u64: func() -> u64
+  uuid4: func() -> string
+}
+
+default world sys-world {
+  import sys: self.sys
+}
