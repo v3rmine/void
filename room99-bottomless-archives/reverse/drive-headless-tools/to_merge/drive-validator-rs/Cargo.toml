@@ -1,0 +1,20 @@
+[package]
+name = "drive-validator"
+version = "0.1.0"
+edition = "2018"
+publish = false
+
+[[bin]]
+name = "drive_validator_server"
+path = "src/server.rs"
+
+[lib]
+name = "drive_validator"
+crate-type = ["cdylib"]
+
+[dependencies]
+headless_chrome = { git = "https://github.com/TheDan64/rust-headless-chrome.git" }
+actix-web = "1.0.0"
+actix-web-codegen = "0.1.2"
+badlog = "1.1"
+log = "0.4"
