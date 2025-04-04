@@ -1,0 +1,41 @@
+syntax = "proto3";
+package dedale.proxy;
+
+service Proxy {
+  rpc Forwarder(stream ResponseStream) returns (stream RequestStream) {}
+  rpc Discovery(DiscoveryRequest) returns (stream FrontendNodesStream) {}
+  rpc Auth(AuthRequest) returns (AuthResponse) {}
+}
+
+message ResponseStream {
+  string requestUuid = 1;
+  enum Action { RESPOND = 0; DROP = 1; }
+  Action action = 2;
+  bytes response = 3;
+}
+message RequestStream {
+  string requestUuid = 1;
+  // TODO: Add SMTP(S) and IMAP(S)
+  enum Protocol { UNKNOWN = 0; HTTP = 1; HTTPS = 2; }
+  Protocol protocol = 2;
+  string clientIp = 3;
+  string host = 4;
+  bytes request = 5;
+}
+
+message DiscoveryRequest {}
+message FrontendNodesStream {
+  string nodeUuid = 1;
+  string nodeIp = 2;
+  bool isMaster = 3;
+}
+
+message AuthRequest {
+  string authToken = 1;
+  string clientCert = 2;
+}
+message AuthResponse {
+  enum Status { OK = 0; UNAUTHORIZED = 1; BLOCKED = 2; }
+  Status status = 1;
+  string serverCert = 2;
+}

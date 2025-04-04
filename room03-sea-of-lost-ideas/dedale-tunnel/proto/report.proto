@@ -1,0 +1,16 @@
+syntax = "proto3";
+package dedale.report;
+
+service Report {
+  rpc System(stream SystemRequest) returns (SystemResponse) {}
+  rpc Ping(PingRequest) returns (PongResponse) {}
+}
+
+message SystemRequest {
+  uint32 cpuUsage = 1;
+  uint32 memoryUsage = 2;
+}
+message SystemResponse {}
+
+message PingRequest {}
+message PongResponse {}
