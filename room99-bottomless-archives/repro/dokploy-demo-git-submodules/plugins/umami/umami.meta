@@ -1,0 +1,6 @@
+description="Add umami tracking to the website"
+parameters="SCRIPT_URL;WEBSITE_ID;DO_NOT_TRACK;DOMAINS"
+parameter.SCRIPT_URL="Umami src script url"
+parameter.WEBSITE_ID="Umami website ID"
+parameter.DO_NOT_TRACK="Respect the do not track parameter"
+parameter.DOMAINS="Track only on these domains"

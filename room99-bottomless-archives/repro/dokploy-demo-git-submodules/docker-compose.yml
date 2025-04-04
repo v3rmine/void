@@ -1,0 +1,21 @@
+services:
+  gitmodulesrepro:
+    build:
+      context: .
+      args:
+        VERSION: v0.13.0
+    expose:
+      - 80
+    networks:
+      - dokploy-network
+    # volumes:
+    #   - /var/lib/docker-data/shaarli/data:/var/www/shaarli/data
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.gitmodulesrepro.entrypoints=websecure
+      - traefik.http.routers.gitmodulesrepro.rule=Host(`gitmodulesrepro.docker.localhost`)
+      - traefik.http.services.gitmodulesrepro.loadbalancer.server.port=80
+
+networks:
+  dokploy-network:
+    external: true
