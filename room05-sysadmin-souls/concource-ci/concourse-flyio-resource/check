@@ -1,0 +1,23 @@
+#!/usr/bin/env python3
+from json import (load, loads, dumps)
+from sys import (stdin, stderr)
+from subprocess import (run)
+
+def _check(instream):
+    payload = load(instream)
+    source = payload["source"]
+
+    api_key = source["api_key"]
+    app_name = source["app_name"]
+    check_machines = source["check_machines"] if "check_machines" in source else False
+
+    result = run(f"flyctl status --json --access-token='{api_key}' --app='{app_name}'", shell=True, capture_output=True, text=True)
+    print(result.stderr, file=stderr)
+    app_status = loads(result.stdout)
+
+    return [{
+        "version": str(app_status["Version"])
+    }]
+
+if __name__ == "__main__":
+    print(dumps(_check(stdin), separators=[",", ":"]))
