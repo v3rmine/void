@@ -1,0 +1,9 @@
+tokens.db
+serverConfig.json
+coverage.out
+tordir
+.idea/
+messages
+cwtch.messages
+serverMonitorReport.txt
+testcwtchmessages.db

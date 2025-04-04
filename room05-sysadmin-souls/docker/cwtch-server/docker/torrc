@@ -1,0 +1,27 @@
+User _tor
+DataDirectory /var/lib/tor
+
+ORPort 0 
+ExitRelay 0
+IPv6Exit 0
+
+#We need this running in the background as the server doesn't launch it itself
+RunAsDaemon 1
+
+ClientOnly 1
+SocksPort 9050
+
+ControlPort 9051
+ControlSocket /run/tor/control
+ControlSocketsGroupWritable 1
+CookieAuthentication 1
+CookieAuthFile /run/tor/control.authcookie
+CookieAuthFileGroupReadable 1
+#HashedControlPassword 16:B4C8EE980C085EE460AEA9094350DAA9C2B5F841400E9BBA247368400A
+
+# Run as a relay only (change policy to enable exit node)
+ExitPolicy reject *:*        # no exits allowed
+ExitPolicy reject6 *:*
+
+# Additional config built by the entrypoint will go here
+

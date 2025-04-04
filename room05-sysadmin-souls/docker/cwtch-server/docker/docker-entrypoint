@@ -1,0 +1,33 @@
+#!/bin/sh
+set -o errexit
+
+chmod_files() { find $2 -type f -exec chmod -v $1 {} \;
+}
+chmod_dirs() { find $2 -type d -exec chmod -v $1 {} \;
+}
+
+chown ${TOR_USER}:${TOR_USER} /run/tor/
+chmod 770 /run/tor
+
+chown -Rv ${TOR_USER}:${TOR_USER} /var/lib/tor
+chmod_dirs 700 /var/lib/tor
+chmod_files 600 /var/lib/tor
+
+echo -e "\n========================================================"
+# Display OS version, Tor version & torrc in log
+echo -e "Alpine Version: \c" && cat /etc/alpine-release
+tor --version
+#cat /etc/tor/torrc
+echo -e "========================================================\n"
+
+tor -f /etc/tor/torrc
+
+#Cwtch will crash and burn if 9051 isn't ready
+sleep 15
+
+if [ -z "${CWTCH_CONFIG_DIR}" ]; then
+	CWTCH_CONFIG_DIR=/etc/cwtch/
+fi
+
+#Run cwtch (or whatever the user passed)
+CWTCH_CONFIG_DIR=$CWTCH_CONFIG_DIR  exec "$@"

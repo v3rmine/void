@@ -1,0 +1,120 @@
+---
+kind: pipeline
+type: docker
+name: linux-test
+
+steps:
+  - name: fetch
+    image: golang:1.21.5
+    volumes:
+      - name: deps
+        path: /go
+    commands:
+      - go install honnef.co/go/tools/cmd/staticcheck@latest
+      - go install go.uber.org/nilaway/cmd/nilaway@latest
+      - git fetch --tags
+      - go get
+      - echo `git describe --tags` > VERSION
+      - echo `date +%G-%m-%d-%H-%M` > BUILDDATE
+
+  - name: quality
+    image: golang:1.21.5
+    volumes:
+      - name: deps
+        path: /go
+    commands:
+      - go list ./... | xargs go vet
+      - staticcheck ./...
+
+  - name: units-tests
+    image: golang:1.21.5
+    volumes:
+      - name: deps
+        path: /go
+    commands:
+      - sh testing/tests.sh
+
+  - name: test-builda-app
+    image: golang:1.21.5
+    volumes:
+      - name: deps
+        path: /go
+    commands:
+      - cd app
+      - go build
+
+  - name: notify-gogs
+    pull: if-not-exists
+    image: openpriv/drone-gogs
+    when:
+      event: pull_request
+      status: [success, changed, failure]
+    environment:
+      GOGS_ACCOUNT_TOKEN:
+        from_secret: gogs_account_token
+    settings:
+      gogs_url: https://git.openprivacy.ca
+
+volumes:
+  # gopath where bin and pkg lives to persist across steps
+  - name: deps
+    temp: {}
+
+trigger:
+  repo: cwtch.im/server
+  branch: trunk
+  event:
+    - push
+    - pull_request
+    - tag
+
+---
+kind: pipeline
+type: exec
+name: mac-test
+
+platform:
+  os: darwin
+  arch: amd64
+
+steps:
+  - name: fetch
+    volumes:
+      - name: deps
+        path: /go
+    commands:
+      - export PATH=$PATH:/usr/local/go/bin
+      - go get
+
+  - name: units-tests
+    volumes:
+      - name: deps
+        path: /go
+    commands:
+      - export PATH=$PATH:/usr/local/go/bin
+      - sh testing/tests.sh
+
+  - name: test-builda-app
+    volumes:
+      - name: deps
+        path: /go
+    commands:
+      - export PATH=$PATH:/usr/local/go/bin
+      - cd app
+      - go build
+
+volumes:
+  # gopath where bin and pkg lives to persist across steps
+  - name: deps
+    temp: {}
+
+trigger:
+  repo: cwtch.im/server
+  branch: trunk
+  event:
+    - push
+    - pull_request
+    - tag
+
+# TODO: windows: but need windows docker containers with
+#  go + gcc to compile sqlite. Will prolly come from likewise work for Cwtch
