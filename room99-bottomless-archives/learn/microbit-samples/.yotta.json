@@ -1,0 +1,6 @@
+{
+  "build": {
+    "target": "bbc-microbit-classic-gcc,https://git.mob-dev.fr/Schoumi/yotta-target-bbc-microbit-classic-gcc.git",
+    "targetSetExplicitly": true
+  }
+}

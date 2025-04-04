@@ -1,0 +1,11 @@
+{
+  "name": "microbit-samples",
+  "version": "2.1.1",
+  "description": "The micro:bit runtime common abstraction with examples.",
+  "license": "MIT",
+  "dependencies": {
+    "microbit": "https://git.mob-dev.fr/Schoumi/microbit.git"
+  },
+  "targetDependencies": {},
+  "bin": "./source"
+}
