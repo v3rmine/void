@@ -1,0 +1,9 @@
+{
+    "example_input": {
+        "prompt": "Hello World!"
+    },
+    "example_output": {
+        "output": "<base 64 wav file>"
+    },
+    "version": "1"
+}
