@@ -1,0 +1,8 @@
+# Rust
+/target
+
+# Build
+/dist
+
+# CI
+/.cargo/advisory-db/

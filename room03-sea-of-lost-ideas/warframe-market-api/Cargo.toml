@@ -1,0 +1,38 @@
+[workspace]
+members = ["xtask", "lib"]
+default-members = ["lib"]
+
+[workspace.package]
+authors = ["v3rmine <v3rmine@astriiid.fr>"]
+version = "1.0.0"
+edition = "2021"
+license = "MPL-2.0"
+license-file = "LICENSE"
+
+[workspace.dependencies]
+# Cli builder
+clap = "4.0.8"
+# Error handling
+eyre = "0.6"
+color-eyre = "0.6"
+# Helper to run linux commands
+duct = "0.13"
+# Error creation
+thiserror = "1.0"
+# Ser/Deser.ialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+# Requests
+hyper = "0.14"
+hyper-rustls = "0.24"
+tokio = "1.28"
+# Logging
+tracing = "0.1"
+tracing-subscriber = "0.3"
+# Async Traits
+async-trait = "0.1"
+
+[profile.release]
+lto = 'fat'
+opt-level = 3
+debug-assertions = false
