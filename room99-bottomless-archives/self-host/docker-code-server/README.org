@@ -1,0 +1,116 @@
+* Code server Docker config
+Coder's code-server personal setup in Docker 
+
+https://github.com/coder/code-server
+
+*Please put your UID / GID in .env* (/you can copy .env.example/)
+
+** Caddyfile
+#+BEGIN_SRC caddy
+{
+    # Remove after dev
+    # debug
+
+    admin off
+
+    email <admin email>
+
+    servers {
+        protocol {
+            experimental_http3
+            strict_sni_host
+        }
+    }
+
+}
+
+(production) {
+    # disable FLoC tracking
+    {args.0} Permissions-Policy "interest-cohort=()"
+
+    # enable HSTS
+    {args.0} Strict-Transport-Security "max-age=31536000; preload"
+
+    # disable clients from sniffing the media type
+    {args.0} X-Content-Type-Options nosniff
+
+    # clickjacking protection
+    {args.0} X-Frame-Options DENY
+
+    # keep referrer data off
+    {args.0} Referrer-Policy no-referrer
+
+    {args.0} X-Forwarded-Proto https
+    {args.0} X-Forwarded-Scheme https
+
+    {args.0} Content-Security-Policy "default-src 'none'; connect-src 'self'; font-src 'self'; style-src 'self'; img-src 'self'; script-src 'self'; manifest-src 'self'"
+}
+
+(noindex) {
+    respond "/robots.txt" 200 {
+        body "User-Agent: *
+Disallow: /"
+        close
+    }
+}
+
+<domain name> {
+    import noindex
+    header -Server
+
+    reverse_proxy http://codeserver:8080 {
+        import production header_down
+
+        header_down -X-Content-Type-Options
+        header_down -X-Frame-Options
+        header_down Content-Security-Policy "default-src 'self'; connect-src 'self' ws: wss: http: https:; font-src 'self'; style-src 'self' 'unsafe-inline' https: data:; img-src 'self' data: https:; script-src 'self' 'unsafe-eval' 'unsafe-inline' https:; frame-src 'self' https://*.<domain name>; worker-src 'self'"
+    }
+}
+
+https://*.<domain name> {
+    import noindex
+    header -Server
+
+    @is_code_port {
+        host 8080.<domain name>
+    }
+    redir @is_code_port https://<domain name>
+
+    @port {
+        header_regexp port Host ([0-9]+)\.<domain name>
+    }
+    reverse_proxy @port {
+        to codeserver:{re.port.1}
+    }
+
+    handle_errors {
+        header -Server
+
+        @errors expression `{http.error.status_code} == 502`
+        redir @errors https://<domain name>
+    }
+
+    tls {
+        dns cloudflare <cloudflare api key>
+    }
+}
+
+http://*.<domain name> {
+    @port_websocket {
+        header_regexp port Host ([0-9]+)\.<domain name>
+        header Upgrade websocket
+    }
+
+    @not_websocket {
+        not {
+            header Upgrade websocket
+        }
+    }
+
+    reverse_proxy @port_websocket {
+        to codeserver:{re.port.1}
+    }
+
+    redir @not_websocket https://{host}{uri}
+}
+#+END_SRC

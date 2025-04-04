@@ -1,0 +1,57 @@
+version: '2.4'
+
+services:
+  # docker:
+  #   image: docker:dind
+  #   privileged: true
+  #   environment:
+  #     - DOCKER_TLS_CERTDIR=
+  #   networks:
+  #     - default
+  postgres:
+    image: postgres:13
+    environment:
+      - POSTGRES_PASSWORD=example-foundkey-pass
+      - POSTGRES_USER=example-foundkey-user
+      - POSTGRES_DB=foundlock
+    networks:
+      - default
+
+
+  codeserver:
+    container_name: codeserver
+    image: codeserver:latest
+    # build:
+    #   context: dockerfile
+    #   args:
+    #     UID: ${UID}
+    #     GID: ${GID}
+    #     GIT_NAME: ${GIT_NAME}
+    #     GIT_EMAIL: ${GIT_EMAIL}
+    restart: unless-stopped
+    user: ${UID}:${GID}
+    volumes:
+      - "./app_data:/user_home/.local:rw"
+      - "./config:/user_home/.config:rw"
+      - "./data:/user_home/data:rw"
+      - "./ssh:/user_home/.ssh:rw"
+      - "${HOME}/docker/.nix:/nix:rw"
+      # - "/var/run/docker.sock:/var/run/docker.sock"
+    devices:
+      - "/dev/fuse:/dev/fuse:rw"
+    environment:
+      EXTENSIONS_GALLERY: '{"serviceUrl": "https://marketplace.visualstudio.com/_apis/public/gallery","cacheUrl":"https://vscode.blob.core.windows.net/gallery/index","itemUrl":"https://marketplace.visualstudio.com/items"}'
+    networks:
+      - default
+      - proxy
+    security_opt:
+      - apparmor:unconfined
+    cap_add:
+      - SYS_ADMIN # Needed for fuse
+    mem_limit: 8G
+
+networks:
+  default:
+  proxy:
+    external:
+      name: proxy

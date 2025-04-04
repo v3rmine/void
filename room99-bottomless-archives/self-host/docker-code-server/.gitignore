@@ -1,0 +1,7 @@
+app_data/
+data/
+config/
+ssh/
+.env
+*.log
+nohup.out
