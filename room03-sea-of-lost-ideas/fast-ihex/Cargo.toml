@@ -1,0 +1,25 @@
+[workspace]
+members = [
+    "lib",
+    "tests",
+]
+default-members = ["lib"]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+
+[workspace.dependencies]
+# Internal
+fast-ihex = { path = "lib" }
+# External
+tracing = { version = "0.1", default-features = false }
+rkyv = "0.7"
+# Tests
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+assay = { version = "^0.1", git = "https://github.com/joxcat/assay.git" }
+test-case = "3.1"
+# Bench
+criterion = { version = "0.4", default-features = false, features = ["rayon", "cargo_bench_support"] }
+ihex = "3.0"

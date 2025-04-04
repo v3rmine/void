@@ -1,0 +1,31 @@
+[package]
+name = "fast-ihex"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+default = [
+    "wayne-and-layne",
+    "microbit",
+    "i16hex",
+    "i32hex"
+]
+wayne-and-layne = []
+microbit = []
+
+i8hex = []
+i16hex = []
+i32hex = []
+
+[dependencies]
+tracing.workspace = true
+rkyv.workspace = true
+
+[dev-dependencies]
+criterion.workspace = true
+assay.workspace = true
+test-case.workspace = true
+
+[[bench]]
+name = "checksum"
+harness = false

@@ -1,0 +1,14 @@
+[package]
+name = "tests"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+tracing-subscriber.workspace = true
+
+[dev-dependencies]
+fast-ihex.workspace = true
+
+tracing.workspace = true
+assay.workspace = true
+test-case.workspace = true
