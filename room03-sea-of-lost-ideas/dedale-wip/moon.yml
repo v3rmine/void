@@ -1,0 +1,13 @@
+tasks:
+  build:
+    command: 'cargo build'
+    inputs:
+      - 'Cargo.lock'
+      - 'src/**/*'
+    outputs:
+      - 'target'
+  run:
+    command: 'cargo run'
+    inputs:
+      - 'Cargo.lock'
+      - 'src/**/*'

@@ -1,0 +1,9 @@
+# moon
+/.moon/cache
+/.moon/docker
+
+# cargo
+/target
+
+# editors
+/.vscode/history
