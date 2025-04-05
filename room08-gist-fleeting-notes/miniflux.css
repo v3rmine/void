@@ -1,0 +1,8 @@
+/* RSS Miniflux Custom CSS */
+body {
+  --entry-content-color: #111;
+  --body-background: #fffff8;
+  --entry-content-font-family:
+    et-book, Palatino, Palatino Linotype, Palatino LT STD, Book Antiqua,
+    Georgia, serif;
+}
