@@ -1,0 +1,5 @@
+skinparam handwritten true
+skinparam monochrome true
+skinparam backgroundColor transparent
+skinparam classBackgroundColor transparent
+skinparam style strictuml
