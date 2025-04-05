@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Youtube up vids by user</title>
+  <style>
+    #input {
+      width: 30%;
+    }
+  </style>
+</head>
+<body>
+  <center id="ytinput">
+    <form method="get">
+      <label>Channel URL</label>
+      <input id="input" name="url" placeholder="https://www.youtube.com/user/<username>" type="text"/>
+      <button type="submit">Generate</button>
+    </form>
+    <p id="erur"></p>
+  </center>
+  <center id="vid">
+    <iframe id="iframevid" style="width:160vmin; height:90vmin;" allowfullscreen="" frameborder="0"></iframe>
+  </center>
+  <script>
+    var vid = document.getElementById('vid')
+    var input = document.getElementById('ytinput')
+    // https://stackoverflow.com/a/901144
+    function getParameterByName(name, url) {
+      if (!url) url = window.location.href;
+      name = name.replace(/[\[\]]/g, "\\$&");
+      var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+          results = regex.exec(url);
+      if (!results) return null;
+      if (!results[2]) return '';
+      return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
+    // Original by Kuromachii
+    function getUserName(url) {
+      var regex = new RegExp(/^https?:\/\/www\.youtube\.com\/user\/(.+)/).exec(url)
+      if (!regex) console.log('PARSING ERROR');
+      if (!regex[1]) {
+        console.log('PARSING ERROR')
+      } else {
+        return decodeURIComponent(regex[1]);
+      }
+    }
+    function playlister() {
+      var iframe = document.getElementById('iframevid')
+      var error = document.getElementById('erur')
+      url = getParameterByName('url')
+      var regex = new RegExp(/^https?:\/\/www\.youtube\.com\/user\/.+/)
+      regex = regex.exec(url)
+      if (!regex) {
+        error.setAttribute('style', 'font-weight:bold;color:red')
+        error.innerHTML = 'ERROR INVALID URL'
+        document.getElementById('input').value = url;
+        input.removeAttribute('hidden')
+      } else {
+        // https://www.youtube.com/user/<username>/* => https://www.youtube.com/embed?listType=user_uploads&list=<username>
+        url = 'https://www.youtube.com/embed?listType=user_uploads&list=' + getUserName(url)
+        iframe.setAttribute('src', url)
+      }
+    }
+
+    if (getParameterByName('url') == null) {
+      vid.setAttribute('hidden', 'true');
+    } else {
+      input.setAttribute('hidden', 'true');
+      playlister()
+    }
+</script>
+</body>
+</html>

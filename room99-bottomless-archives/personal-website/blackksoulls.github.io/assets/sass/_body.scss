@@ -1,0 +1,315 @@
+$light: #eceff1;
+
+* {
+  transition: all 0.5s ease, opacity 1s ease, transform 1s ease, left 1s ease, top 1s ease;
+}
+@include mobile-only{
+  h1 {font-size: 6.6vmin}
+  h2 {font-size: 6vmin}
+};
+
+h1, h2, h3 {
+  text-transform: uppercase;
+  color: $light;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.16), 0px 1px 4px rgba(0,0,0,0.23);
+  &, h4, h5, h6 {
+    font-family: "Open Sans Condensed", sans-serif;
+    user-select: none;
+    white-space: nowrap;
+  }
+}
+
+body:before {
+  z-index: -3;
+  content: "";
+  position: absolute;
+  width : 100%;
+  height: 100%;
+  filter: blur(15px) brightness(125%) opacity(75%);
+
+  background-image: url('../pictures/bg4-cm.jpg');
+  background-size: cover;
+}
+
+#wrapbehind {
+  z-index: -2;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+#left, #bottom, #right, #top {
+  opacity: 0.5;
+  position: absolute;
+  transition: width 1s ease, height 1s ease, opacity 1s ease;
+  overflow: hidden;
+  & .content {
+    position: absolute !important;
+    top: 8vmin !important;
+  }
+}
+
+#center {
+  position: absolute;
+  overflow: hidden;
+  z-index: 0;
+  top: 10%;
+  bottom: 10%;
+  left: 10%;
+  right: 10%;
+  height: 80%;
+  width: 80%;
+  background-color: #D2B561;
+  box-shadow: 0 3px 3px rgba(0,0,0,0.16), 0 3px 3px rgba(0,0,0,0.23);
+  & .content {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    & h1 {
+      margin: 0.75rem 2.5%;
+    }
+    & div {
+      width: 65%;
+      margin: auto 2.5%;
+      &:nth-of-type(2) {
+        position: absolute;
+        bottom: 2.5%;
+      }
+      & h2 {
+        white-space: normal;
+        font-size: 1em;
+        color: #cfd8dc;
+        margin: 1em 0;
+      }
+      & a {
+        text-decoration: none;
+        color: #2A2133;
+        & i {
+          margin-right: 0.5em;
+        }
+        &:hover {
+          filter: brightness(250%);
+        }
+      }
+      & p {
+        margin-top: 1em;
+        text-align: justify;
+      }
+      & ul {
+        list-style: none;
+        display: flex;
+        flex-direction: row;
+        & li {
+          margin-right: 5%;
+          & a {
+            font-size: 4.5vmin;
+            text-decoration: none;
+            & i {
+              margin-right: 0.5em;
+            }
+          }
+        }
+      }
+    }
+    & img {
+      position: absolute;
+      width: 25%;
+      top: 2.5%;
+      right: 2.5%;
+      border-radius: 3px;
+      box-shadow: 1.5px 3px 5px rgba(0,0,0,0.16), 1.5px 3px 5px rgba(0,0,0,0.23);
+      -webkit-user-drag: none;
+      user-select: none;
+    }
+  }
+}
+
+#top {
+  z-index: 9000;
+  background-color: #6DAFB0;
+  width: 80vw !important;
+  left: 10vw;
+  height: 7vmin;
+  top: 0;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  & h2 {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%,50%);
+    user-select: none;
+  }
+  & .content {
+    position: absolute;
+    top: 3em;
+    width: 100%;
+    height: 90%;
+    & > ul {
+      list-style: none;
+      & > li {
+        height: 15vmin;
+        margin-bottom: 3vmin;
+        margin-left: 4vmin;
+        background-color: #fafafa;
+        padding: 2vmin 3vmin;
+        width: fit-content;
+        border-radius: 2px;
+        @include box_shadow(1);
+        & > span:nth-of-type(2) {
+          float: left;
+          display: flex;
+          flex-flow: column;
+          padding-top: 2vmin;
+        }
+        & .year {
+          float: left;
+          display: inline-block;
+          height: 10vmin;
+          width: 14vmin;
+          padding: 4vmin 0;
+          text-align: center;
+          background-color: #b2dfdb;
+          border-radius: 2px;
+          font-weight: bold;
+          @include box_shadow(1);
+        }
+        & .what {
+          font-size: 2.5vmin;
+          margin-left: 2vmin;
+        }
+        & .where {
+          font-style: italic;
+          font-size: 2vmin;
+          opacity: 0.75;
+          margin-left: 2vmin;
+          & a {
+            text-decoration: none;
+            color: #2A2133;
+            &:hover {
+              filter: brightness(250%);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+#left {
+  z-index: 9000;
+  background-color: #C23D80;
+  height: 80vh;
+  width: 7vmin;
+  top: 10vh;
+  left: 0;
+  box-shadow: 3px 1.5px 6px rgba(0,0,0,0.16), 3px 1.5px 6px rgba(0,0,0,0.23);
+  & h2 {
+    position: absolute;
+    top: 50%;
+    right: -125%;
+    transform: rotate(-90deg) translate(0%,100%);
+  }
+  & .content {
+    display: none;
+    margin: 1% 4%;
+    font-size: 3vmin;
+  }
+}
+
+#right {
+  z-index: 9000;
+  background-color: #2A2133;
+  height: 80vh;
+  width: 7vmin;
+  top: 10vh;
+  right: 0;
+  box-shadow: -3px 1.5px 6px rgba(0,0,0,0.16), -3px 1.5px 6px rgba(0,0,0,0.23);
+  & h2 {
+    position: absolute;
+    color: #cfd8dc;
+    top: 50%;
+    left: 0;
+    transform: rotate(90deg) translate(0%,300%);
+    user-select: none;
+    white-space: nowrap;
+  }
+  & .content {
+    color: #cfd8dc;
+    display: none;
+    margin: 1% 4%;
+    font-size: 3vmin;
+  }
+}
+
+@include desktop-only {
+  #left .content, #right .content {
+    max-width: 60%;
+  }
+}
+
+#bottom {
+  z-index: 9000;
+  background-color: #438377;
+  width: 80vw;
+  height: 7vmin;
+  left: 10vw;
+  bottom: 0;
+  box-shadow: 0 -2px 6px rgba(0,0,0,0.16), 0 -2px 6px rgba(0,0,0,0.23);
+  & h2 {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%,50%);
+    user-select: none;
+  }
+  & .content {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: 4vmin;
+    & .card {
+      background-color: #fafafa;
+      height: fit-content;
+      min-height: 25vmin;
+      width: 25vmin;
+      border-radius: 2px;
+      margin-right: 3vmin;
+      margin-bottom: 3vmin;
+      & .title {
+        border-radius: 2px 2px 0 0;
+        background-color: #cccccc;
+        padding: 1vmin 2vmin;
+        font-size: 2.5vmin;
+        text-align: center;
+      }
+      & .data {
+        font-size: 2vmin;
+        padding: 1vmin 2vmin;
+        text-align: center;
+        & p {
+          margin-bottom: 2vmin;
+        }
+        & a {
+          padding: 0.5vmin 1vmin;
+          text-decoration: none;
+          background-color: #cccccc;
+          &:hover {
+            border-radius: 5px;
+            filter: brightness(125%);
+          }
+        }
+      }
+    }
+  }
+}
+
+@include mobile-only {
+  #center .content {
+    & h1 {
+      margin: 0 2.5% !important;
+    }
+    & h2 {
+      margin: 0 !important;
+    }
+    & p {
+      font-size: 4vmin;
+    }
+  }
+}

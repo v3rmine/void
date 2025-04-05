@@ -1,0 +1,23 @@
+@charset "UTF-8";
+
+@import url('https://fonts.googleapis.com/css?family=Open+Sans+Condensed:700|Raleway:300|Ubuntu+Mono');
+
+/** VARS DEFAULTS */
+$base-font-family: "Raleway", sans-serif !default;
+
+* {
+  padding: 0;
+  margin: 0;
+  font-family: $base-font-family;
+  box-sizing: border-box;
+}
+
+a, a:active, a:hover, a:focus {
+  transition: all 0.3s ease-in-out;
+}
+
+@import
+  "mixins",
+  "mixins_c",
+  "body"
+;

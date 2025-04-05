@@ -1,0 +1,95 @@
+$tablet-width: 768px;
+$desktop-width: 1024px;
+
+$vendors: "-moz-", "-webkit-", "";
+
+@mixin phone {
+  @media (max-width: #{$tablet-width - 1px}) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (min-width: #{$tablet-width}) and (max-width: #{$desktop-width - 1px}) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: #{$desktop-width}) {
+    @content;
+  }
+}
+
+// https://gist.github.com/paulmelnikow/7fcfbe4f68e5df7fe326
+@mixin box_shadow ($level) {
+  @if $level == 1 {
+    @each $vendor in $vendors {
+      #{$vendor}box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    }
+  } @else if $level == 2 {
+    @each $vendor in $vendors {
+      #{$vendor}box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    }
+  } @else if $level == 3 {
+    @each $vendor in $vendors {
+      #{$vendor}box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+    }
+  } @else if $level == 4 {
+    @each $vendor in $vendors {
+      #{$vendor}box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+    }
+  } @else if $level == 5 {
+    @each $vendor in $vendors {
+      #{$vendor}box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+    }
+  }
+}
+
+@mixin rounded($radius: 0.5em) {
+  @each $vendor in $vendors {
+    #{$vendor}border-radius: $radius;
+  }
+}
+
+@mixin gradient($from, $to) {
+  background: -webkit-gradient(linear, left top, left bottom, from($from), to($to));
+  background: -moz-linear-gradient(top,  $from, $to);
+  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#{$from}', endColorstr='#{$to}');
+}
+
+@mixin code {
+  font-family: "Ubuntu Mono", monospace;
+}
+
+@mixin basic {
+  font-family: $base-font-family;
+}
+
+@mixin title {
+  font-family: "Open Sans Condensed", sans-serif;
+}
+
+$mq-mobile-portrait		: 320px !default;
+$mq-mobile-landscape	: 480px !default;
+$mq-tablet-portrait		: 768px !default;
+$mq-tablet-landscape	: 1024px !default;
+$mq-desktop				: 1920px !default;
+
+@mixin mobile-only {
+  @media (max-width : $mq-mobile-landscape) {
+    @content;
+  }
+}
+
+@mixin tablet-only {
+  @media only screen and (min-width : $mq-mobile-landscape + 1) and (max-width : $mq-tablet-landscape) {
+    @content;
+  }
+}
+
+@mixin desktop-only {
+  @media only screen and (min-width : $mq-tablet-landscape + 1) and (max-width : $mq-desktop) {
+    @content;
+  }
+}
