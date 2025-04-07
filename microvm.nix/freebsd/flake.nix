@@ -24,7 +24,9 @@
             networking.hostName = vmname;
             users.users.root.password = "";
             microvm = {
-              guest.enable = false;
+              # guest.enable = false;
+              # kernelParams = [ ];
+
               interfaces = [{
                 type = "user";
                 id = "usernet";
@@ -46,7 +48,7 @@
           exec ${declaredRunner}/bin/microvm-run
         '';
     in {
-      packages.${system} = {
+      packages.${system} = builtins.trace nixosConfiguration.config.microvm {
         default = with import nixpkgs { inherit system; }; vmRunner pkgs;
         vm = nixosConfiguration.config.microvm.declaredRunner;
       };
