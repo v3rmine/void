@@ -156,7 +156,10 @@
                 nixpkgs.lib.mkForce true;
 
               microvm = {
-                forwardPorts = [ ];
+                forwardPorts = [ 
+                  { from = "host"; host.port = 3000; guest.port = 3000; }
+                  { from = "host"; host.port = 8888; guest.port = 8888; }
+                ];
                 interfaces = [{
                   type = "user";
                   id = "usernet";
