@@ -1,0 +1,11 @@
+init:
+  tofu init
+
+plan: init
+  tofu plan -var-file=../../.secrets/terraform/provider.tfvars
+
+apply:
+  tofu apply -var-file=../../.secrets/terraform/provider.tfvars
+
+apply-auto-approve:
+  tofu apply -auto-approve -var-file=../../.secrets/terraform/provider.tfv
