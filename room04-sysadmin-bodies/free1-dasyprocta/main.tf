@@ -5,7 +5,7 @@ terraform {
 }
 
 module "free1-dasyprocta" {
-    source = "../../room05-sysadmin-souls/terraform-but-its-actually-eatable/modules/oci-free-tier"
+    source = "../../room05-sysadmin-souls/terraform-but-its-actually-eatable/modules/oci"
 
     fingerprint = var.fingerprint
     private_key_path = var.private_key_path
