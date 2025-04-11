@@ -23,9 +23,11 @@
           ({ ... }: {
             networking.hostName = vmname;
             users.users.root.password = "";
+            system.stateVersion = "24.11";
             microvm = {
-              # guest.enable = false;
-              # kernelParams = [ ];
+              storeOnDisk = true;
+              storeDisk = nixpkgs.lib.mkForce
+                "${builtins.getEnv "PWD"}/FreeBSD-14.2-RELEASE-amd64.qcow2";
 
               interfaces = [{
                 type = "user";
@@ -48,7 +50,7 @@
           exec ${declaredRunner}/bin/microvm-run
         '';
     in {
-      packages.${system} = builtins.trace nixosConfiguration.config.microvm {
+      packages.${system} = {
         default = with import nixpkgs { inherit system; }; vmRunner pkgs;
         vm = nixosConfiguration.config.microvm.declaredRunner;
       };
