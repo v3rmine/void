@@ -1,11 +1,19 @@
+set credentials_file := "../../.secrets/terraform/oci.tfvars"
+
 init:
   tofu init
 
 plan: init
-  tofu plan -var-file=../../.secrets/terraform/provider.tfvars
+  tofu plan -var-file={{credentials_file}}
 
 apply:
-  tofu apply -var-file=../../.secrets/terraform/provider.tfvars
+  tofu apply -var-file={{credentials_file}}
+
+show:
+  tofu show -var-file={{credentials_file}}
+
+destroy:
+  tofu destroy -var-file={{credentials_file}}
 
 apply-auto-approve:
-  tofu apply -auto-approve -var-file=../../.secrets/terraform/provider.tfvars
+  tofu apply -auto-approve -var-file={{credentials_file}}
