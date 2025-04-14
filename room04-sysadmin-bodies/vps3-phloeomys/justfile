@@ -1,4 +1,4 @@
-set credentials_file := "../../.secrets/terraform/hetzner.tfvars"
+credentials_file := "../../.secrets/terraform/hetzner.tfvars"
 
 init:
   tofu init
