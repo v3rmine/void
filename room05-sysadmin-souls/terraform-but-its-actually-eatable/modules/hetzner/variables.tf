@@ -11,28 +11,21 @@ variable "hcloud_token" {
 # Instance
 # =============================================================================
 
-variable "ssh_public_key_file" {
-  description = "Local path to your public key"
-  type = string
-  default = "~/.ssh/id_rsa.pub"
-}
-
 variable "ssh_private_key_file" {
   description = "Local path to your private key"
   type = string
-  default = "~/.ssh/id_rsa"
+  default = "~/.ssh/id_ed25519"
 }
 
 variable "ssh_public_key_name" {
   description = "Name of your public key to identify at Hetzner Cloud portal"
   type = string
-  default = "My-SSH-Key"
 }
 
 variable "hcloud_server_type" {
   description = "vServer type name, lookup via `hcloud server-type list`"
   type = string
-  default = "cx22"
+  default = "cax11"
 }
 
 variable "hcloud_server_datacenter" {
@@ -49,4 +42,16 @@ variable "hcloud_server_name" {
 variable "default_user" {
   description = "Default user for the server"
   type = string
+}
+
+variable "ipv4_enabled" {
+  description = "Enable IPv4 access"
+  type = bool
+  default = true
+}
+
+variable "ipv6_enabled" {
+  description = "Enable IPv6 access"
+  type = bool
+  default = true
 }

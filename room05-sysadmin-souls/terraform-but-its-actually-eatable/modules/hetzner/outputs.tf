@@ -1,9 +1,9 @@
 output "instance" {
   value = {
-    id = hetzner_server.default.id
-    name = hetzner_server.default.name
-    ipv4 = oci_core_instance.default.ipv4_address
-    ipv6 = oci_core_instance.default.ipv6_address
-    status = oci_core_instance.default.status
+    id = hcloud_server.default.id
+    name = hcloud_server.default.name
+    ipv4 = hcloud_server.default.ipv4_address
+    ipv6 = hcloud_server.default.ipv6_address
+    status = hcloud_server.default.status
   }
 }

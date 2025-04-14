@@ -1,11 +1,22 @@
+set credentials_file := "../../.secrets/terraform/hetzner.tfvars"
+
 init:
   tofu init
 
+source-secrets:
+ jq -r '[to_entries | .[] | "\(.key)=\"\(.value)\""] | join(" ")' ../../.secrets/nixos/secrets.json
+
 plan: init
-  tofu plan -var-file=../../.secrets/terraform/provider.tfvars
+  tofu plan -var-file={{credentials_file}}
 
 apply:
-  tofu apply -var-file=../../.secrets/terraform/provider.tfvars
+  tofu apply -var-file={{credentials_file}}
 
-apply-auto-approve:
-  tofu apply -auto-approve -var-file=../../.secrets/terraform/provider.tfvars
+show:
+  tofu show -var-file={{credentials_file}}
+
+destroy:
+  tofu destroy -var-file={{credentials_file}}
+
+nixos-setup host:
+  env "$(just source-secrets)" nix run --impure github:nix-community/nixos-anywhere -- --flake ./#default --target-host {{host}}
