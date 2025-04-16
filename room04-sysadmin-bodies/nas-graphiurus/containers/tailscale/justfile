@@ -14,3 +14,6 @@ show:
 
 destroy:
   tofu destroy -var-file={{credentials_file}}
+  
+deploy:
+  nix run github:serokell/deploy-rs .
