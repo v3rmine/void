@@ -1,7 +1,7 @@
 resource "proxmox_virtual_environment_container" "default" {
-  node_name    = "proxmox"
+  node_name    = var.node_name
   tags         = ["terraform"]
-  unprivileged = false
+  unprivileged = var.unprivileged_container
 
   features {
     nesting = true
@@ -14,6 +14,9 @@ resource "proxmox_virtual_environment_container" "default" {
       ipv4 {
         address = "dhcp"
       }
+      ipv6 {
+        address = "dhcp"
+      }
     }
   }
 
@@ -22,18 +25,18 @@ resource "proxmox_virtual_environment_container" "default" {
   }
 
   cpu {
-    cores        = 1
+    cores        = var.cpu_cores
     architecture = "amd64"
   }
 
   memory {
-    dedicated = 512
-    swap      = 0
+    dedicated = var.dedicated_memory
+    swap      = var.swap_memory
   }
 
   disk {
     datastore_id = "local-lvm"
-    size         = 4
+    size         = var.disk_size
   }
 
   operating_system {
