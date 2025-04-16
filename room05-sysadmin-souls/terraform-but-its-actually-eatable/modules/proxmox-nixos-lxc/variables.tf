@@ -36,14 +36,15 @@ variable "ssh_private_key_file" {
   type        = string
 }
 
+variable "proxmox_node_name" {
+  description = "Proxmox node name"
+  type        = string
+  default     = "proxmox"
+}
+
 # =============================================================================
 # Instance
 # =============================================================================
-
-variable "node_name" {
-  description = "Container node name"
-  type        = string
-}
 
 variable "unprivileged_container" {
   description = "If true, the container will be unprivileged"
@@ -52,24 +53,42 @@ variable "unprivileged_container" {
 }
 
 variable "disk_size" {
-  description = "Size of the VM disk in GB"
+  description = "Size of the container disk in GB"
   type        = number
 }
 
 variable "cpu_cores" {
-  description = "Number of CPU cores for the VM (number of CPU threads)"
+  description = "Number of CPU cores for the container"
   type        = number
   default     = 1
 }
 
 variable "dedicated_memory" {
-  description = "Amount of dedicated memory for the VM in MB"
+  description = "Amount of dedicated memory for the container in MB"
   type        = number
   default     = 1024
 }
 
 variable "swap_memory" {
-  description = "Amount of swap memory for the VM in MB"
+  description = "Amount of swap memory for the container in MB"
   type        = number
   default     = 512
+}
+
+variable "extra_conf" {
+  description = "Proxmox container config extra lines"
+  type        = list(string)
+  default     = []
+}
+
+variable "files" {
+  description = "Files in the container"
+  type        = map(string)
+  default     = {}
+}
+
+variable "nixos_env" {
+  description = "NixOS env variables to be passed during build"
+  type        = map(string)
+  default     = {}
 }

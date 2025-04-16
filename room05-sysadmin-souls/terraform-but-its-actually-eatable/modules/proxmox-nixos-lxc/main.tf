@@ -1,6 +1,13 @@
+locals {
+  nixos_env = join(" ", [
+    for key, value in var.nixos_env : "${key}=${value}"
+  ])
+}
+
 resource "proxmox_virtual_environment_container" "default" {
-  node_name    = var.node_name
-  tags         = ["terraform"]
+  node_name = var.proxmox_node_name
+  tags      = ["terraform"]
+
   unprivileged = var.unprivileged_container
 
   features {
@@ -63,6 +70,31 @@ resource "proxmox_virtual_environment_container" "default" {
     source      = "configuration.nix"
     destination = "/tmp/${self.vm_id}/configuration.nix"
   }
+  // Add extra config lines in container config
+  provisioner "remote-exec" {
+    inline = flatten([
+      ["pct stop ${self.vm_id}"],
+      [
+        for line in var.extra_conf : "echo '${line}' >> /etc/pve/lxc/${self.vm_id}.conf"
+      ],
+      ["pct start ${self.vm_id}"]
+    ])
+  }
+  // Create var.files
+  provisioner "remote-exec" {
+    inline = [for path, content in var.files : join("", [
+      "echo '${content}'",
+      "| pct exec ${self.vm_id} -- sh -c '",
+      join("; ", [
+        "source /etc/set-environment",
+        "mkdir -p $(dirname ${path})",
+        "cat > ${path}",
+      ]),
+      "'"
+    ])]
+  }
+
+  // Setup NixOS
   provisioner "remote-exec" {
     inline = [
       join("", [
@@ -74,12 +106,20 @@ resource "proxmox_virtual_environment_container" "default" {
           "passwd --delete root",
           "cat > /etc/nixos/configuration.nix",
           "nix-channel --update",
-          "nixos-rebuild switch --upgrade",
+          "env ${local.nixos_env} nixos-rebuild switch --impure --upgrade",
           "nix-collect-garbage",
         ]),
         "'",
       ]),
       "rm -r /tmp/${self.vm_id}"
+    ]
+  }
+
+  // Restart to be in a fresh state
+  provisioner "remote-exec" {
+    inline = [
+      "pct stop ${self.vm_id}",
+      "pct start ${self.vm_id}"
     ]
   }
 }

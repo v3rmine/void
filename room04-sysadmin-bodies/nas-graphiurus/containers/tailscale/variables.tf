@@ -15,3 +15,13 @@ variable "proxmox_password" {
   type        = string
   default     = null
 }
+
+variable "tailscale_auth_key" {
+  description = "TailScale auth key"
+  type        = string
+}
+
+variable "ssh_public_key" {
+  description = "SSH public key for the container"
+  type        = string
+}

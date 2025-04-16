@@ -3,16 +3,24 @@
   nix.settings = { sandbox = false; };
   proxmoxLXC = {
     manageNetwork = false;
-    privileged = true;
+    privileged = false;
+  };
+
+  services.tailscale = {
+    enable = true;
+    authKeyFile = "/run/secrets/tailscale_key";
+    useRoutingFeatures = "server";
+    extraUpFlags =
+      [ "--accept-dns=false" "--advertise-routes=192.168.50.0/24" "--ssh" ];
   };
 
   security.pam.services.sshd.allowNullPassword = true;
   services.openssh = {
     enable = true;
-    openFirewall = true;
+    authorizedKeysFiles = [ "/etc/sshd/authorized_keys" ];
     settings = {
       PermitRootLogin = "yes";
-      PasswordAuthentication = true;
+      PasswordAuthentication = false;
       PermitEmptyPasswords = "yes";
     };
   };
