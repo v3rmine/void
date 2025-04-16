@@ -14,6 +14,6 @@ show:
 
 destroy:
   tofu destroy -var-file={{credentials_file}}
-
+  
 deploy:
-  nixos-rebuild switch  --target-host root@tailscale --flake .#tailscale
+  nix run github:serokell/deploy-rs .

@@ -57,6 +57,12 @@ variable "vm_name" {
   type        = string
 }
 
+variable "network_bridge" {
+  description = "VM's network's bridge interface"
+  type        = string
+  default     = "vnet0"
+}
+
 variable "local_installation_media" {
   description = "Identifier of the installation media file"
   type        = string
@@ -71,6 +77,12 @@ variable "qemu_agent_enabled" {
 
 variable "stop_on_destroy" {
   description = "Force stop the VM on destroy, should be true if qemu agent is not installed / enabled on the VM"
+  type        = bool
+  default     = true
+}
+
+variable "firewall_enabled" {
+  description = "Enable firewall on VM's network interface"
   type        = bool
   default     = true
 }

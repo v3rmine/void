@@ -46,8 +46,25 @@ variable "proxmox_node_name" {
 # Instance
 # =============================================================================
 
+variable "hostname" {
+  description = "Container's hostname"
+  type        = string
+}
+
+variable "network_bridge" {
+  description = "Container's network's bridge interface"
+  type        = string
+  default     = "vnet0"
+}
+
 variable "unprivileged_container" {
   description = "If true, the container will be unprivileged"
+  type        = bool
+  default     = true
+}
+
+variable "firewall_enabled" {
+  description = "Enable firewall on container's network interface"
   type        = bool
   default     = true
 }

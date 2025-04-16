@@ -43,7 +43,7 @@ resource "proxmox_virtual_environment_vm" "default" {
 
   network_device {
     model    = "virtio"
-    bridge   = "vmbr0"
-    firewall = true
+    bridge   = var.network_bridge
+    firewall = var.firewall
   }
 }

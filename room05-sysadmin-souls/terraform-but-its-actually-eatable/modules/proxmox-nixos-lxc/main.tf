@@ -15,7 +15,7 @@ resource "proxmox_virtual_environment_container" "default" {
   }
 
   initialization {
-    hostname = "tailscale"
+    hostname = var.hostname
 
     ip_config {
       ipv4 {
@@ -52,8 +52,9 @@ resource "proxmox_virtual_environment_container" "default" {
   }
 
   network_interface {
-    name   = "veth0"
-    bridge = "vmbr0"
+    name     = "veth0"
+    bridge   = var.network_bridge
+    firewall = var.firewall_enabled
   }
 
   connection {
@@ -82,16 +83,19 @@ resource "proxmox_virtual_environment_container" "default" {
   }
   // Create var.files
   provisioner "remote-exec" {
-    inline = [for path, content in var.files : join("", [
-      "echo '${content}'",
-      "| pct exec ${self.vm_id} -- sh -c '",
-      join("; ", [
-        "source /etc/set-environment",
-        "mkdir -p $(dirname ${path})",
-        "cat > ${path}",
-      ]),
-      "'"
-    ])]
+    inline = flatten([
+      ["echo 'Provisioning var.files'"],
+      [for path, content in var.files : join("", [
+        "echo '${content}'",
+        "| pct exec ${self.vm_id} -- sh -c '",
+        join("; ", [
+          "source /etc/set-environment",
+          "mkdir -p $(dirname ${path})",
+          "cat > ${path}",
+        ]),
+        "'"
+      ])]
+    ])
   }
 
   // Setup NixOS
