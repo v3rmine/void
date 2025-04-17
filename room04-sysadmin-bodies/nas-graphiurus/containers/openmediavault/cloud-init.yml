@@ -67,12 +67,6 @@ runcmd:
   # Restart web service to ensure WebUI is available
   - systemctl restart openmediavault-engined.service
 
-# Final message shown to the console
-final_message: >
-  OpenMediaVault installation has completed.
-  Access the web interface at:
-  http://${v1.local_hostname}:80 or http://${v1.local_ipv4}:80
-
 # Configure power management settings
 power_state:
   mode: reboot
