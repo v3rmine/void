@@ -1,0 +1,16 @@
+credentials_file := "../../../../.secrets/terraform/proxmox.tfvars"
+
+init:
+  tofu init
+
+plan: init
+  tofu plan -var-file={{credentials_file}}
+
+apply:
+  tofu apply -var-file={{credentials_file}}
+
+show:
+  tofu show -var-file={{credentials_file}}
+
+destroy:
+  tofu destroy -var-file={{credentials_file}}
