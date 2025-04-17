@@ -121,3 +121,9 @@ variable "floating_memory" {
   type        = number
   default     = 512
 }
+
+variable "security_group" {
+  description = "VM's security group"
+  type        = string
+  default     = "internal_dmz"
+}

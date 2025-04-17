@@ -57,6 +57,18 @@ resource "proxmox_virtual_environment_container" "default" {
     firewall = var.firewall_enabled
   }
 
+  dynamic "device_passthrough" {
+    for_each = var.passthrough_devices
+
+    content {
+      deny_write = device_passthrough.value.deny_write
+      gid        = device_passthrough.value.gid
+      uid        = device_passthrough.value.uid
+      mode       = device_passthrough.value.mode
+      path       = device_passthrough.value.path
+    }
+  }
+
   connection {
     type = "ssh"
     user = "root"
@@ -64,6 +76,7 @@ resource "proxmox_virtual_environment_container" "default" {
   }
   provisioner "remote-exec" {
     inline = [
+      "set -o errexit",
       "mkdir -p /tmp/${self.vm_id}"
     ]
   }
@@ -74,9 +87,10 @@ resource "proxmox_virtual_environment_container" "default" {
   // Add extra config lines in container config
   provisioner "remote-exec" {
     inline = flatten([
+      ["set -o errexit"],
       ["pct stop ${self.vm_id}"],
       [
-        for line in var.extra_conf : "echo '${line}' >> /etc/pve/lxc/${self.vm_id}.conf"
+        for line in var.extra_conf : "echo '${base64encode(line)}' | base64 -d >> /etc/pve/lxc/${self.vm_id}.conf"
       ],
       ["pct start ${self.vm_id}"]
     ])
@@ -84,9 +98,9 @@ resource "proxmox_virtual_environment_container" "default" {
   // Create var.files
   provisioner "remote-exec" {
     inline = flatten([
-      ["echo 'Provisioning var.files'"],
+      ["set -o errexit"],
       [for path, content in var.files : join("", [
-        "echo '${content}'",
+        "echo '${base64encode(content)}' | base64 -d",
         "| pct exec ${self.vm_id} -- sh -c '",
         join("; ", [
           "source /etc/set-environment",
@@ -101,6 +115,7 @@ resource "proxmox_virtual_environment_container" "default" {
   // Setup NixOS
   provisioner "remote-exec" {
     inline = [
+      ["set -o errexit"],
       join("", [
         "cat /tmp/${self.vm_id}/configuration.nix",
         "| pct exec ${self.vm_id} -- sh -c '",
@@ -122,8 +137,22 @@ resource "proxmox_virtual_environment_container" "default" {
   // Restart to be in a fresh state
   provisioner "remote-exec" {
     inline = [
+      "set -o errexit",
       "pct stop ${self.vm_id}",
       "pct start ${self.vm_id}"
     ]
+  }
+}
+
+resource "proxmox_virtual_environment_firewall_rules" "default" {
+  node_name = var.proxmox_node_name
+  vm_id     = proxmox_virtual_environment_container.default.vm_id
+
+  dynamic "rule" {
+    for_each = var.security_group != null ? [var.security_group] : []
+
+    content {
+      security_group = rule.value
+    }
   }
 }

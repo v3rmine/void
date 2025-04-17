@@ -92,6 +92,24 @@ variable "swap_memory" {
   default     = 512
 }
 
+variable "security_group" {
+  description = "Container's security group"
+  type        = string
+  default     = "internal_dmz"
+}
+
+variable "passthrough_devices" {
+  description = "List of devices to passthrough to the container"
+  type = list(object({
+    deny_write = optional(bool)
+    gid        = optional(number)
+    uid        = optional(number)
+    mode       = optional(string)
+    path       = string
+  }))
+  default = []
+}
+
 variable "extra_conf" {
   description = "Proxmox container config extra lines"
   type        = list(string)
