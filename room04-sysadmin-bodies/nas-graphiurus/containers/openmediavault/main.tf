@@ -22,15 +22,32 @@ module "openmediavault" {
   unprivileged_container = true
 
   files_path = {
-    "/etc/cloud/cloud.cfg.d/cloud.cfg" = "./cloud-init.yml"
+    "/etc/cloud/datasource/user-data"        = "./cloud-init.yml"
+    "/etc/cloud/cloud.cfg.d/10_instance.cfg" = "./cloud-init-proxmox.yml"
+  }
+  files_text = {
+    #     "/etc/cloud/datasource/meta-data" = <<EOF
+    # instance-id: iid-local
+    # dsmode: local
+    #     EOF
+    "/etc/cloud/datasource/meta-data" = "instance-id: iid-local"
   }
 
   extra_setup_commands = [
+    "passwd -d root",
     "apt-get update",
-    "apt-get install -y cloud-init gnupg curl",
+    # Need ifupdown2 for network configuration in Debian LXC
+    "apt-get install -y cloud-init gnupg curl ifupdown2",
+    # Get openmediavault signing key
     "curl -s https://packages.openmediavault.org/public/archive.key | gpg --dearmor -o /usr/share/keyrings/openmediavault-archive-keyring.gpg",
-    # Run cloud-init which applies all the configuration specified in the YAML file
-    "cloud-init modules --mode=config",
+    # We don't need systemd-networkd.service in LXC
+    "systemctl disable systemd-networkd.service",
+    # Enable cloud-init for next reboot
+    "systemctl enable cloud-init-local.service",
+    "systemctl enable cloud-init.service",
+    "systemctl enable cloud-config.service",
+    "systemctl enable cloud-final.service",
+    "cloud-init clean --logs"
   ]
 
   # passthrough_devices = [

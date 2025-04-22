@@ -79,6 +79,12 @@ variable "unprivileged_container" {
   default     = true
 }
 
+variable "nesting" {
+  description = "If true, the container will allow nesting"
+  type        = bool
+  default     = false
+}
+
 variable "protection" {
   description = "If true, this will prevent the container itself and its disk for remove/update operations."
   type        = bool

@@ -5,6 +5,10 @@ resource "proxmox_virtual_environment_container" "default" {
   unprivileged = var.unprivileged_container
   protection   = var.protection
 
+  features {
+    nesting = var.nesting
+  }
+
   initialization {
     hostname = var.hostname
 

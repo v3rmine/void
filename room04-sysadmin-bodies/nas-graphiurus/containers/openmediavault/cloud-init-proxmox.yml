@@ -1,0 +1,32 @@
+# The modules that run in the 'init' stage
+# We removed the `mounts` module because it's managed by Proxmox
+cloud_init_modules:
+  - migrator
+  - seed_random
+  - bootcmd
+  - write-files
+  - growpart
+  - resizefs
+  - disk_setup
+  - set_hostname
+  - update_hostname
+  - update_etc_hosts
+  - ca-certs
+  - rsyslog
+  - users-groups
+  - ssh
+
+# Enable root login via SSH
+disable_root: false
+
+# Network config is managed by Proxmox
+network: { config: disabled }
+
+# Config is sourced from files
+datasource_list: [NoCloud]
+datasource:
+  NoCloud:
+    seedfrom: file:///etc/cloud/datasource/
+
+preserve_hostname: true
+manage_etc_hosts: false
