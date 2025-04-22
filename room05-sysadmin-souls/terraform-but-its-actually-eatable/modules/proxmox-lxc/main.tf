@@ -1,8 +1,9 @@
 resource "proxmox_virtual_environment_container" "default" {
   node_name = var.proxmox_node_name
-  tags      = ["terraform"]
+  tags      = flatten([var.tags, ["tofu"]])
 
   unprivileged = var.unprivileged_container
+  protection   = var.protection
 
   initialization {
     hostname = var.hostname

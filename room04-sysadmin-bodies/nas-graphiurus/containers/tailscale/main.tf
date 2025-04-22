@@ -18,6 +18,8 @@ module "tailscale" {
   swap_memory            = 512
   disk_size              = 4
   unprivileged_container = true
+  protection             = true
+  tags                   = ["do_not_delete"]
 
   extra_conf = [
     "lxc.cgroup2.devices.allow: c 10:200 rwm",

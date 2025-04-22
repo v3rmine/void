@@ -31,7 +31,6 @@ module "openmediavault" {
     "curl -s https://packages.openmediavault.org/public/archive.key | gpg --dearmor -o /usr/share/keyrings/openmediavault-archive-keyring.gpg",
     # Run cloud-init which applies all the configuration specified in the YAML file
     "cloud-init modules --mode=config",
-    "cloud-init modules --mode=final",
   ]
 
   # passthrough_devices = [

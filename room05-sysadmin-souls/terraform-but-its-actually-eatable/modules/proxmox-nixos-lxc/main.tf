@@ -6,9 +6,10 @@ locals {
 
 resource "proxmox_virtual_environment_container" "default" {
   node_name = var.proxmox_node_name
-  tags      = ["terraform"]
+  tags      = flatten([var.tags, ["tofu"]])
 
   unprivileged = var.unprivileged_container
+  protection   = var.protection
 
   features {
     nesting = true
@@ -115,7 +116,7 @@ resource "proxmox_virtual_environment_container" "default" {
   // Setup NixOS
   provisioner "remote-exec" {
     inline = [
-      ["set -o errexit"],
+      "set -o errexit",
       join("", [
         "cat /tmp/${self.vm_id}/configuration.nix",
         "| pct exec ${self.vm_id} -- sh -c '",

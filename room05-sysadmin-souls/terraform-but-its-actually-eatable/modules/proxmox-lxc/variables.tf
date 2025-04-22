@@ -79,6 +79,18 @@ variable "unprivileged_container" {
   default     = true
 }
 
+variable "protection" {
+  description = "If true, this will prevent the container itself and its disk for remove/update operations."
+  type        = bool
+  default     = false
+}
+
+variable "tags" {
+  description = "Tags to apply to the container (tofu is always added)"
+  type        = list(string)
+  default     = []
+}
+
 variable "firewall_enabled" {
   description = "Enable firewall on container's network interface"
   type        = bool
