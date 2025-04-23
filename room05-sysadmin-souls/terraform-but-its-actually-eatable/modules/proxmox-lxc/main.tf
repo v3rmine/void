@@ -1,3 +1,21 @@
+locals {
+  files_path = merge(
+    var.files_path,
+    var.proxmox_cloud_init ? {
+      "/etc/cloud/cloud.cfg.d/99-proxmox.cfg" = "${path.module}/cloud-init-proxmox.yml"
+  } : {})
+
+  files_text = merge(
+    var.files_text,
+    var.proxmox_cloud_init ? {
+      "/etc/cloud/datasource/meta-data" = "instance-id: iid-${base64encode(var.hostname)}"
+    } : {},
+    var.cloud_init_user_data != null ? {
+      "/etc/cloud/datasource/user-data" = var.cloud_init_user_data
+    } : {}
+  )
+}
+
 resource "proxmox_virtual_environment_container" "default" {
   node_name = var.proxmox_node_name
   tags      = flatten([var.tags, ["tofu"]])
@@ -82,7 +100,7 @@ resource "proxmox_virtual_environment_container" "default" {
   provisioner "remote-exec" {
     inline = flatten([
       ["set -o errexit"],
-      [for path, content in var.files_text : join("", [
+      [for path, content in local.files_text : join("", [
         "echo '${base64encode(content)}' | base64 -d",
         "| pct exec ${self.vm_id} -- sh -c '",
         join("; ", [
@@ -97,7 +115,7 @@ resource "proxmox_virtual_environment_container" "default" {
   provisioner "remote-exec" {
     inline = flatten([
       ["set -o errexit"],
-      [for path, file_path in var.files_path : join("", [
+      [for path, file_path in local.files_path : join("", [
         "echo '${filebase64(file_path)}' | base64 -d",
         "| pct exec ${self.vm_id} -- sh -c '",
         join("; ", [

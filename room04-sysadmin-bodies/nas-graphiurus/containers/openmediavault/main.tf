@@ -15,23 +15,14 @@ module "openmediavault" {
   hostname               = "openmediavault"
   os_type                = "debian"
   os_template            = "vztmpl/debian-12-standard_12.7-1_amd64.tar.zst"
-  cpu_cores              = 2
-  dedicated_memory       = 1024
+  cpu_cores              = 4
+  dedicated_memory       = 2048
   swap_memory            = 1024
   disk_size              = 10
   unprivileged_container = true
 
-  files_path = {
-    "/etc/cloud/datasource/user-data"        = "./cloud-init.yml"
-    "/etc/cloud/cloud.cfg.d/10_instance.cfg" = "./cloud-init-proxmox.yml"
-  }
-  files_text = {
-    #     "/etc/cloud/datasource/meta-data" = <<EOF
-    # instance-id: iid-local
-    # dsmode: local
-    #     EOF
-    "/etc/cloud/datasource/meta-data" = "instance-id: iid-local"
-  }
+  proxmox_cloud_init   = true
+  cloud_init_user_data = file("./cloud-init.yml")
 
   extra_setup_commands = [
     "passwd -d root",
@@ -50,12 +41,23 @@ module "openmediavault" {
     "cloud-init clean --logs"
   ]
 
-  # passthrough_devices = [
-  #   {
-  #     path = "/dev/sda"
-  #   },
-  #   {
-  #     path = "/dev/sdb"
-  #   }
-  # ]
+  files_text = {
+    "/etc/crypttab" = <<EOF
+parity1 UUID=2580faaf-42b6-4a45-a97c-3b8482e6bcb6 /root/hdd_key luks
+disk1 UUID=dbb1e30c-44f3-4541-8941-2452a544b93b /root/hdd_key luks
+EOF
+  }
+
+  files_path = {
+    "/root/hdd_key" = "../../../../.secrets/files/hdd_keyfile"
+  }
+
+  passthrough_devices = [
+    {
+      path = "/dev/sda"
+    },
+    {
+      path = "/dev/sdb"
+    }
+  ]
 }

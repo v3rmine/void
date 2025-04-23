@@ -9,6 +9,8 @@ fqdn: openmediavault.nodes.reta.re
 package_update: true
 package_upgrade: true
 
+# Mount HDDs
+
 # Install required packages
 packages:
   - apt-transport-https
@@ -19,6 +21,7 @@ packages:
   - software-properties-common
   - lsb-release
   - postfix
+  - cryptsetup
   - openmediavault
 
 # Configure APT sources for OpenMediaVault

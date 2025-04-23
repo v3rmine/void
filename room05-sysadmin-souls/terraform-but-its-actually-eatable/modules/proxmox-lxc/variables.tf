@@ -167,3 +167,15 @@ variable "extra_setup_commands" {
   type        = list(string)
   default     = []
 }
+
+variable "proxmox_cloud_init" {
+  description = "Import proxmox cloud-init overrides"
+  type        = bool
+  default     = false
+}
+
+variable "cloud_init_user_data" {
+  description = "User data path for cloud-init"
+  type        = string
+  default     = null
+}
