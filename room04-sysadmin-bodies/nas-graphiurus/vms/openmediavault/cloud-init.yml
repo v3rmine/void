@@ -1,0 +1,122 @@
+#cloud-config
+
+# SOURCE: https://docs.openmediavault.org/en/latest/installation/on_debian.html
+
+disable_root: true
+
+# Proxmox managed
+network: { config: disabled }
+preserve_hostname: true
+manage_etc_hosts: false
+
+# Set system hostname
+fqdn: openmediavault.nodes.reta.re
+
+# Update package lists and upgrade installed packages
+package_update: true
+package_upgrade: true
+
+bootcmd:
+  - apt update
+  - apt upgrade -y
+  - apt install -y gnupg
+
+# Install required packages
+packages:
+  - ifupdown2
+  - qemu-guest-agent
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - wget
+  - software-properties-common
+  - lsb-release
+  - postfix
+  - cryptsetup
+  - snapraid
+  - mergerfs
+  # - openmediavault
+
+# Configure APT sources for OpenMediaVault
+apt:
+  sources:
+    openmediavault.list:
+      keyid: D67506C878E08A94FD7E009424863F0C716B980B
+      source: "deb [signed-by=$KEY_FILE] https://packages.openmediavault.org/public sandworm main"
+      filename: openmediavault.list
+    openmediavault-proposed.list:
+      source: "deb [signed-by=/etc/apt/cloud-init.gpg.d/openmediavault.gpg] https://packages.openmediavault.org/public sandworm-proposed main"
+      filename: openmediavault.list
+    openmediavault-partner.list:
+      source: "deb [signed-by=/etc/apt/cloud-init.gpg.d/openmediavault.gpg] https://packages.openmediavault.org/public sandworm partner"
+      filename: openmediavault.list
+
+# Create a default user with sudo privileges
+users:
+  - name: omvadmin
+    gecos: OpenMediaVault Administrator
+    sudo: ALL=(ALL) ALL
+    groups: sudo
+    shell: /bin/bash
+    lock_passwd: false
+    # Password is 'omvadmin' - change this in production!
+    plain_text_passwd: omvadmin
+
+# Run commands once at first boot
+runcmd:
+  # Allow ssh access with password authentication
+  - sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+
+  # Initialize the system
+  - omv-confdbadm populate
+
+  # Install optional OMV extras (plugins)
+  # - >
+  #   wget -O - https://github.com/OpenMediaVault-Plugin-Developers/packages/raw/master/install |
+  #   bash
+
+  # Set file permissions
+  - chmod 770 /srv
+
+  # Apply network configuration
+  # - omv-salt deploy run network
+
+  # Apply all pending changes
+  - omv-salt deploy run all
+
+  # Restart web service to ensure WebUI is available
+  - systemctl restart openmediavault-engined.service
+
+  # Disable fking systemd-networkd => proxmox is handling network configuration
+  - systemctl disable systemd-networkd.service
+
+write_files:
+  - path: /etc/crypttab
+    owner: "root:root"
+    permissions: "0644"
+    content: |
+      parity1 UUID=2580faaf-42b6-4a45-a97c-3b8482e6bcb6 /root/hdd_key luks,discard,tries=1
+      disk1 UUID=dbb1e30c-44f3-4541-8941-2452a544b93b /root/hdd_key luks,discard,tries=1
+  - path: /etc/fstab
+    defer: true
+    append: true
+    content: |
+      # /dev/mapper/parity1 /media/parity1 xfs defaults 0 2
+      # /dev/mapper/disk1 /media/disk1 xfs defaults 0 2
+      # /media/disk* /media/merged mergerfs nofail,nobootwait,cache.files=auto-full,category.create=pfrd,func.getattr=newest,dropcacheonclose=true 0 0
+  - path: /etc/snapraid.conf
+    owner: "root:root"
+    permissions: "0644"
+    content: |
+      parity /media/parity1/snapraid.parity
+
+      content /var/snapraid/content
+      content /media/disk1/snapraid.content
+
+      disk d1 /media/disk1/
+
+# Configure power management settings
+power_state:
+  mode: reboot
+  timeout: 30
+  condition: true

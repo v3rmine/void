@@ -1,7 +1,20 @@
+resource "proxmox_virtual_environment_file" "cloud_init" {
+  count = var.cloud_init_user_data != null ? 1 : 0
+
+  content_type = "snippets"
+  datastore_id = "local"
+  node_name    = var.proxmox_node_name
+
+  source_raw {
+    data      = var.cloud_init_user_data
+    file_name = "${var.vm_name}.cloud-config.yml"
+  }
+}
+
 resource "proxmox_virtual_environment_vm" "default" {
   name      = var.vm_name
   node_name = var.proxmox_node_name
-  tags      = ["terraform"]
+  tags      = flatten([var.tags, ["tofu"]])
 
   # should be true if qemu agent is not installed / enabled on the VM
   stop_on_destroy = var.stop_on_destroy
@@ -13,8 +26,27 @@ resource "proxmox_virtual_environment_vm" "default" {
     enabled = var.qemu_agent_enabled
   }
 
+  # https://github.com/bpg/terraform-provider-proxmox/issues/1639
+  serial_device {
+    device = "socket"
+  }
+
+  initialization {
+    ip_config {
+      ipv4 {
+        address = "dhcp"
+      }
+      ipv6 {
+        address = "dhcp"
+      }
+    }
+
+    user_data_file_id = var.cloud_init_user_data != null ? proxmox_virtual_environment_file.cloud_init[0].id : null
+  }
+
   dynamic "cdrom" {
-    for_each = var.local_installation_media != null && var.local_installation_media != "" ? [1] : []
+    for_each = var.local_installation_media != null ? [1] : []
+
     content {
       file_id   = "local:${var.local_installation_media}"
       interface = "ide3"
@@ -23,9 +55,12 @@ resource "proxmox_virtual_environment_vm" "default" {
 
   disk {
     datastore_id = "local-lvm"
-    interface    = "scsi0"
-    iothread     = true
-    size         = var.disk_size
+    file_id      = var.base_image != null ? "local:${var.base_image}" : null
+
+    interface = "scsi0"
+    iothread  = true
+    ssd       = true
+    size      = var.disk_size
   }
 
   cpu {
@@ -44,6 +79,43 @@ resource "proxmox_virtual_environment_vm" "default" {
   network_device {
     model    = "virtio"
     bridge   = var.network_bridge
-    firewall = var.firewall
+    firewall = true
+  }
+
+  dynamic "disk" {
+    for_each = var.passthrough_devices
+
+    content {
+      aio          = "native"
+      backup       = false
+      cache        = "none"
+      discard      = "on"
+      datastore_id = ""
+      file_format  = "raw"
+      interface    = "scsi${disk.key + 1}"
+
+      path_in_datastore = disk.value
+    }
+  }
+}
+
+resource "proxmox_virtual_environment_firewall_options" "default" {
+  node_name = var.proxmox_node_name
+  vm_id     = proxmox_virtual_environment_vm.default.vm_id
+
+  dhcp    = true
+  enabled = true
+}
+
+resource "proxmox_virtual_environment_firewall_rules" "default" {
+  node_name = var.proxmox_node_name
+  vm_id     = proxmox_virtual_environment_vm.default.vm_id
+
+  dynamic "rule" {
+    for_each = var.security_group != null ? [var.security_group] : []
+
+    content {
+      security_group = rule.value
+    }
   }
 }

@@ -57,6 +57,12 @@ variable "vm_name" {
   type        = string
 }
 
+variable "tags" {
+  description = "Tags to apply to the container (tofu is always added)"
+  type        = list(string)
+  default     = []
+}
+
 variable "network_bridge" {
   description = "VM's network's bridge interface"
   type        = string
@@ -65,6 +71,12 @@ variable "network_bridge" {
 
 variable "local_installation_media" {
   description = "Identifier of the installation media file"
+  type        = string
+  default     = null
+}
+
+variable "base_image" {
+  description = "Identifier of the base image file"
   type        = string
   default     = null
 }
@@ -126,4 +138,16 @@ variable "security_group" {
   description = "VM's security group"
   type        = string
   default     = "internal_dmz"
+}
+
+variable "passthrough_devices" {
+  description = "List of devices to passthrough to the container"
+  type        = list(string)
+  default     = []
+}
+
+variable "cloud_init_user_data" {
+  description = "User data path for cloud-init"
+  type        = string
+  default     = null
 }
