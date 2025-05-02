@@ -1,6 +1,6 @@
 terraform {
   backend "local" {
-    path = "../../../../.secrets/terraform/.state/proxmox"
+    path = "../../../../.secrets/terraform/.state/proxmox-tailscale"
   }
 }
 
