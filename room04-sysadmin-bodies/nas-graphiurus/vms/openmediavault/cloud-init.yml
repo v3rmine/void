@@ -44,7 +44,7 @@ users:
   - name: omvadmin
     gecos: OpenMediaVault Administrator
     sudo: ALL=(ALL) ALL
-    groups: sudo
+    groups: sudo, _ssh
     shell: /bin/bash
     lock_passwd: false
     # Password is 'omvadmin' - change this in production!
@@ -77,6 +77,13 @@ runcmd:
     wget -O - https://github.com/OpenMediaVault-Plugin-Developers/packages/raw/master/install |
     bash
 
+  # Create mountpoints
+  - |
+    mkdir -p /media/parity1
+    mkdir -p /media/disk1
+    mkdir -p /media/merged
+    mkdir -p /var/snapraid/content
+
   # Disable cloud-init so it doesnt conflict with OMV on next boot
   - touch /etc/cloud/cloud-init.disabled
 
@@ -91,9 +98,9 @@ write_files:
     defer: true
     append: true
     content: |
-      # /dev/mapper/parity1 /media/parity1 xfs defaults 0 2
-      # /dev/mapper/disk1 /media/disk1 xfs defaults 0 2
-      # /media/disk* /media/merged mergerfs nofail,nobootwait,cache.files=auto-full,category.create=pfrd,func.getattr=newest,dropcacheonclose=true 0 0
+      /dev/mapper/parity1 /media/parity1 xfs defaults,nofail 0 2
+      /dev/mapper/disk1 /media/disk1 xfs defaults,nofail 0 2
+      /media/disk* /media/merged mergerfs cache.files=auto-full,category.create=pfrd,func.getattr=newest,dropcacheonclose=true 0 0
   - path: /etc/snapraid.conf
     owner: "root:root"
     permissions: "0644"
