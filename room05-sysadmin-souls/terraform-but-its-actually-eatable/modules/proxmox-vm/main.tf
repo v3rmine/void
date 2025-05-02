@@ -2,12 +2,12 @@ resource "proxmox_virtual_environment_file" "cloud_init" {
   count = var.cloud_init_user_data != null ? 1 : 0
 
   content_type = "snippets"
-  datastore_id = "local"
+  datastore_id = "snippets"
   node_name    = var.proxmox_node_name
 
   source_raw {
     data      = var.cloud_init_user_data
-    file_name = "${var.vm_name}.cloud-config.yml"
+    file_name = "${uuid()}.cloud-config.yml"
   }
 }
 
@@ -19,8 +19,9 @@ resource "proxmox_virtual_environment_vm" "default" {
   # should be true if qemu agent is not installed / enabled on the VM
   stop_on_destroy = var.stop_on_destroy
 
-  boot_order    = ["scsi0", "ide3"]
+  boot_order    = ["virtio0", "ide3"]
   scsi_hardware = "virtio-scsi-single"
+  bios          = var.bios
 
   agent {
     enabled = var.qemu_agent_enabled
@@ -32,6 +33,15 @@ resource "proxmox_virtual_environment_vm" "default" {
   }
 
   initialization {
+    dynamic "user_account" {
+      for_each = var.cloud_init_user_data == null ? [1] : []
+
+      content {
+        username = "root"
+        password = "root"
+      }
+    }
+
     ip_config {
       ipv4 {
         address = "dhcp"
@@ -57,10 +67,12 @@ resource "proxmox_virtual_environment_vm" "default" {
     datastore_id = "local-lvm"
     file_id      = var.base_image != null ? "local:${var.base_image}" : null
 
-    interface = "scsi0"
+    interface = "virtio0"
     iothread  = true
     ssd       = true
     size      = var.disk_size
+    cache     = "writeback"
+    discard   = "on"
   }
 
   cpu {
@@ -79,7 +91,7 @@ resource "proxmox_virtual_environment_vm" "default" {
   network_device {
     model    = "virtio"
     bridge   = var.network_bridge
-    firewall = true
+    firewall = var.firewall_enabled
   }
 
   dynamic "disk" {
@@ -104,7 +116,7 @@ resource "proxmox_virtual_environment_firewall_options" "default" {
   vm_id     = proxmox_virtual_environment_vm.default.vm_id
 
   dhcp    = true
-  enabled = true
+  enabled = var.firewall_enabled
 }
 
 resource "proxmox_virtual_environment_firewall_rules" "default" {

@@ -9,6 +9,11 @@ provider "proxmox" {
     agent       = true
     username    = var.ssh_username
     private_key = file(var.ssh_private_key_file)
+
+    node {
+      name    = "proxmox"
+      address = "proxmox"
+    }
   }
 }
 
@@ -16,7 +21,7 @@ terraform {
   required_providers {
     proxmox = {
       source  = "bpg/proxmox"
-      version = ">= 0.75"
+      version = ">= 0.77"
     }
   }
 }

@@ -63,6 +63,11 @@ variable "tags" {
   default     = []
 }
 
+variable "bios" {
+  description = "'omvf' = UEFI, 'seabios' = bios"
+  default     = "seabios"
+}
+
 variable "network_bridge" {
   description = "VM's network's bridge interface"
   type        = string

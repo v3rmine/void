@@ -20,6 +20,7 @@ module "openmediavault" {
   floating_memory  = 1024
   disk_size        = 10
 
+  qemu_agent_enabled   = false
   cloud_init_user_data = file("./cloud-init.yml")
 
   passthrough_devices = [
