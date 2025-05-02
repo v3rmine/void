@@ -104,7 +104,7 @@ resource "proxmox_virtual_environment_vm" "default" {
       discard      = "on"
       datastore_id = ""
       file_format  = "raw"
-      interface    = "scsi${disk.key + 1}"
+      interface    = "virtio${disk.key + 1}"
 
       path_in_datastore = disk.value
     }
