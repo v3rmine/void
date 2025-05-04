@@ -9,6 +9,10 @@ resource "proxmox_virtual_environment_file" "cloud_init" {
     data      = var.cloud_init_user_data
     file_name = "${uuid()}.cloud-config.yml"
   }
+
+  lifecycle {
+    ignore_changes = [source_raw[0].file_name]
+  }
 }
 
 resource "proxmox_virtual_environment_vm" "default" {
@@ -19,9 +23,10 @@ resource "proxmox_virtual_environment_vm" "default" {
   # should be true if qemu agent is not installed / enabled on the VM
   stop_on_destroy = var.stop_on_destroy
 
-  boot_order    = ["virtio0", "ide3"]
+  boot_order    = ["virtio0", "ide0"]
   scsi_hardware = "virtio-scsi-single"
   bios          = var.bios
+  machine       = var.machine
 
   agent {
     enabled = var.qemu_agent_enabled
@@ -59,7 +64,7 @@ resource "proxmox_virtual_environment_vm" "default" {
 
     content {
       file_id   = "local:${var.local_installation_media}"
-      interface = "ide3"
+      interface = "ide0"
     }
   }
 
@@ -69,7 +74,6 @@ resource "proxmox_virtual_environment_vm" "default" {
 
     interface = "virtio0"
     iothread  = true
-    ssd       = true
     size      = var.disk_size
     cache     = "writeback"
     discard   = "on"
@@ -95,7 +99,7 @@ resource "proxmox_virtual_environment_vm" "default" {
   }
 
   dynamic "disk" {
-    for_each = var.passthrough_devices
+    for_each = var.passthrough_disks
 
     content {
       aio          = "native"
@@ -104,9 +108,19 @@ resource "proxmox_virtual_environment_vm" "default" {
       discard      = "on"
       datastore_id = ""
       file_format  = "raw"
-      interface    = "virtio${disk.key + 1}"
+      interface    = "scsi${disk.key + 1}"
 
       path_in_datastore = disk.value
+    }
+  }
+
+  dynamic "hostpci" {
+    for_each = var.pci_passthrough
+
+    content {
+      device = "hostpci${hostpci.key}"
+      id     = hostpci.value.id
+      pcie   = hostpci.value.pcie == null ? false : hostpci.value.pcie
     }
   }
 }

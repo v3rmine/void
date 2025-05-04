@@ -23,10 +23,17 @@ module "openmediavault" {
   qemu_agent_enabled   = false
   cloud_init_user_data = file("./cloud-init.yml")
 
-  passthrough_devices = [
-    "/dev/disk/by-id/ata-ST4000DM004-2U9104_ZFN5L7XV",
-    "/dev/disk/by-id/ata-ST4000DM004-2U9104_ZFN5LLMA"
-  ]
+  machine = "q35"
+  # pci_passthrough = [
+  #   { id = "06:00.0" },
+  #   { id = "06:00.1" }
+  # ]
+
+  # passthrough_devices = [
+  #   "/dev/disk/by-id/ata-ST4000DM004-2U9104_ZFN5L7XV",
+  #   "/dev/disk/by-id/ata-ST4000DM004-2U9104_ZFN5LLMA"
+  # ]
+
 
   #   files_path = {
   #     "/root/hdd_key" = "../../../../.secrets/files/hdd_keyfile"

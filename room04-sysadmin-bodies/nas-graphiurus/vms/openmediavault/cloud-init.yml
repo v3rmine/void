@@ -82,7 +82,7 @@ runcmd:
     mkdir -p /media/parity1
     mkdir -p /media/disk1
     mkdir -p /media/merged
-    mkdir -p /var/snapraid/content
+    mkdir -p /var/snapraid
 
   # Disable cloud-init so it doesnt conflict with OMV on next boot
   - touch /etc/cloud/cloud-init.disabled
@@ -111,6 +111,11 @@ write_files:
       content /media/disk1/snapraid.content
 
       disk d1 /media/disk1/
+  - path: /etc/cron.d/snapraid
+    owner: "root:root"
+    content: |
+      # Run snapraid sync daily at 05h00
+      0 5 * * * root snapraid sync
 
 # Configure power management settings
 power_state:

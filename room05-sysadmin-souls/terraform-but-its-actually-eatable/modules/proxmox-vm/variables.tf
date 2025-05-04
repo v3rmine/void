@@ -68,6 +68,11 @@ variable "bios" {
   default     = "seabios"
 }
 
+variable "machine" {
+  description = "The VM machine type. pc | q35 (Optionally, you can enable VIOMMU by adding q35,viommu=virtio)"
+  default     = "pc"
+}
+
 variable "network_bridge" {
   description = "VM's network's bridge interface"
   type        = string
@@ -145,10 +150,19 @@ variable "security_group" {
   default     = "internal_dmz"
 }
 
-variable "passthrough_devices" {
-  description = "List of devices to passthrough to the container"
+variable "passthrough_disks" {
+  description = "List of disks to passthrough to the container"
   type        = list(string)
   default     = []
+}
+
+variable "pci_passthrough" {
+  description = "List of host devices to passthrough to the container"
+  type = list(object({
+    id   = string
+    pcie = optional(bool)
+  }))
+  default = []
 }
 
 variable "cloud_init_user_data" {
