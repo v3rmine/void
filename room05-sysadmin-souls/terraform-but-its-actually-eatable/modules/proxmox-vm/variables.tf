@@ -129,7 +129,7 @@ variable "cpu_sockets" {
 variable "cpu_vcpus" {
   description = "Number of virtual CPU cores for the VM (should be at most cpu_cores * cpu_sockets)"
   type        = number
-  default     = 1
+  default     = 0
 }
 
 variable "dedicated_memory" {

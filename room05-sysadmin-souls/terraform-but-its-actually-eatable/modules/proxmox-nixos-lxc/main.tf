@@ -91,7 +91,7 @@ resource "proxmox_virtual_environment_container" "default" {
       ["set -o errexit"],
       ["pct stop ${self.vm_id}"],
       [
-        for line in var.extra_conf : "echo '${base64encode(line)}' | base64 -d >> /etc/pve/lxc/${self.vm_id}.conf"
+        for line in var.extra_conf : "echo '${base64encode("${line}\n")}' | base64 -d >> /etc/pve/lxc/${self.vm_id}.conf"
       ],
       ["pct start ${self.vm_id}"]
     ])

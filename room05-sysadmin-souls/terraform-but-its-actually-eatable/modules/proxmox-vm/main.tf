@@ -23,7 +23,7 @@ resource "proxmox_virtual_environment_vm" "default" {
   # should be true if qemu agent is not installed / enabled on the VM
   stop_on_destroy = var.stop_on_destroy
 
-  boot_order    = ["virtio0", "ide0"]
+  boot_order    = ["virtio0", "ide3"]
   scsi_hardware = "virtio-scsi-single"
   bios          = var.bios
   machine       = var.machine
@@ -64,7 +64,7 @@ resource "proxmox_virtual_environment_vm" "default" {
 
     content {
       file_id   = "local:${var.local_installation_media}"
-      interface = "ide0"
+      interface = "ide3"
     }
   }
 
