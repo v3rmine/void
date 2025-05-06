@@ -13,17 +13,17 @@ module "openmediavault" {
   ssh_private_key_file = "~/.ssh/id_ed25519"
 
   vm_name          = "openmediavault"
-  base_image       = "iso/debian-12-genericcloud-amd64.img"
+  base_image       = "iso/debian-12-generic-amd64.img"
   cpu_cores        = 4
-  dedicated_memory = 2048
+  dedicated_memory = 4096
   floating_memory  = 1024
   disk_size        = 10
 
-  qemu_agent_enabled   = false
+  qemu_agent_enabled   = true
   cloud_init_user_data = file("./cloud-init.yml")
 
-  passthrough_disks = [
-    "/dev/disk/by-id/ata-ST4000DM004-2U9104_ZFN5L7XV",
-    "/dev/disk/by-id/ata-ST4000DM004-2U9104_ZFN5LLMA"
+  pci_passthrough = [
+    { id : "06:00.0" },
+    { id : "06:00.1" },
   ]
 }

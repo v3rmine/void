@@ -141,7 +141,7 @@ variable "dedicated_memory" {
 variable "floating_memory" {
   description = "Amount of floating memory for the VM in MB (set equal to dedicated to enable ballooning)"
   type        = number
-  default     = 512
+  default     = 0
 }
 
 variable "security_group" {
