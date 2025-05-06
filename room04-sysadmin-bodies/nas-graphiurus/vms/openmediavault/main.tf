@@ -17,7 +17,7 @@ module "openmediavault" {
   cpu_cores        = 4
   dedicated_memory = 4096
   floating_memory  = 1024
-  disk_size        = 10
+  disk_size        = 20
 
   qemu_agent_enabled   = true
   cloud_init_user_data = file("./cloud-init.yml")

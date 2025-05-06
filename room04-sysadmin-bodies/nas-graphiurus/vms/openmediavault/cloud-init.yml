@@ -6,6 +6,8 @@
 package_update: true
 package_upgrade: true
 
+timezone: Europe/Paris
+
 bootcmd:
   - apt update
   - apt upgrade -y
@@ -23,7 +25,6 @@ packages:
   - postfix
   - cryptsetup
   - snapraid
-  - mergerfs
 
 # Configure APT sources for OpenMediaVault
 apt:
@@ -77,6 +78,15 @@ runcmd:
     wget -O - https://github.com/OpenMediaVault-Plugin-Developers/packages/raw/master/install |
     bash
 
+  # Install mergerfs
+  # https://forum.openmediavault.org/index.php?thread/47913-problems-installing-mergerfs/&pageNo=1
+  - |
+    omv-aptclean repos
+    apt-get update
+    apt-get --yes --auto-remove --show-upgraded --allow-downgrades --allow-change-held-packages \
+      --no-install-recommends --option DPkg::Options::="--force-confdef" \
+      --option DPkg::Options::="--force-confold" install mergerfs
+
   # Enable qemu-guest-agent
   - systemctl enable qemu-guest-agent
 
@@ -98,15 +108,15 @@ write_files:
     owner: "root:root"
     permissions: "0644"
     content: |
-      parity1 UUID=2580faaf-42b6-4a45-a97c-3b8482e6bcb6 /root/hdd_key luks,discard,tries=1
+      parity1 UUID=e5e2fa22-6b0d-4516-b5da-ffe826a02736 /root/hdd_key luks,discard,tries=1
       disk1 UUID=dbb1e30c-44f3-4541-8941-2452a544b93b /root/hdd_key luks,discard,tries=1
-  - path: /etc/fstab
-    defer: true
-    append: true
-    content: |
-      /dev/mapper/parity1 /media/parity1 xfs defaults,noauto,nofail,x-systemd.automount,x-systemd.idle-timeout=15min,x-systemd.device-timeout=5 0 2
-      /dev/mapper/disk1 /media/disk1 xfs defaults,noauto,nofail,x-systemd.automount,x-systemd.idle-timeout=15min,x-systemd.device-timeout=5 0 2
-      /media/disk* /media/merged mergerfs allow_other,use_ino,cache.files=auto-full,x-systemd.requires=/media/disk1,x-systemd.idle-timeout=15min,x-systemd.device-timeout=5,x-systemd.automount,category.create=pfrd,func.getattr=newest,dropcacheonclose=true 0 0
+  # - path: /etc/fstab
+  #   defer: true
+  #   append: true
+  #   content: |
+  #     /dev/mapper/parity1 /media/parity1 xfs defaults,noauto,nofail,x-systemd.automount,x-systemd.idle-timeout=15min,x-systemd.device-timeout=5 0 2
+  #     /dev/mapper/disk1 /media/disk1 xfs defaults,noauto,nofail,x-systemd.automount,x-systemd.idle-timeout=15min,x-systemd.device-timeout=5 0 2
+  #     /media/disk* /media/merged mergerfs allow_other,use_ino,cache.files=auto-full,x-systemd.requires=/media/disk1,x-systemd.idle-timeout=15min,x-systemd.device-timeout=5,x-systemd.automount,category.create=pfrd,func.getattr=newest,dropcacheonclose=true 0 0
   - path: /etc/snapraid.conf
     owner: "root:root"
     permissions: "0644"
@@ -120,8 +130,10 @@ write_files:
   - path: /etc/cron.d/snapraid
     owner: "root:root"
     content: |
-      # Run snapraid sync daily at 05h00
+      # SYNC snapraid daily at 5:00
       0 5 * * * root snapraid sync
+      # SCRUB snapraid weekly on monday at 4:00
+      0 4 * * MON root snapraid scrub
 
 # Configure power management settings
 power_state:
