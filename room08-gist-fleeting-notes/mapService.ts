@@ -32,12 +32,20 @@ export const ZOOM_LEVELS = {
   precise: 15,
 };
 
-export const MapComponent = () => {
+export const MapComponent = ({
+  defaultPitch = 25,
+  noControl = false,
+  noAttribution = false,
+}: {
+  defaultPitch?: number;
+  noControl?: boolean;
+  noAttribution?: boolean;
+}) => {
   const { mapRef, modules, modulesExtraProps } = useMap();
   const { location } = useGeolocation();
 
   const [initialViewState] = useState<Partial<ViewState>>({
-    pitch: 25,
+    pitch: defaultPitch,
     bearing: 0,
     zoom: ZOOM_LEVELS.country,
     ...(location ?? FRANCE_CENTER),
@@ -53,12 +61,13 @@ export const MapComponent = () => {
       return;
     }
 
-    map.addControl(
-      new maplibregl.NavigationControl({
-        showCompass: true,
-        showZoom: true,
-      }),
-    );
+    if (!noControl)
+      map.addControl(
+        new maplibregl.NavigationControl({
+          showCompass: true,
+          showZoom: true,
+        }),
+      );
 
     logger.debug("Map loaded. Applying style modifications...");
 
@@ -83,7 +92,7 @@ export const MapComponent = () => {
     });
 
     logger.debug("Style modifications completed.");
-  }, [mapRef]);
+  }, [mapRef, noControl]);
 
   // When precision changes, update the map center and zoom level
 
@@ -96,6 +105,8 @@ export const MapComponent = () => {
         style={{ width: "100%", height: "100%" }}
         mapStyle={mapTilerStyleUrl}
         onLoad={onMapLoad}
+        interactive={!noControl}
+        attributionControl={noAttribution ? false : undefined}
       >
         {modules.map(({ id, component: Module }) => (
           <Module key={id} mapRef={mapRef} {...modulesExtraProps[id]} />
@@ -208,4 +219,3 @@ export function ProvideMap({ children }: PropsWithChildren) {
 export function useMap() {
   return useContext(MapContext)!;
 }
-
