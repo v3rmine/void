@@ -108,7 +108,7 @@ runcmd:
       <freq>0</freq>
       <fsname>/dev/mapper/parity1</fsname>
       <hidden>0</hidden>
-      <opts>defaults,noauto,nofail,x-systemd.automount,x-systemd.idle-timeout=60,x-systemd.device-timeout=5</opts>
+      <opts>defaults,noauto,nofail,x-systemd.automount,x-systemd.device-timeout=5</opts>
       <passno>2</passno>
       <type>xfs</type>
       <usagewarnthreshold>0</usagewarnthreshold>
@@ -120,7 +120,7 @@ runcmd:
       <freq>0</freq>
       <fsname>/dev/mapper/disk1</fsname>
       <hidden>0</hidden>
-      <opts>defaults,noauto,nofail,x-systemd.automount,x-systemd.idle-timeout=60,x-systemd.device-timeout=5</opts>
+      <opts>defaults,noauto,nofail,x-systemd.automount,x-systemd.device-timeout=5</opts>
       <passno>2</passno>
       <type>xfs</type>
       <usagewarnthreshold>0</usagewarnthreshold>
@@ -131,8 +131,8 @@ runcmd:
       <dir>/media/merged</dir>
       <freq>0</freq>
       <fsname>e5f13730-4f09-4eb3-80f7-b2cfb3285e1d</fsname>
-      <hidden>0</hidden>
-      <opts>defaults,cache.files=auto-full,x-systemd.requires=/media/disk1,x-systemd.idle-timeout=60,x-systemd.device-timeout=5,x-systemd.automount,fsname=merged,category.create=pfrd,func.getattr=newest,dropcacheonclose=true</opts>
+      <hidden>1</hidden>
+      <opts>defaults,cache.files=auto-full,x-systemd.requires=/media/disk1,x-systemd.device-timeout=5,x-systemd.automount,fsname=merged,category.create=pfrd,func.getattr=newest,dropcacheonclose=true</opts>
       <passno>0</passno>
       <type>fuse.mergerfs</type>
       <usagewarnthreshold>0</usagewarnthreshold>
@@ -148,7 +148,7 @@ runcmd:
           <createpolicy>epmfs</createpolicy>
           <minfreespace>10</minfreespace>
           <minfreespaceunit>G</minfreespaceunit>
-          <options>defaults,cache.files=auto-full,x-systemd.requires=/media/disk1,x-systemd.idle-timeout=60,x-systemd.device-timeout=5,x-systemd.automount,category.create=pfrd,func.getattr=newest,dropcacheonclose=true</options>
+          <options>defaults,cache.files=auto-full,x-systemd.requires=/media/disk1,x-systemd.device-timeout=5,x-systemd.automount,category.create=pfrd,func.getattr=newest,dropcacheonclose=true</options>
         </pool>
       </pools>
     " 'merge(config.services)'
@@ -179,13 +179,13 @@ write_files:
     content: |
       parity1 UUID=e5e2fa22-6b0d-4516-b5da-ffe826a02736 /root/hdd_key luks,discard,tries=1
       disk1 UUID=dbb1e30c-44f3-4541-8941-2452a544b93b /root/hdd_key luks,discard,tries=1
-  # - path: /etc/fstab
-  #   defer: true
-  #   append: true
-  #   content: |
-  #     /dev/mapper/parity1 /media/parity1 xfs defaults,noauto,nofail,x-systemd.automount,x-systemd.idle-timeout=15min,x-systemd.device-timeout=5 0 2
-  #     /dev/mapper/disk1 /media/disk1 xfs defaults,noauto,nofail,x-systemd.automount,x-systemd.idle-timeout=15min,x-systemd.device-timeout=5 0 2
-  #     /media/disk* /media/merged mergerfs allow_other,use_ino,cache.files=auto-full,x-systemd.requires=/media/disk1,x-systemd.idle-timeout=15min,x-systemd.device-timeout=5,x-systemd.automount,category.create=pfrd,func.getattr=newest,dropcacheonclose=true 0 0
+  - path: /etc/fstab
+    defer: true
+    append: true
+    # /dev/mapper/parity1 /media/parity1 xfs defaults,noauto,nofail,x-systemd.automount,x-systemd.idle-timeout=15min,x-systemd.device-timeout=5 0 2
+    # /dev/mapper/disk1 /media/disk1 xfs defaults,noauto,nofail,x-systemd.automount,x-systemd.idle-timeout=15min,x-systemd.device-timeout=5 0 2
+    content: |
+      /media/disk1	/media/merged	fuse.mergerfs	defaults,cache.files=auto-full,x-systemd.requires=/media/disk1,x-systemd.device-timeout=5,x-systemd.automount,fsname=e5f13730-4f09-4eb3-80f7-b2cfb3285e1d,category.create=pfrd,func.getattr=newest,dropcacheonclose=true	0 0
   - path: /etc/snapraid.conf
     owner: "root:root"
     permissions: "0644"
@@ -203,19 +203,6 @@ write_files:
       0 5 * * * root snapraid sync
       # SCRUB snapraid weekly on monday at 4:00
       0 4 * * MON root snapraid scrub
-  - path: /etc/collectd/collectd.conf.d/df.conf
-    owner: "root:root"
-    defer: true
-    content: |
-      <LoadPlugin df>
-        Interval 300
-      </LoadPlugin>
-      <Plugin df>
-       	MountPoint "/"
-       	FSType xfs
-        FSType fuse.mergerfs
-       	IgnoreSelected false
-      </Plugin>
 
 # Configure power management settings
 power_state:
