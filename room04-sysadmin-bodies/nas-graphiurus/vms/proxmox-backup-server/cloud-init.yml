@@ -1,0 +1,64 @@
+#cloud-config
+
+# SOURCE: https://pbs.proxmox.com/docs/installation.html#install-proxmox-backup-server-on-debian
+
+fqdn: nodes.reta.re
+hostname: proxmox-backup-server
+
+# Update package lists and upgrade installed packages
+package_update: true
+package_upgrade: true
+
+timezone: Europe/Paris
+
+bootcmd:
+  - apt update
+  - apt upgrade -y
+  - apt install -y gnupg
+
+# Install required packages
+packages:
+  - qemu-guest-agent
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - wget
+  - software-properties-common
+  - lsb-release
+  - proxmox-backup-server
+  - proxmox-backup
+
+# Configure APT sources for OpenMediaVault
+apt:
+  sources:
+    proxmox.list:
+      keyid: F4E136C67CDCE41AE6DE6FC81140AF8F639E0C39
+      source: "deb [signed-by=$KEY_FILE] http://download.proxmox.com/debian/pbs bookworm pbs-no-subscription"
+      filename: proxmox.list
+
+# Change root user
+users:
+  - name: root
+    lock_passwd: false
+    # Password is 'root' - change this in production!
+    plain_text_passwd: root
+
+# Run commands once at first boot
+runcmd:
+  # Allow ssh access with password authentication
+  - sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+
+  # Remove root password
+  - passwd -d root
+
+  # Enable qemu-guest-agent
+  - systemctl enable qemu-guest-agent
+
+  # Disable cloud-init so it doesnt conflict with OMV on next boot
+  - touch /etc/cloud/cloud-init.disabled
+
+# Configure power management settings
+power_state:
+  mode: reboot
+  timeout: 30
+  condition: true
