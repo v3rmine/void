@@ -134,7 +134,18 @@ write_files:
       0 5 * * * root snapraid sync
       # SCRUB snapraid weekly on monday at 4:00
       0 4 * * MON root snapraid scrub
-
+  - path: /etc/collectd/collectd.conf.d/df.conf
+    owner: "root:root"
+    content: |
+      <LoadPlugin df>
+        Interval 1800
+      </LoadPlugin>
+      <Plugin df>
+       	MountPoint "/"
+       	MountPoint "/media/parity1"
+       	MountPoint "/media/disk1"
+       	IgnoreSelected false
+      </Plugin>
 # Configure power management settings
 power_state:
   mode: reboot
