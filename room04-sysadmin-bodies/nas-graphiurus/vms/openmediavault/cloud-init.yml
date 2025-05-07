@@ -108,7 +108,7 @@ runcmd:
       <freq>0</freq>
       <fsname>/dev/mapper/parity1</fsname>
       <hidden>0</hidden>
-      <opts>defaults,noauto,nofail,x-systemd.automount,x-systemd.idle-timeout=15min,x-systemd.device-timeout=5</opts>
+      <opts>defaults,noauto,nofail,x-systemd.automount,x-systemd.idle-timeout=60,x-systemd.device-timeout=5</opts>
       <passno>2</passno>
       <type>xfs</type>
       <usagewarnthreshold>0</usagewarnthreshold>
@@ -120,7 +120,7 @@ runcmd:
       <freq>0</freq>
       <fsname>/dev/mapper/disk1</fsname>
       <hidden>0</hidden>
-      <opts>defaults,noauto,nofail,x-systemd.automount,x-systemd.idle-timeout=15min,x-systemd.device-timeout=5</opts>
+      <opts>defaults,noauto,nofail,x-systemd.automount,x-systemd.idle-timeout=60,x-systemd.device-timeout=5</opts>
       <passno>2</passno>
       <type>xfs</type>
       <usagewarnthreshold>0</usagewarnthreshold>
@@ -132,7 +132,7 @@ runcmd:
       <freq>0</freq>
       <fsname>e5f13730-4f09-4eb3-80f7-b2cfb3285e1d</fsname>
       <hidden>0</hidden>
-      <opts>defaults,cache.files=auto-full,x-systemd.requires=/media/disk1,x-systemd.idle-timeout=15min,x-systemd.device-timeout=5,x-systemd.automount,fsname=merged,category.create=pfrd,func.getattr=newest,dropcacheonclose=true</opts>
+      <opts>defaults,cache.files=auto-full,x-systemd.requires=/media/disk1,x-systemd.idle-timeout=60,x-systemd.device-timeout=5,x-systemd.automount,fsname=merged,category.create=pfrd,func.getattr=newest,dropcacheonclose=true</opts>
       <passno>0</passno>
       <type>fuse.mergerfs</type>
       <usagewarnthreshold>0</usagewarnthreshold>
@@ -148,7 +148,7 @@ runcmd:
           <createpolicy>epmfs</createpolicy>
           <minfreespace>10</minfreespace>
           <minfreespaceunit>G</minfreespaceunit>
-          <options>defaults,cache.files=auto-full,x-systemd.requires=/media/disk1,x-systemd.idle-timeout=15min,x-systemd.device-timeout=5,x-systemd.automount,category.create=pfrd,func.getattr=newest,dropcacheonclose=true</options>
+          <options>defaults,cache.files=auto-full,x-systemd.requires=/media/disk1,x-systemd.idle-timeout=60,x-systemd.device-timeout=5,x-systemd.automount,category.create=pfrd,func.getattr=newest,dropcacheonclose=true</options>
         </pool>
       </pools>
     " 'merge(config.services)'
@@ -208,7 +208,7 @@ write_files:
     defer: true
     content: |
       <LoadPlugin df>
-        Interval 1800
+        Interval 300
       </LoadPlugin>
       <Plugin df>
        	MountPoint "/"
