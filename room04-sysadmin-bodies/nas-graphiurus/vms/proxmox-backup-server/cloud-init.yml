@@ -27,6 +27,7 @@ packages:
   - lsb-release
   - proxmox-backup-server
   - proxmox-backup
+  - nfs-common
 
 # Configure APT sources for OpenMediaVault
 apt:
@@ -45,17 +46,27 @@ users:
 
 # Run commands once at first boot
 runcmd:
+  # Allow root ssh access
+  - sed -i 's/#PermitRootLogin no/PermitRootLogin yes/' /etc/ssh/sshd_config
   # Allow ssh access with password authentication
   - sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
-
-  # Remove root password
-  - passwd -d root
 
   # Enable qemu-guest-agent
   - systemctl enable qemu-guest-agent
 
+  # Create mountpoints
+  - |
+    mkdir /var/proxmox-backups
+
   # Disable cloud-init so it doesnt conflict with OMV on next boot
   - touch /etc/cloud/cloud-init.disabled
+
+write_files:
+  - path: /etc/fstab
+    defer: true
+    append: true
+    content: |
+      10.0.0.11:/proxmox-backup /var/proxmox-backups nfs defaults,noauto,nofail,x-systemd.automount,x-systemd.device-timeout=5 0 0
 
 # Configure power management settings
 power_state:
