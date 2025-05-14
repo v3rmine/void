@@ -1,0 +1,6 @@
+{
+  "name": "gu-pot",
+  "dependencies": {
+    "franken-ui": "2.0.0"
+  }
+}

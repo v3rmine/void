@@ -1,0 +1,31 @@
+[package]
+name = "gu-pot"
+version = "0.1.0"
+authors = ["Astrid Planchon <v3rmine@astriiid.fr>"]
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+dioxus = { version = "0.6.0", features = ["router"] }
+iroh = { version = "0.34.0", default-features = false }
+iroh-base = { version = "0.34.0", default-features = false, features = ["ticket"] }
+iroh-gossip = { version = "0.34.0", default-features = false, features = ["net"] }
+
+getrandom = { version = "0.3", features = ["wasm_js"] }
+
+[features]
+default = ["web"]
+web = ["dioxus/web"]
+desktop = ["dioxus/desktop"]
+mobile = ["dioxus/mobile"]
+
+[profile.wasm-dev]
+inherits = "dev"
+opt-level = 1
+
+[profile.server-dev]
+inherits = "dev"
+
+[profile.android-dev]
+inherits = "dev"
