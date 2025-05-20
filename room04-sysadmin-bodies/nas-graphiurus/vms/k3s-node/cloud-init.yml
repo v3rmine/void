@@ -15,8 +15,6 @@ users:
     lock_passwd: false
     # Password is 'root' - change this in production!
     plain_text_passwd: root
-    ssh_authorized_keys:
-      - "${ssh_authorized_key}"
 
 runcmd:
   # Allow root ssh access
@@ -29,7 +27,7 @@ runcmd:
 #   | PROVIDER="hetznercloud" bash 2>&1 | tee /tmp/infect.log
 
 write_files:
-  - path: /etc/nixos/host.nix
+  - path: /etc/nixos/configuration.nix
     permissions: "0644"
     encoding: b64
     content: ${configuration_nix}
