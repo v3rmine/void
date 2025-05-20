@@ -21,10 +21,10 @@ runcmd:
   - sed -i 's/#PermitRootLogin .*/PermitRootLogin yes/' /etc/ssh/sshd_config
   # Allow ssh access with password authentication
   - sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
-# # Infect with NixOS
-# - >
-#   curl https://raw.githubusercontent.com/elitak/nixos-infect/master/nixos-infect
-#   | PROVIDER="hetznercloud" bash 2>&1 | tee /tmp/infect.log
+  # # Infect with NixOS
+  - >
+    curl https://raw.githubusercontent.com/elitak/nixos-infect/master/nixos-infect
+    | PROVIDER="hetznercloud" bash 2>&1 | tee /tmp/infect.log
 
 write_files:
   - path: /etc/nixos/configuration.nix

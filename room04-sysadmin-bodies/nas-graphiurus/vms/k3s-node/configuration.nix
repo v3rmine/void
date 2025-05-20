@@ -32,7 +32,7 @@
   time.timeZone = "Europe/Paris";
 
   networking = {
-    hostName = "k3s";
+    hostName = "nas-k3s";
     domain = "";
     nameservers = [ "10.0.0.1" ];
     defaultGateway = "10.0.0.1";
@@ -59,7 +59,7 @@
   # Hardware configuration
   imports = [ (modulesPath + "/profiles/qemu-guest.nix") ];
   boot.loader.grub.enable = lib.mkDefault true; # Use the boot drive for GRUB
-  boot.loader.grub.devices = [ "nodev" ];
+  boot.loader.grub.device = "/dev/vda";
   boot.tmp.cleanOnBoot = true;
   boot.growPartition = lib.mkDefault true;
   boot.initrd.availableKernelModules =

@@ -19,7 +19,7 @@ module "k3s-nas" {
   # floating_memory  = 4096
   disk_size = 64
 
-  qemu_agent_enabled = false
+  qemu_agent_enabled = true
   cloud_init_user_data = templatefile("./cloud-init.yml", {
     ssh_authorized_key = trimspace(file("~/.ssh/id_ed25519.pub"))
     # Encode file in base64 to escape newlines and characters
