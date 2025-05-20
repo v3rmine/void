@@ -9,6 +9,11 @@ provider "proxmox" {
     agent       = true
     username    = "root"
     private_key = file(var.ssh_private_key_file)
+
+    node {
+      name    = "proxmox"
+      address = "proxmox"
+    }
   }
 }
 

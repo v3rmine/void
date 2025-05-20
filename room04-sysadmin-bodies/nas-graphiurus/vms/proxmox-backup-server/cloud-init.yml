@@ -47,7 +47,7 @@ users:
 # Run commands once at first boot
 runcmd:
   # Allow root ssh access
-  - sed -i 's/#PermitRootLogin no/PermitRootLogin yes/' /etc/ssh/sshd_config
+  - sed -i 's/#PermitRootLogin .*/PermitRootLogin yes/' /etc/ssh/sshd_config
   # Allow ssh access with password authentication
   - sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
 
