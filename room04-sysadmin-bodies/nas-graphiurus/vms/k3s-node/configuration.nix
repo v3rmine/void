@@ -1,5 +1,26 @@
 { modulesPath, lib, pkgs, ... }: {
-  security.pam.services.sshd.allowNullPassword = true;
+  system.stateVersion = "24.11";
+
+  # k3s https://github.com/NixOS/nixpkgs/blob/master/pkgs/applications/networking/cluster/k3s/docs/USAGE.md
+  networking.firewall.allowedTCPPorts = [
+    6443 # k3s: required so that pods can reach the API server (running on port 6443 by default)
+    # 2379 # k3s, etcd clients: required if using a "High Availability Embedded etcd" configuration
+    # 2380 # k3s, etcd peers: required if using a "High Availability Embedded etcd" configuration
+  ];
+  networking.firewall.allowedUDPPorts = [
+    # 8472 # k3s, flannel: required if using multi-node for inter-node networking
+  ];
+  services.k3s = {
+    enable = true;
+    role = "server";
+    token = "e2f487587c0c12e491ea9f26ab22ff8a8f72a147907fbf78165c6f0d1a2afda0005f450138e3783126005a9444c4b7398735f9c6a2ad849db09e6cef63fb07cb";
+    extraFlags = toString [
+      # "--debug" # Optionally add additional args to k3s
+    ];
+    clusterInit = true;
+  };
+  
+  # System
   services.openssh = {
     enable = true;
     settings = {
@@ -7,7 +28,6 @@
       PasswordAuthentication = true;
     };
   };
-  system.stateVersion = "24.11";
 
   time.timeZone = "Europe/Paris";
 

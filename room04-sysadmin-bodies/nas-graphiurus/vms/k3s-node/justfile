@@ -1,4 +1,5 @@
 credentials_file := "../../../../.secrets/terraform/proxmox.tfvars"
+kubeconfig := "../../../../.secrets/k3s/k3s.yaml"
 
 init:
   tofu init
@@ -17,3 +18,9 @@ destroy:
 
 deploy:
   nixos-rebuild switch --target-host root@10.0.0.13 -I nixos-config=./configuration.nix -I nixpkgs=channel:nixos-24.11
+
+kubectl *PARAMS:
+  kubectl --kubeconfig {{kubeconfig}} {{PARAMS}}
+
+helm *PARAMS:
+  helm --kubeconfig {{kubeconfig}} {{PARAMS}}
