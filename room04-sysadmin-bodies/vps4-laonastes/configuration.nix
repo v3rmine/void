@@ -15,7 +15,7 @@ in {
       interfaces = {
         "ens6" = {
           allowedTCPPorts = [ 80 443 8080 ];
-          allowedUDPPorts = [ 53 80 443 51820 ];
+          allowedUDPPorts = [ 53 443 51820 ];
         };
       };
     };
