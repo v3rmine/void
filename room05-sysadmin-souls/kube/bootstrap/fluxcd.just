@@ -4,6 +4,7 @@ bootstrap-fluxcd:
 
 
 uninstall-fluxcd:
-  kubectl delete all --all -n flux-system
+  kubectl -n flux-system delete fluxinstances --all
+  helm -n flux-system uninstall flux-operator
   kubectl delete namespace flux-system
 
