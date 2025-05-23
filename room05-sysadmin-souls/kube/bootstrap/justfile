@@ -1,0 +1,7 @@
+import 'fluxcd.just'
+
+bootstrap: bootstrap-fluxcd
+  @echo "Bootstraping finished!" 
+
+uninstall: uninstall-fluxcd
+  @echo "Uninstall finished!"

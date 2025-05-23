@@ -1,0 +1,6 @@
+flux-instance:
+  instance:
+    sync:
+      url: https://github.com/v3rmine/void
+      ref: refs/head/main
+      path: room05-sysadmin-souls/kube/apps
