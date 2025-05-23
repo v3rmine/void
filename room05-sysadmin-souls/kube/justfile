@@ -1,0 +1,11 @@
+kubeconfig := absolute_path("../../.secrets/k3s/k3s.yaml")
+
+alias k := kubectl
+[no-cd]
+kubectl *PARAMS:
+  kubectl --kubeconfig {{kubeconfig}} {{PARAMS}}
+
+alias h := helm
+[no-cd]
+helm *PARAMS:
+  helm --kubeconfig {{kubeconfig}} {{PARAMS}}
