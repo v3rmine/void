@@ -1,7 +1,6 @@
 bootstrap-fluxcd:
-  helm install --dependency-update --create-namespace --namespace flux-system flux-operator ./fluxcd/flux-operator
-  helm install --dependency-update --namespace flux-system flux-instance ./fluxcd/flux-instance
-
+  helm install --create-namespace --namespace flux-system flux-operator oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator
+  kubectl apply -f ../apps/core/flux-instance.yaml
 
 uninstall-fluxcd:
   kubectl -n flux-system delete fluxinstances --all

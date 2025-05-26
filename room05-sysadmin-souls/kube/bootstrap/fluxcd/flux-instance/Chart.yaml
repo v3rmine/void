@@ -1,7 +1,0 @@
-apiVersion: v2
-name: fluxcd
-version: 0.0.0
-dependencies:
-  - name: flux-instance
-    repository: oci://ghcr.io/controlplaneio-fluxcd/charts
-    version: 0.20.0
