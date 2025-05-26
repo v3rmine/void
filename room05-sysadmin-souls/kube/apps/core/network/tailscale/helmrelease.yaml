@@ -34,8 +34,8 @@ spec:
     # Refer to the kubernetes-operator documentation for all available options:
     # https://tailscale.com/kb/1236/kubernetes-operator
     oauth:
-      clientId: "${CLIENT_ID}"
-      clientSecret: "${CLIENT_SECRET}"
+      clientId: <CLIENT_ID>
+      clientSecret: <CLIENT_SECRET>
 
     # installCRDs determines whether tailscale.com CRDs should be installed as part
     # of chart installation. We do not use Helm's CRD installation mechanism as that

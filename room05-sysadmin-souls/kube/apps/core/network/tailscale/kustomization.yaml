@@ -1,14 +1,43 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 metadata:
-  name: tailscale
-  namespace: flux-system
+    name: tailscale
+    namespace: flux-system
 resources:
-  - namespace.yaml
-  - helmrepository.yaml
-  - helmrelease.yaml
-  - secret.yaml
-postBuild:
-  substituteFrom:
-    - kind: Secret
-      name: tailscale-credentials
+    - namespace.yaml
+    - helmrepository.yaml
+    - helmrelease.yaml
+patches:
+    - target:
+        group: helm.toolkit.fluxcd.io
+        version: v2beta2
+        kind: HelmRelease
+        name: tailscale-operator
+      patch: ENC[AES256_GCM,data:CNT1oNOuApNsL9hyrwlZmefz9Eds9ti5Flyb51z1VLHVuBRcksK24FOfOpMQgHjoSYLWrGnjLrkya/oKECweOwZ4TrMsPfbUSiFoesoJ7GJkn2VS5XxXQ3e9BDrEWV9Gvw1G/Mm7TTbI/I/b3MseiPXC8g6hf6O/Ql1mFyCcxiT8N4lSDIqAAEzdnczR6Za4MycE14TJ/vPEKGzwGI7j3EW1zTP0dRSMNEUVgAed7xEd36x6NFOMTszBz0x0VLwuNXo2jV5ts/cLl0C+lA==,iv:1Th+5T8T3ZE9+lJPLJVKUPxaQa/ZS1PlelYADPdzsM0=,tag:HiLk8Dsl9Sj4hrLEA6brFg==,type:str]
+sops:
+    lastmodified: "2025-05-26T16:47:43Z"
+    mac: ENC[AES256_GCM,data:8LRFHL+8gLCQyPhDQqQc5kuhICY16qWUINMJMZQqZDKEsTCMqM0R3ARg4Mgm8GYhw6j8wAGpbLa5nrOivU7t2+K3wVV6S6XrhPbjXFDJonOX7fcu1b1rr7YMQmmSq7QMPXIZmSCWNwp3zB9j1rudspf929MVEH2gvKl+Sg09MgU=,iv:hA+3V9Lfasfa3lLwhXv5tg1lBDGRQc0yhafB6N5XVvk=,tag:eVIKPCpRDsQ9boaDnSEZPA==,type:str]
+    pgp:
+        - created_at: "2025-05-26T16:47:43Z"
+          enc: |-
+            -----BEGIN PGP MESSAGE-----
+
+            hQIMA/ZmICfIWU5oAQ//S0uyrSJNNE/oRjk0XDWdZJ6TsEEJiPh0PpMaaIKTe47+
+            EGX3k71JWBOb0Oj3pJaarLOdZ9NSMFBfEMWU5KMWhAgBaOjcAyPJSU+aKhH2e+ho
+            EzJpzRT42kCRFOwAOmp/ntzhHEQLsJt2/m3DwuPcP5ESRPxBvGrM7wpVQmKyu7IW
+            Nb3dS0UsLKLiOW4UtQFBInvujhqnbf148EEjFG+gHwfJE/fBwjHnJfEuElNZiVsX
+            JTmTM2nZVeDgeV6V1lFxWLSCuTl5zSFIhgbxNsVEK+AW9OQ6zVi77qhYJ6K/t/ly
+            ksgi7i+iR446+iYsrtjeEie9gO4akbD5s/2K9VBs1YYtXLmPu5qwUfiTLa05xf6d
+            Y5kTulu23GMQB+UbX6DSgP0zgnkGNLxSgTi711o/dHsmd3uOmOz4QPrAgnLDHAaI
+            AonXHsMomXjxmVigUC+ONeL66NHqz4I3SpR3fVdjXHY8jfMj6aTOp4zSTV96LT5H
+            dGSIBMdgIcGzB11aO8lFVGWnb6hoKdxYcuqMYn6VOQ9xV9OXBi/Z5bZZTZu1NFW7
+            mVCUYsoFAEBXUHFgh605nrVKUf7E0G0tZtPk0H8L6tqfZEWYqwDE44i8V8OetQxZ
+            9CNqiphrZyPTwgSPln3rFWOlQCOqFI/imiqPfZjhbssfKUOtlJTIE7RpLuqTCtnU
+            ZgEJAhBKtRZJAYajQvO+XqG69V/ssaRaPYE7LICwy2FvutNCXn1P9X/4MVViTXNt
+            dQwpvAKYdNBEUUwH6CigFNXFtvMxp/8jjxGapLKxZs3ehHprUO6G32n2O8E3Hd/s
+            8cF+7ADKAA==
+            =nCvU
+            -----END PGP MESSAGE-----
+          fp: BF5ACB1786BD3BB9F4FABEEE275EF572DD0F3EB8
+    encrypted_regex: ^patch$
+    version: 3.10.2
