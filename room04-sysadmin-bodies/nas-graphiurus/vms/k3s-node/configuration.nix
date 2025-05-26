@@ -20,6 +20,17 @@
     clusterInit = true;
   };
   
+  environment.systemPackages = with pkgs; [
+    nfs-utils
+    openiscsi
+  ];
+
+  # Required for Longhorn
+  services.openiscsi = {
+    enable = true;
+    name = "iqn.2020-08.org.linux-iscsi.nas-k3s:storage";
+  };
+
   # System
   services.openssh = {
     enable = true;
