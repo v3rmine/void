@@ -1,0 +1,13 @@
+apiVersion: fluxcd.controlplane.io/v1
+kind: FluxInstance
+metadata:
+  name: flux
+  namespace: flux-system
+spec:
+  sync:
+    kind: GitRepository
+    url: "https://github.com/v3rmine/void"
+    ref: "refs/heads/main"
+    path: "room05-sysadmin-souls/kube/apps"
+
+
