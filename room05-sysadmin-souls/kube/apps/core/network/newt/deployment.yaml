@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: newt
+  namespace: newt-system
+  labels:
+    app: newt
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: newt
+  template:
+    metadata:
+      labels:
+        app: newt
+    spec:
+      containers:
+        - name: newt
+          image: fosrl/newt:1.1.3
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: PANGOLIN_ENDPOINT
+              value: "https://cloud.reta.re"
+            - name: NEWT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: newt-credentials
+                  key: NEWT_ID
+            - name: NEWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: newt-credentials
+                  key: NEWT_SECRET
+          # Add resource limits/requests as per best practice
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
+      restartPolicy: Always
