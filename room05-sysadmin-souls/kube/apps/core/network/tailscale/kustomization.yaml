@@ -8,8 +8,7 @@ resources:
   - helmrepository.yaml
   - helmrelease.yaml
   - secret.yaml
-spec:
-  postBuild:
-    substituteFrom:
-      - kind: Secret
-        name: tailscale-credentials
+postBuild:
+  substituteFrom:
+    - kind: Secret
+      name: tailscale-credentials
