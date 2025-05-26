@@ -1,0 +1,10 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: tailscale-charts
+  namespace: tailscale-system
+spec:
+  interval: 24h # How often Flux checks the repository for updates
+  url: https://pkgs.tailscale.com/helmcharts
+  timeout: 5m # Timeout for fetching the repository index
+

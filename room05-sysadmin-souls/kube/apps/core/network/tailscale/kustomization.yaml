@@ -1,0 +1,31 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  name: tailscale
+  namespace: flux-system
+resources:
+  - namespace.yaml
+  - helmrepository.yaml
+  - helmrelease.yaml
+  - secret.yaml
+patches:
+  - target:
+      group: helm.toolkit.fluxcd.io
+      version: v2beta2
+      kind: HelmRelease
+      name: tailscale-operator
+    patch: |
+      - op: replace
+        path: /spec/values/oauth/clientId
+        value:
+          valueFrom:
+            secretKeyRef:
+              name: tailscale-credentials
+              key: CLIENT_ID
+      - op: replace
+        path: /spec/values/oauth/clientSecret
+        value:
+          valueFrom:
+            secretKeyRef:
+              name: tailscale-credentials
+              key: CLIENT_SECRET
