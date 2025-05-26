@@ -12,7 +12,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: tailscale-charts
-        namespace: flux-system
       interval: 10m # How often Flux checks the Helm repository for *new chart versions* for this release
   releaseName: tailscale-operator
   targetNamespace: tailscale-system
