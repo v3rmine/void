@@ -6,7 +6,7 @@ metadata:
 spec:
   interval: 1m0s
   ref:
-    branch: main
+    branch: master
   url: https://github.com/stefanprodan/podinfo
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -22,5 +22,6 @@ spec:
   sourceRef:
     kind: GitRepository
     name: podinfo
+  targetNamespace: default
   timeout: 3m0s
   wait: true
