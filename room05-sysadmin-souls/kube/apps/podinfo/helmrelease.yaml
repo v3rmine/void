@@ -18,4 +18,4 @@ spec:
   values:
     ingress:
       enabled: true
-      className: nginx
+      className: tailscale
