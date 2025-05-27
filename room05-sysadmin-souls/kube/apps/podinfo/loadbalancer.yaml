@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: podinfo
+  namespace: podinfo
+  tailscale.com/hostname: podinfo
+spec:
+  ports:
+    - name: http
+      port: 80
+      targetPort: 9898
+  type: LoadBalancer
+  loadBalancerClass: tailscale

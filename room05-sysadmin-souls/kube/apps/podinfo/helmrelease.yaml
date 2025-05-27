@@ -15,7 +15,3 @@ spec:
   install:
     remediation:
       retries: 3
-  values:
-    ingress:
-      enabled: true
-      className: tailscale
