@@ -31,13 +31,18 @@ spec:
   valuesFrom:
     - kind: Secret
       name: tailscale-credentials
-      valuesKey: oauthConfig
-      targetPath: oauth
+      valuesKey: CLIENT_ID
+      targetPath: oauth.clientId
+    - kind: Secret
+      name: tailscale-credentials
+      valuesKey: CLIENT_SECRET
+      targetPath: oauth.clientSecret
   values:
     # --- Tailscale Operator values ---
     # Configure your Tailscale Operator here.
     # Refer to the kubernetes-operator documentation for all available options:
     # https://tailscale.com/kb/1236/kubernetes-operator
+    oauth: {}
 
     # installCRDs determines whether tailscale.com CRDs should be installed as part
     # of chart installation. We do not use Helm's CRD installation mechanism as that
