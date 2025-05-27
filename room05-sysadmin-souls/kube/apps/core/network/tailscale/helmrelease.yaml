@@ -15,19 +15,6 @@ spec:
       interval: 10m # How often Flux checks the Helm repository for *new chart versions* for this release
   releaseName: tailscale-operator
   targetNamespace: tailscale-system
-  install:
-    remediation:
-      retries: 3
-  upgrade:
-    remediation:
-      retries: 3
-      remediateLastFailure: true # If an upgrade fails, try to revert to the previous successful state
-    force: false # Set to true if you want to force resource recreation on upgrade
-  rollback:
-    timeout: 10m
-    recreate: true
-  test:
-    enable: false # Set to true to run Helm tests after install/upgrade
   valuesFrom:
     - kind: Secret
       name: tailscale-credentials
@@ -42,9 +29,6 @@ spec:
     # Configure your Tailscale Operator here.
     # Refer to the kubernetes-operator documentation for all available options:
     # https://tailscale.com/kb/1236/kubernetes-operator
-    oauth:
-      clientId: <CLIENT ID>
-      clientSecret: <CLIENT SECRET>
 
     # installCRDs determines whether tailscale.com CRDs should be installed as part
     # of chart installation. We do not use Helm's CRD installation mechanism as that
@@ -64,13 +48,6 @@ spec:
       hostname: tailscale-operator
       nodeSelector:
         kubernetes.io/os: linux
-
-      resources: {}
-      podAnnotations: {}
-      tolerations: []
-      affinity: {}
-      podSecurityContext: {}
-      securityContext: {}
 
     # proxyConfig contains configuraton that will be applied to any ingress/egress
     # proxies created by the operator.
