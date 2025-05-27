@@ -1,7 +1,8 @@
 import 'fluxcd.just'
+import 'sops.just'
 
-bootstrap: bootstrap-fluxcd
+bootstrap: bootstrap-sops bootstrap-fluxcd
   @echo "Bootstraping finished!" 
 
-uninstall: uninstall-fluxcd
+uninstall: uninstall-sops uninstall-fluxcd
   @echo "Uninstall finished!"
