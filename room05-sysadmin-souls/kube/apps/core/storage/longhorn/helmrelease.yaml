@@ -33,14 +33,6 @@ spec:
       # This HelmRelease is for Longhorn's own CSI driver.
       # See https://longhorn.io/docs/latest/references/settings/#general-settings
       # It's more about how Longhorn functions.
-    ingress:
-      enabled: true
-      className: traefik
-      host: longhorn.serv4.reta.re
-      tls:
-        enabled: false
-      annotations:
-        traefik.ingress.kubernetes.io/router.entrypoints: web
     # persistence:
     #   defaultClass: longhorn # This creates a default StorageClass named 'longhorn'
     #   defaultFsType: ext4
