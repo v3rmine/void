@@ -34,6 +34,15 @@ spec:
           - op: add
             path: /spec/template/spec/containers/0/args/-
             value: --requeue-dependency=5s
+      - target:
+          kind: Kustomization
+        patch: |
+          - op: add
+            path: /spec/decryption
+            value:
+              provider: sops
+              secretRef:
+                name: sops-gpg
   sync:
     kind: GitRepository
     url: "https://github.com/v3rmine/void"
