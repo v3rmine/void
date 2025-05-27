@@ -9,3 +9,6 @@ alias h := helm
 [no-cd]
 helm *PARAMS:
   helm --kubeconfig {{kubeconfig}} {{PARAMS}}
+
+flux-status:
+  kubectl get fluxreport/flux -n flux-system -o yaml
