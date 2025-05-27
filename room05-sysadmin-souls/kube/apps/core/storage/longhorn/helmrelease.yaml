@@ -34,9 +34,13 @@ spec:
       # See https://longhorn.io/docs/latest/references/settings/#general-settings
       # It's more about how Longhorn functions.
     ingress:
-      enabled: false # Set to true if you want an Ingress for the Longhorn UI
-      # className: nginx # or your ingress controller class
-      # host: longhorn.yourdomain.com
+      enabled: true
+      className: traefik
+      host: longhorn.serv4.reta.re
+      tls:
+        enabled: false
+      annotations:
+        traefik.ingress.kubernetes.io/router.entrypoints: web
     # persistence:
     #   defaultClass: longhorn # This creates a default StorageClass named 'longhorn'
     #   defaultFsType: ext4
