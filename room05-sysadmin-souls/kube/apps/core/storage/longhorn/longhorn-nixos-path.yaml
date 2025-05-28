@@ -35,11 +35,6 @@ spec:
           spec:
             template:
               spec:
-                initContainers:
-                  - (name): "*"
-                    envFrom:
-                      - configMapRef:
-                          name: longhorn-nixos-path
                 containers:
                   - (name): "*"
                     envFrom:
