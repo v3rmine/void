@@ -20,16 +20,19 @@
     clusterInit = true;
   };
   
+  # https://github.com/NixOS/nixpkgs/blob/master/pkgs/applications/networking/cluster/k3s/docs/examples/STORAGE.md#longhorn
   environment.systemPackages = with pkgs; [
     nfs-utils
-    openiscsi
   ];
 
   # Required for Longhorn
   services.openiscsi = {
     enable = true;
-    name = "iqn.2020-08.org.linux-iscsi.nas-k3s:storage";
+    name = "nas-k3s-initiatorhost";
   };
+
+  boot.supportedFilesystems = [ "nfs" ];
+  services.rpcbind.enable = true;
 
   # System
   services.openssh = {
