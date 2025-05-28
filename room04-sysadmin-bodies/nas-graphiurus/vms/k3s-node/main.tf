@@ -17,7 +17,7 @@ module "k3s-nas" {
   cpu_cores        = 8
   dedicated_memory = 8192
   # floating_memory  = 4096
-  disk_size = 64
+  disk_size = 128
 
   qemu_agent_enabled = true
   cloud_init_user_data = templatefile("./cloud-init.yml", {
