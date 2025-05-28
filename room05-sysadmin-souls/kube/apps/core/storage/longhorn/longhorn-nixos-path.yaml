@@ -30,7 +30,7 @@ spec:
           namespaces:
             - longhorn-system
       mutate:
-        patchStrategicMerge:
+        overlay:
           spec:
             initContainers:
               - (name): "*"
