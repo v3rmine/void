@@ -26,19 +26,22 @@ spec:
       match:
         resources:
           kinds:
-            - Pod
+            - DaemonSet
+            - Deployment
           namespaces:
             - longhorn-system
       mutate:
-        overlay:
+        patchStrategicMerge:
           spec:
-            initContainers:
-              - (name): "*"
-                envFrom:
-                  - configMapRef:
-                      name: longhorn-nixos-path
-            containers:
-              - (name): "*"
-                envFrom:
-                  - configMapRef:
-                      name: longhorn-nixos-path
+            template:
+              spec:
+                initContainers:
+                  - (name): "*"
+                    envFrom:
+                      - configMapRef:
+                          name: longhorn-nixos-path
+                containers:
+                  - (name): "*"
+                    envFrom:
+                      - configMapRef:
+                          name: longhorn-nixos-path
