@@ -12,3 +12,7 @@ helm *PARAMS:
 
 flux-status:
   kubectl get fluxreport/flux -n flux-system -o yaml
+
+kube-overview namespace:
+  @kubectl api-resources --verbs=list --namespaced -o name \
+  | xargs -I '{}' bash -c 'x="$(kubecolor --force-colors get --show-kind --ignore-not-found -n {{namespace}} {})" && if [[ ! -z "$x" ]]; then echo "--- {} ---"; echo -e "$x"; echo -e "---------\n"; fi'
