@@ -76,6 +76,7 @@ in {
       "/var/tmp"
       "/etc/containers"
       "/var/lib/containers/storage"
+      "/root/pangolin"
     ];
   };
 
