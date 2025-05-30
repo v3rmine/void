@@ -31,7 +31,7 @@ in {
     };
   };
 
-  environment.systemPackages = with pkgs; [ podman-compose vim ];
+  environment.systemPackages = with pkgs; [ podman-compose vim iperf net-snmp ];
 
   # Networking and SSH
   networking.hostName = "laonastes";
