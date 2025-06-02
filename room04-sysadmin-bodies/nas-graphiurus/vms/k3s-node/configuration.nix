@@ -25,6 +25,7 @@
     nfs-utils
     cryptsetup
   ];
+  boot.kernelModules = [ "dm_crypt" ];
 
   # Required for Longhorn
   services.openiscsi = {
