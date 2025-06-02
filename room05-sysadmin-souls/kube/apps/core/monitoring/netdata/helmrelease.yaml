@@ -1,0 +1,25 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: netdata
+  namespace: netdata-system
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: netdata
+      version: "2"
+      sourceRef:
+        kind: HelmRepository
+        name: netdata
+      interval: 1m
+  install:
+    crds: CreateIfNotExists
+  upgrade:
+    crds: CreateIfNotExists
+  values:
+    ingress:
+      annotations:
+        kubernetes.io/ingress.class: traefik
+      spec:
+        ingressClassName: traefik
