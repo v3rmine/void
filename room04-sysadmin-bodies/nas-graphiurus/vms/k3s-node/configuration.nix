@@ -23,6 +23,7 @@
   # https://github.com/NixOS/nixpkgs/blob/master/pkgs/applications/networking/cluster/k3s/docs/examples/STORAGE.md#longhorn
   environment.systemPackages = with pkgs; [
     nfs-utils
+    cryptsetup
   ];
 
   # Required for Longhorn
