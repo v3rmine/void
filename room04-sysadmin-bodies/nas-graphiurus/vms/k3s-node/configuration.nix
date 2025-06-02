@@ -24,6 +24,7 @@
   environment.systemPackages = with pkgs; [
     nfs-utils
     cryptsetup
+    openiscsi
   ];
   boot.kernelModules = [ "dm_crypt" ];
 
