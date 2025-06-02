@@ -14,9 +14,9 @@ spec:
         name: netdata
       interval: 1m
   install:
-    crds: CreateIfNotExists
+    crds: Create
   upgrade:
-    crds: CreateIfNotExists
+    crds: Create
   values:
     ingress:
       annotations:
