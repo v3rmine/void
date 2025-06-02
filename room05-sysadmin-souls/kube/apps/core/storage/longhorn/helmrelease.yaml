@@ -1,0 +1,47 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: longhorn
+  namespace: longhorn-system
+spec:
+  interval: 12h
+  chart:
+    spec:
+      chart: longhorn
+      version: "1" # Use the desired Longhorn version
+      sourceRef:
+        kind: HelmRepository
+        name: longhorn
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  # Values to configure Longhorn. This is a crucial section.
+  # Adjust these based on your cluster's specifics and desired Longhorn configuration.
+  values:
+    defaultSettings:
+      defaultReplicaCount: 1
+      # backupTarget: "" # e.g., s3://your-s3-bucket/longhorn-backups
+      # backupTargetCredentialSecret: ""
+      # enable CSI Driver NFS if you plan to use it for initial data migration or other purposes.
+      # You might not need it for Longhorn itself, but if you have a separate CSI Driver NFS,
+      # ensure it doesn't conflict. Longhorn provides its own CSI driver.
+      # For a standalone csi-driver-nfs, it's typically for ephemeral NFS mounts.
+      # Longhorn provides its own CSI driver for its volumes, so you don't enable CSI Driver NFS *for longhorn itself*.
+      # This HelmRelease is for Longhorn's own CSI driver.
+      # See https://longhorn.io/docs/latest/references/settings/#general-settings
+      # It's more about how Longhorn functions.
+    persistence:
+      defaultClassReplicaCount: 1
+    #   defaultClass: longhorn # This creates a default StorageClass named 'longhorn'
+    #   defaultFsType: ext4
+    # Set the manager count to avoid issues on clusters with few nodes.
+    # It's recommended to have at least 3 nodes for production.
+    # service:
+    #   ui:
+    #     type: ClusterIP
+    #     port: 80
+    #     nodePort: null
