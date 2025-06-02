@@ -13,10 +13,6 @@ spec:
         kind: HelmRepository
         name: netdata
         namespace: flux-system
-  install:
-    crds: Create
-  upgrade:
-    crds: Create
   values:
     ingress:
       annotations:
