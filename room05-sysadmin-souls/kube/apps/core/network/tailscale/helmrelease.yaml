@@ -4,7 +4,7 @@ metadata:
   name: tailscale-operator
   namespace: tailscale-system
 spec:
-  interval: 1h # How often Flux reconciles this HelmRelease
+  interval: 12h # How often Flux reconciles this HelmRelease
   chart:
     spec:
       chart: tailscale-operator
@@ -12,7 +12,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: tailscale-charts
-      interval: 10m # How often Flux checks the Helm repository for *new chart versions* for this release
   releaseName: tailscale-operator
   targetNamespace: tailscale-system
   valuesFrom:

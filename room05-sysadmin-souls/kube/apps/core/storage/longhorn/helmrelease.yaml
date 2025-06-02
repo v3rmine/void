@@ -4,7 +4,7 @@ metadata:
   name: longhorn
   namespace: longhorn-system
 spec:
-  interval: 10m
+  interval: 12h
   chart:
     spec:
       chart: longhorn
