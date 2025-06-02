@@ -24,8 +24,8 @@ spec:
   values:
     defaultSettings:
       defaultReplicaCount: 1
-      backupTarget: "" # e.g., s3://your-s3-bucket/longhorn-backups
-      backupTargetCredentialSecret: ""
+      # backupTarget: "" # e.g., s3://your-s3-bucket/longhorn-backups
+      # backupTargetCredentialSecret: ""
       # enable CSI Driver NFS if you plan to use it for initial data migration or other purposes.
       # You might not need it for Longhorn itself, but if you have a separate CSI Driver NFS,
       # ensure it doesn't conflict. Longhorn provides its own CSI driver.
