@@ -12,7 +12,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: kyverno
-        namespace: flux-system
   releaseName: kyverno
   targetNamespace: kyverno-system
   install:
