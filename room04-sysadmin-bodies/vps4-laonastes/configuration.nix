@@ -76,6 +76,7 @@ in {
       "/var/tmp"
       "/etc/containers"
       "/var/lib/containers/storage"
+      "/var/lib/swap"
       "/root/pangolin"
     ];
   };
@@ -94,6 +95,10 @@ in {
   # System Config
   boot.tmp.cleanOnBoot = true;
   zramSwap.enable = true;
+  swapDevices = [{
+    device = "/var/lib/swap/swapfile";
+    size = 1024;
+  }];
   powerManagement.cpuFreqGovernor = "performance";
   users.mutableUsers = false;
 
