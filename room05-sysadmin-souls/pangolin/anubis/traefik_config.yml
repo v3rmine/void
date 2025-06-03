@@ -1,0 +1,39 @@
+api:
+  insecure: true
+  dashboard: false
+
+providers:
+  file:
+    filename: "/etc/traefik/dynamic_config.yml"
+
+accessLog:
+  format: json
+  fields:
+    defaultMode: keep
+    headers:
+      defaultMode: keep
+
+log:
+  level: "INFO" # "DEBUG"
+  format: "common"
+
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      storage: "/letsencrypt/acme.json"
+      caServer: "https://acme-v02.api.letsencrypt.org/directory"
+
+entryPoints:
+  websecure:
+    address: ":443"
+    transport:
+      respondingTimeouts:
+        readTimeout: "30m"
+    http:
+      tls:
+        certResolver: "letsencrypt"
+  anubis:
+    address: ":3923"
+
+serversTransport:
+  insecureSkipVerify: true

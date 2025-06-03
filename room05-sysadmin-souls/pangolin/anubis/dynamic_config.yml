@@ -1,0 +1,36 @@
+http:
+  routers:
+    pangolin:
+      rule: "Host(`cloud.reta.re`)"
+      service: inner-traefik
+      entryPoints:
+        - websecure
+
+    services:
+      priority: 1
+      rule: "PathRegexp(`.*`)"
+      service: inner-traefik
+      entryPoints:
+        - anubis
+
+    # Anubis router
+    anubis:
+      # Setting Anubis to the lowest priority, so it only takes the slack
+      priority: 1
+      # wildcard match anything
+      rule: "PathRegexp(`.*`)"
+      service: anubis
+      entryPoints:
+        - websecure
+      tls:
+        certResolver: letsencrypt
+
+  services:
+    anubis:
+      loadBalancer:
+        servers:
+          - url: "http://anubis:8888" # Anubis port
+    inner-traefik:
+      loadBalancer:
+        servers:
+          - url: "https://gerbil:443"
