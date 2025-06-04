@@ -1,0 +1,23 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: longhorn-1-replica
+provisioner: driver.longhorn.io
+parameters:
+  numberOfReplicas: "1"  # This is the key parameter!
+  staleReplicaTimeout: "20" # Optional: reduced timeout for faster failure detection on 1-replica volumes
+
+reclaimPolicy: Delete # Recommended for most dynamic provisioning
+volumeBindingMode: Immediate # Or WaitForFirstConsumer, depending on your needs. Immediate is fine for 1 replica.
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: longhorn-test-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn-1-replica # This should be the default Longhorn StorageClass
+  resources:
+    requests:
+      storage: 1Gi

@@ -13,6 +13,9 @@ helm *PARAMS:
 flux-status:
   kubectl get fluxreport/flux -n flux-system -o yaml
 
+patch-crd namespace crd:
+  kubectl patch crd {{crd}} -n {{namespace}} -p '{"metadata":{"finalizers":[]}}' --type=merge
+
 kube-overview namespace:
   @kubectl -n {{namespace}} api-resources --verbs=list --namespaced -o name \
   | grep -Ev '(^events.events.k8s.io$|^events$)' | xargs -I '{}' bash -c 'x="$(kubecolor --force-colors get --show-kind --ignore-not-found -n {{namespace}} {})" && if [[ ! -z "$x" ]]; then echo "--- {} ---"; echo -e "$x"; echo -e "---------\n"; fi'
