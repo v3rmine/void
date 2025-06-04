@@ -26,8 +26,7 @@ spec:
       match:
         resources:
           kinds:
-            - DaemonSet
-            - Deployment
+            - Pod
           namespaces:
             - longhorn-system
       mutate:
