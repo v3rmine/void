@@ -32,10 +32,8 @@ spec:
       mutate:
         patchStrategicMerge:
           spec:
-            template:
-              spec:
-                containers:
-                  - (name): "*"
-                    envFrom:
-                      - configMapRef:
-                          name: longhorn-nixos-path
+            containers:
+              - (name): "*"
+                envFrom:
+                  - configMapRef:
+                      name: longhorn-nixos-path
