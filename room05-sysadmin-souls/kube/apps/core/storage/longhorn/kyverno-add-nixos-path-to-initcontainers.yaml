@@ -2,7 +2,6 @@ apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
   name: kyverno-longhorn-add-nixos-path-to-initcontainers
-  namespace: longhorn-system
   annotations:
     policies.kyverno.io/title: Add Environment Variables from ConfigMap
     policies.kyverno.io/subject: Pod
