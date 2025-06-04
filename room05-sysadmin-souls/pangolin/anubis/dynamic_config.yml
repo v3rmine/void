@@ -1,8 +1,17 @@
 http:
+  middlewares:
+    ratelimit:
+      rateLimit:
+        average: 100
+        burst: 200
+        period: 1m
+
   routers:
     pangolin:
       rule: "Host(`cloud.reta.re`)"
       service: inner-traefik
+      middlewares:
+        - ratelimit
       entryPoints:
         - websecure
 
@@ -20,6 +29,8 @@ http:
       # wildcard match anything
       rule: "PathRegexp(`.*`)"
       service: anubis
+      middlewares:
+        - ratelimit
       entryPoints:
         - websecure
       tls:
