@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: kyverno
-      version: "1"
+      version: "3.4.2"
       sourceRef:
         kind: HelmRepository
         name: kyverno
@@ -20,3 +20,13 @@ spec:
   upgrade:
     remediation:
       retries: 3
+  values:
+    features:
+      admissionReports:
+        enabled: false
+      aggregateReports:
+        enabled: false
+      policyReports:
+        enabled: false
+      validatingAdmissionPolicyReports:
+        enabled: false
