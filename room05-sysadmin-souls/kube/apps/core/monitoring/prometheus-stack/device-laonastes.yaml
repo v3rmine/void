@@ -4,7 +4,7 @@ metadata:
   annotations:
     tailscale.com/tailnet-fqdn: laonastes.tail5b39.ts.net
   name: laonastes
-  namespace: tailscale-system
+  namespace: prometheus-system
 spec:
   externalName: placeholder   # any value - will be overwritten by operator
   type: ExternalName

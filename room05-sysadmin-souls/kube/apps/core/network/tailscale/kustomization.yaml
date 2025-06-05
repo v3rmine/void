@@ -8,4 +8,3 @@ resources:
     - helmrepository.yaml
     - helmrelease.yaml
     - secret.yaml
-    - device-laonastes.yaml
