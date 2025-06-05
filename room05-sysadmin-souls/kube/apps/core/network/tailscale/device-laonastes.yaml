@@ -4,6 +4,7 @@ metadata:
   annotations:
     tailscale.com/tailnet-fqdn: laonastes
   name: laonastes
+  namespace: tailscale-system
 spec:
   externalName: placeholder   # any value - will be overwritten by operator
   type: ExternalName
