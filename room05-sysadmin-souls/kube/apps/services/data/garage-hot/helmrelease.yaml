@@ -16,15 +16,21 @@ spec:
   values:
     garage:
       replicationMode: "1"
+      compressionLevel: "1"
     persistence:
       enabled: true
-      size: "100Mi"
+      meta:
+        storageClass: longhorn
+        size: "100Mi"
+      data:
+        storageClass: longhorn
+        size: "100Mi"
     deployment:
       replicaCount: 1
     resources:
       requests:
-        memory: "1Gi"
-        cpu: "500m"
+        memory: "512Mi"
+        cpu: "100m"
       limits:
-        memory: "2Gi"
-        cpu: "1000m"
+        memory: "1024Mi"
+        cpu: "200M"
