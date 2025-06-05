@@ -99,7 +99,7 @@ spec:
             memory: 512Mi
         additionalScrapeConfigs:
           - job_name: "laonastes-node-exporter"
-            static_configs:
+            static_config:
               - targets: ["laonastes:9100"]
 
 
