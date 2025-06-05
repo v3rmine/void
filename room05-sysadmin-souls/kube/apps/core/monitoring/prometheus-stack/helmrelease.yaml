@@ -98,9 +98,9 @@ spec:
             cpu: 200m
             memory: 512Mi
         additionalScrapeConfigs:
-          - job_name: "node-exporter"
-            http_sd_config:
-              - url: "http://laonastes:9100"
+          - job_name: "laonastes-node-exporter"
+            static_configs:
+              - targets: ["laonastes:9100"]
 
 
       # Further reduce memory by setting a lower retention or disabling compaction for small clusters
