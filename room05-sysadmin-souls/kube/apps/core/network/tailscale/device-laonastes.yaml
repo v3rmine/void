@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   annotations:
-    tailscale.com/tailnet-fqdn: laonastes
+    tailscale.com/tailnet-fqdn: laonastes.tail5b39.ts.net
   name: laonastes
   namespace: tailscale-system
 spec:
