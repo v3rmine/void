@@ -1,0 +1,9 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: csi-driver-nfs
+  namespace: csi-driver-system
+spec:
+  interval: 12h
+  url: https://kubernetes-csi.github.io/csi-driver-nfs
+
