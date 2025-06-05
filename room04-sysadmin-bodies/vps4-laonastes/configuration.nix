@@ -31,7 +31,25 @@ in {
     };
   };
 
-  environment.systemPackages = with pkgs; [ podman-compose vim iperf net-snmp ];
+  services.tailscale = {
+    enable = true;
+    extraUpFlags =
+      [ "--ssh" ];
+  };
+
+  environment.systemPackages = with pkgs; [
+    podman-compose
+    vim
+    iperf
+    prometheus-node-exporter
+  ];
+
+  systemd.services.prometheus-node-exporter = {
+    enable = true;
+    unitConfig = { Type = "simple"; };
+    serviceConfig = { ExecStart = "${pkgs.prometheus-node-exporter}/bin/node_exporter"; };
+    wantedBy = [ "multi-user.target" ];
+  };
 
   # Networking and SSH
   networking.hostName = "laonastes";
