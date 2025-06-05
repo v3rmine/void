@@ -1,0 +1,96 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: prometheus-stack
+  namespace: prometheus-system
+spec:
+  interval: 6h
+  chart:
+    spec:
+      chart: kube-prometheus-stack
+      version: "73.1.0"
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus-community
+  values:
+    # Disable components we don't need or want to manage separately
+    alertmanager:
+      enabled: false
+    grafana:
+      enabled: true
+    kubernetesServiceMonitors:
+      enabled: true
+    kubeApiServer:
+      enabled: true
+    # Often collected by Node Exporter anyway, or directly by Prometheus if configured for it
+    kubelet:
+      enabled: false
+    kubeControllerManager:
+      enabled: true
+    # Component scraping coreDns. Use either this or kubeDns
+    coreDns:
+      enabled: true
+    # Component scraping kubeDns. Use either this or coreDns
+    kubeDns:
+      enabled: false
+    kubeEtcd:
+      enabled: true
+    kubeScheduler:
+      enabled: true
+    kubeProxy:
+      enabled: true
+    kubeStateMetrics:
+      enabled: true
+    nodeExporter:
+      enabled: true
+    prometheusOperator:
+      enabled: true
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 200Mi
+    kube-state-metrics:
+      resources:
+        requests:
+          cpu: 10m
+          memory: 32Mi
+        limits:
+          cpu: 50m
+          memory: 64Mi
+    prometheus-node-exporter:
+      resources:
+        requests:
+          cpu: 10m
+          memory: 32Mi
+        limits:
+          cpu: 50m
+          memory: 64Mi
+
+    # Prometheus configuration
+    prometheus:
+      prometheusSpec:
+        scrapeInterval: "1m"
+        walCompression: true
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: "longhorn"
+              resources:
+                requests:
+                  storage: 15Gi
+        resources:
+          # Prometheus server resources. Adjust based on scrape targets and retention.
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 200m
+            memory: 512Mi
+      # Further reduce memory by setting a lower retention or disabling compaction for small clusters
+      retention: 7d # Keep data for 7 days. Adjust as needed.
+      retentionSize: "10GB" # Optional: set a size limit instead of time.
+
