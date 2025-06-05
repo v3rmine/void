@@ -19,3 +19,6 @@ patch-crd namespace crd:
 kube-overview namespace:
   @kubectl -n {{namespace}} api-resources --verbs=list --namespaced -o name \
   | grep -Ev '(^events.events.k8s.io$|^events$)' | xargs -I '{}' bash -c 'x="$(kubecolor --force-colors get --show-kind --ignore-not-found -n {{namespace}} {})" && if [[ ! -z "$x" ]]; then echo "--- {} ---"; echo -e "$x"; echo -e "---------\n"; fi'
+
+garage-hot *PARAMS:
+  @kubectl exec -it -n garage-hot pods/garage-0 -- /garage {{PARAMS}}
