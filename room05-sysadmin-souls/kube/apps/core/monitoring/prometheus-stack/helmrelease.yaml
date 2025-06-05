@@ -20,14 +20,14 @@ spec:
     grafana:
       enabled: true
     kubernetesServiceMonitors:
-      enabled: true
+      enabled: false
     kubeApiServer:
-      enabled: true
+      enabled: false
     # Often collected by Node Exporter anyway, or directly by Prometheus if configured for it
     kubelet:
       enabled: false
     kubeControllerManager:
-      enabled: true
+      enabled: false
     # Component scraping coreDns. Use either this or kubeDns
     coreDns:
       enabled: true
@@ -35,11 +35,11 @@ spec:
     kubeDns:
       enabled: false
     kubeEtcd:
-      enabled: true
+      enabled: false
     kubeScheduler:
-      enabled: true
+      enabled: false
     kubeProxy:
-      enabled: true
+      enabled: false
     kubeStateMetrics:
       enabled: true
     nodeExporter:
