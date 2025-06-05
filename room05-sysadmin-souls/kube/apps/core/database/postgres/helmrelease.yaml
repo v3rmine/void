@@ -24,7 +24,7 @@ spec:
               tag: 17.5-alpine
             envFrom:
               - secretRef:
-                name: postgres-secrets
+                  name: postgres-secrets
             securityContext:
               runAsUser: 0
               runAsGroup: 0
@@ -43,12 +43,13 @@ spec:
         ports:
           db:
             port: 5432
-            protocol: tcp
+            protocol: TCP
       
     persistence:
       data:
         enabled: true
         storageClass: longhorn
+        accessMode: ReadWriteOnce
         size: 5Gi
         retain: true
         advancedMounts:
