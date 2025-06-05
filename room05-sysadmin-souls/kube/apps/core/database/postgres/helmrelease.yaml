@@ -56,4 +56,5 @@ spec:
           postgres:
             postgres:
               - path: /var/lib/postgresql/data
+                subPath: postgres-data
                 readOnly: false
