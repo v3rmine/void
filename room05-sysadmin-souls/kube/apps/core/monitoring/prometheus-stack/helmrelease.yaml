@@ -19,6 +19,13 @@ spec:
       enabled: false
     grafana:
       enabled: true
+      persistence:
+        type: pvc
+        enabled: true
+        storageClassName: "longhorn"
+        accessModes: ["ReadWriteOnce"]
+        size: 512Mi
+
     kubernetesServiceMonitors:
       enabled: false
     kubeApiServer:
@@ -90,6 +97,12 @@ spec:
           limits:
             cpu: 200m
             memory: 512Mi
+        additionalScrapeConfigs:
+          - job_name: "node-exporter"
+            http_sd_config:
+              - url: "http://laonastes:9100"
+
+
       # Further reduce memory by setting a lower retention or disabling compaction for small clusters
       retention: 7d # Keep data for 7 days. Adjust as needed.
       retentionSize: "10GB" # Optional: set a size limit instead of time.
