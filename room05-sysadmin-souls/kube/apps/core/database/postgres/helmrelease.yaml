@@ -42,7 +42,8 @@ spec:
         type: ClusterIP
         ports:
           db:
-            ports: 5432
+            port: 5432
+            protocol: tcp
       
     persistence:
       data:
