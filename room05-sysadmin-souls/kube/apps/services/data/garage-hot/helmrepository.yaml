@@ -1,9 +1,0 @@
----
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
-metadata:
-  name: garage-s3-charts
-  namespace: garage-hot
-spec:
-  interval: 12h
-  url: https://git.deuxfleurs.fr/Deuxfleurs/garage/raw/branch/main/script/helm
