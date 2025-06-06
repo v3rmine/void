@@ -1,0 +1,34 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: garage
+  namespace: garage-hot
+spec:
+  interval: 6h
+  chart:
+    spec:
+      chart: ./script/helm/garage
+      sourceRef:
+        kind: GitRepository
+        name: garage
+  values:
+    garage:
+      replicationMode: "1"
+      compressionLevel: "1"
+    persistence:
+      enabled: true
+      meta:
+        storageClass: longhorn
+        size: "100Mi"
+      data:
+        storageClass: longhorn
+        size: "1Gi"
+    deployment:
+      replicaCount: 1
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: 100m
+      limits:
+        memory: "1024Mi"
+        cpu: 200m
