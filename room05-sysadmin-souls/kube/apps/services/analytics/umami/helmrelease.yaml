@@ -1,0 +1,49 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: umami
+  namespace: umami
+spec:
+  interval: 6h
+  chart:
+    spec:
+      chart: app-template
+      version: "4.0.1"
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: common-charts
+  values:
+    controllers:
+      umami:
+        replicas: 1
+        containers:
+          umami:
+            image:
+              repository: docker.umami.is/umami-software/umami
+              tag: postgresql-v2.18.1
+            env:
+              TZ: Europe/Paris
+              DISABLE_BOT_CHECK: 1
+              DISABLE_TELEMETRY: 1
+              DATABASE_TYPE: postgresql
+            envFrom:
+              - secretRef:
+                  name: umami-secrets
+            resources:
+              requests:
+                cpu: 50m
+                memory: 256Mi
+              limits:
+                cpu: 100m
+                memory: 512Mi
+
+    service:
+      umami:
+        controller: umami
+        type: ClusterIP
+        ports:
+          http:
+            port: 3000
+            protocol: HTTP
+      
