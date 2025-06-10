@@ -90,6 +90,7 @@ in {
     directories = [
       "/nix"
       "/var/lib/nixos"
+      "/var/lib/tailscale"
       "/tmp"
       "/var/tmp"
       "/etc/containers"
@@ -117,6 +118,10 @@ in {
     device = "/var/lib/swap/swapfile";
     size = 1024;
   }];
+  boot.kernel.sysctl = {
+    "vm.swappiness" = 130;
+  };
+
   powerManagement.cpuFreqGovernor = "performance";
   users.mutableUsers = false;
 
