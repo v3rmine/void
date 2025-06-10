@@ -45,3 +45,8 @@ spec:
       enabled: false
     postgresql:
       enabled: false
+
+    redis-cluster:
+      enabled: false
+    redis:
+      enabled: true
