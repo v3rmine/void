@@ -11,10 +11,10 @@ in {
 
   networking = {
     firewall = {
-      enable = false;
+      enable = true;
       interfaces = {
         "ens6" = {
-          allowedTCPPorts = [ 80 443 8080 ];
+          allowedTCPPorts = [ 22 80 443 8080 ];
           allowedUDPPorts = [ 53 443 51820 ];
         };
       };
