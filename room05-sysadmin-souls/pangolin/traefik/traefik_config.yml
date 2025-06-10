@@ -15,12 +15,12 @@ experimental:
       moduleName: "github.com/fosrl/badger"
       version: "v1.1.0"
 
-accessLog:
-  format: json
-  fields:
-    defaultMode: keep
-    headers:
-      defaultMode: keep
+# accessLog:
+#   format: json
+#   fields:
+#     defaultMode: keep
+#     headers:
+#       defaultMode: keep
 
 log:
   level: "INFO" # "DEBUG"

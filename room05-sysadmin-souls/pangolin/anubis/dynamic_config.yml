@@ -1,5 +1,16 @@
 http:
   middlewares:
+    umami:
+      plugin:
+        umami-feeder:
+          umamiHost: "https://umami.serv4.reta.re"
+          umamiUsername: <username>
+          umamiPassword: <password>
+          umamiTeamId: <team-id>
+          createNewWebsites: true
+          trackErrors: true
+          trackAllResources: false
+
     ratelimit:
       rateLimit:
         average: 100
@@ -7,41 +18,81 @@ http:
         period: 1m
 
   routers:
-    pangolin:
-      rule: "Host(`cloud.reta.re`)"
-      service: inner-traefik
+    # Bypass anubis
+    bypass-anubis-https:
+      rule: "Host(`cloud.reta.re`) || Host(`umami.serv4.reta.re`)"
+      service: inner-traefik-https
       middlewares:
         - ratelimit
       entryPoints:
         - websecure
-
-    services:
-      priority: 1
-      rule: "PathRegexp(`.*`)"
-      service: inner-traefik
-      entryPoints:
-        - anubis
-
-    # Anubis router
-    anubis:
-      # Setting Anubis to the lowest priority, so it only takes the slack
-      priority: 1
-      # wildcard match anything
-      rule: "PathRegexp(`.*`)"
-      service: anubis
+    bypass-anubis-http:
+      rule: "Host(`cloud.reta.re`) || Host(`umami.serv4.reta.re`)"
+      service: inner-traefik-http
       middlewares:
         - ratelimit
+      entryPoints:
+        - web
+
+    http-challenges:
+      priority: 100
+      rule: "PathPrefix(`/.well-known/acme-challenge/`)"
+      service: inner-traefik-http
+      middlewares:
+        - ratelimit
+      entryPoints:
+        - web
+
+    services-https:
+      priority: 1
+      rule: "PathRegexp(`.*`)"
+      service: inner-traefik-https
+      entryPoints:
+        - anubiswebsecure
+    services-http:
+      priority: 1
+      rule: "PathRegexp(`.*`)"
+      service: inner-traefik-http
+      entryPoints:
+        - anubisweb
+
+    # Anubis routers
+    anubis-https:
+      # Setting Anubis to the lowest priority, so it only takes the slack
+      priority: 1
+      rule: "PathRegexp(`.*`)"
+      service: anubis-https
+      middlewares:
+        - ratelimit
+        - umami
       entryPoints:
         - websecure
       tls:
         certResolver: letsencrypt
+    anubis-http:
+      # Setting Anubis to the lowest priority, so it only takes the slack
+      priority: 1
+      rule: "PathRegexp(`.*`)"
+      service: anubis-http
+      middlewares:
+        - ratelimit
+      entryPoints:
+        - web
 
   services:
-    anubis:
+    anubis-https:
       loadBalancer:
         servers:
-          - url: "http://anubis:8888" # Anubis port
-    inner-traefik:
+          - url: "http://anubis-https:8443"
+    anubis-http:
+      loadBalancer:
+        servers:
+          - url: "http://anubis-http:8080"
+    inner-traefik-https:
       loadBalancer:
         servers:
           - url: "https://gerbil:443"
+    inner-traefik-http:
+      loadBalancer:
+        servers:
+          - url: "http://gerbil:80"
