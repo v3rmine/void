@@ -6,3 +6,4 @@ metadata:
 spec:
   interval: 12h
   url: oci://code.forgejo.org/forgejo-helm/forgejo
+  type: "oci"
