@@ -1,0 +1,55 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: forgejo
+  namespace: forgejo
+spec:
+  interval: 6h
+  chart:
+    spec:
+      chart: forgejo
+      version: "12.5.1"
+      sourceRef:
+        kind: OCIRepository
+        name: forgejo
+  valuesFrom:
+    - kind: Secret
+      name: forgejo-secrets
+      valuesKey: FORGEJO_ADMIN_EMAIL
+      targetPath: gitea.admin.email
+    - kind: Secret
+      name: forgejo-secrets
+      valuesKey: FORGEJO_ADMIN_PASSWORD
+      targetPath: gitea.admin.password
+    - kind: Secret
+      name: forgejo-secrets
+      valuesKey: FORGEJO_ADMIN_SECRET
+      targetPath: gitea.admin.existingSecret
+    - kind: Secret
+      name: forgejo-secrets
+      valuesKey: FORGEJO_DB_PASSWORD
+      targetPath: gitea.config.database.PASSWD
+  values:
+    gitea:
+      admin:
+        username: v3rmine
+        passwordMode: keepUpdated
+
+      config:
+        APP_NAME: 'Forgejo: Beyond coding. We forge.'
+
+        database:
+          DB_TYPE: postgres
+          HOST: postgres.postgres
+          NAME: forgejo
+          USER: forgejo
+
+    persistence:
+      enabled: true
+      storageClass: longhorn
+      size: 10Gi
+
+    postgresql-ha:
+      enabled: false
+    postgresql:
+      enabled: false
