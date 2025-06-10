@@ -19,10 +19,6 @@ spec:
       targetPath: gitea.admin.password
     - kind: Secret
       name: forgejo-secrets
-      valuesKey: FORGEJO_ADMIN_SECRET
-      targetPath: gitea.admin.existingSecret
-    - kind: Secret
-      name: forgejo-secrets
       valuesKey: FORGEJO_DB_PASSWORD
       targetPath: gitea.config.database.PASSWD
   values:
