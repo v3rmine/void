@@ -5,13 +5,9 @@ metadata:
   namespace: forgejo
 spec:
   interval: 6h
-  chart:
-    spec:
-      chart: forgejo
-      version: "12.5.1"
-      sourceRef:
-        kind: HelmRepository
-        name: forgejo
+  chartRef:
+    kind: OCIRepository
+    name: forgejo
   valuesFrom:
     - kind: Secret
       name: forgejo-secrets
