@@ -10,7 +10,7 @@ spec:
       chart: forgejo
       version: "12.5.1"
       sourceRef:
-        kind: OCIRepository
+        kind: HelmRepository
         name: forgejo
   valuesFrom:
     - kind: Secret
