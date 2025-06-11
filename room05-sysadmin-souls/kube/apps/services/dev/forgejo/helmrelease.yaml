@@ -30,15 +30,41 @@ spec:
       config:
         APP_NAME: 'Forgejo: Beyond coding. We forge.'
 
+        repository:
+          ENABLE_PUSH_CREATE_USER: true
+
+        service:
+          DISABLE_REGISTRATION: false
+          REGISTER_EMAIL_CONFIRM: false
+          REGISTER_MANUAL_CONFIRM: true
+          REQUIRE_SIGNIN_VIEW: false
+
+        cors:
+          ENABLED: true
+          ALLOW_DOMAIN: https://git.planchon.dev
+
+        ui:
+          SHOW_USER_EMAIL: false
+
         server:
           DOMAIN: git.planchon.dev
           ROOT_URL: https://git.planchon.dev/
+          LANDING_PAGE: explore
 
         database:
           DB_TYPE: postgres
           HOST: postgres.postgres
           NAME: forgejo
           USER: forgejo
+
+        mailer:
+          ENABLED: false
+          PROTOCOL: smtps+starttls
+          SMTP_ADDR: ''
+          SMTP_PORT: 587
+          USER: ''
+          PASSWD: ''
+          FROM: ''
 
     persistence:
       enabled: true
