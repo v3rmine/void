@@ -30,6 +30,10 @@ spec:
       config:
         APP_NAME: 'Forgejo: Beyond coding. We forge.'
 
+        server:
+          DOMAIN: git.planchon.dev
+          ROOT_URL: https://git.planchon.dev/
+
         database:
           DB_TYPE: postgres
           HOST: postgres.postgres
