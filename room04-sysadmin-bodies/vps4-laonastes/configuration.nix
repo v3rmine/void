@@ -11,7 +11,7 @@ in {
 
   networking = {
     firewall = {
-      enable = true;
+      enable = false;
       interfaces = {
         "ens6" = {
           allowedTCPPorts = [ 22 80 443 8080 ];
