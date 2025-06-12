@@ -25,7 +25,6 @@ spec:
     deploymentMode: SingleBinary
     
     loki:
-      auth_enabled: false # Typically true for production, but false is easier for initial setup
       commonConfig:
         replication_factor: 1
 
@@ -39,11 +38,21 @@ spec:
               prefix: index_
               period: 24h
 
+      pattern_ingester:
+        enabled: true
+
+      limits_config:
+        allow_structured_metadata: true
+        volume_enabled: true
+        retention_period: 168h
+
+      compactor:
+        retention_enabled: true
+
       storage:
         bucketNames:
           chunks: loki-chunks
           ruler: loki-ruler
-
         type: s3
         s3:
           endpoint: https://garage-hot.serv4.reta.re
@@ -51,6 +60,32 @@ spec:
 
     singleBinary:
       replicas: 1
+
+    # Zero out replica counts of other deployment modes
+    backend:
+      replicas: 0
+    read:
+      replicas: 0
+    write:
+      replicas: 0
+    ingester:
+      replicas: 0
+    querier:
+      replicas: 0
+    queryFrontend:
+      replicas: 0
+    queryScheduler:
+      replicas: 0
+    distributor:
+      replicas: 0
+    compactor:
+      replicas: 0
+    indexGateway:
+      replicas: 0
+    bloomCompactor:
+      replicas: 0
+    bloomGateway:
+      replicas: 0
 
     # --- Ruler configuration (if you plan to use Loki for alerting) ---
     ruler:
