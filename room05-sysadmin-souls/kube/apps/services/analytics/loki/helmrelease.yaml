@@ -52,7 +52,6 @@ spec:
       storage:
         bucketNames:
           chunks: loki-chunks
-          ruler: loki-ruler
         type: s3
         s3:
           endpoint: https://garage-hot.serv4.reta.re
@@ -60,6 +59,10 @@ spec:
 
     singleBinary:
       replicas: 1
+
+    chunksCache:
+      allocatedMemory: 1024
+      writebackSizeLimit: 256MB
 
     # Zero out replica counts of other deployment modes
     backend:
@@ -86,8 +89,7 @@ spec:
       replicas: 0
     bloomGateway:
       replicas: 0
-
-    # --- Ruler configuration (if you plan to use Loki for alerting) ---
     ruler:
       enabled: false # Set to true if you are using Loki for recording rules/alerts
+      replicas: 0
 
