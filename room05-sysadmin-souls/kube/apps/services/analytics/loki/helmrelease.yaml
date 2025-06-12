@@ -1,0 +1,70 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: loki
+  namespace: loki
+spec:
+  interval: 6h
+  chart:
+    spec:
+      chart: loki
+      version: "6.30.1"
+      sourceRef:
+        kind: HelmRepository
+        name: loki
+  valuesFrom:
+    - kind: Secret
+      name: loki-secrets
+      valuesKey: ACCESS_KEY_ID
+      targetPath: loki.storage.s3.accessKeyId
+    - kind: Secret
+      name: loki-secrets
+      valuesKey: SECRET_ACCES_KEY
+      targetPath: loki.storage.s3.secretAccessKey
+  values:
+    loki:
+      auth_enabled: false # Typically true for production, but false is easier for initial setup
+      commonConfig:
+        replication_factor: 1 # Adjust for higher availability in production
+
+      storage:
+        bucketNames:
+          chunks: loki-chunks
+          ruler: loki-ruler
+
+        # Use object storage for chunks and ruler storage
+        type: s3
+        s3:
+          endpoint: https://garage-hot.serv4.reta.re
+          region: garage
+
+    # --- Ingester configuration ---
+    # Configure how Loki handles incoming logs
+    ingester:
+      replicas: 1
+
+    # --- Compactor configuration ---
+    # Compactor merges smaller index files into larger ones
+    compactor:
+      replicas: 1
+
+    # --- Distributor configuration ---
+    # Distributor manages incoming log streams before they go to ingester
+    distributor:
+      replicas: 1
+
+    # --- Querier configuration ---
+    # Querier fetches logs from ingesters and the object store (S3)
+    querier:
+      replicas: 1
+
+    # --- Query Frontend configuration ---
+    # Query frontend proxies queries to queriers
+    queryFrontend:
+      replicas: 1
+
+    # --- Ruler configuration (if you plan to use Loki for alerting) ---
+    ruler:
+      enabled: false # Set to true if you are using Loki for recording rules/alerts
+      replicas: 1
+
