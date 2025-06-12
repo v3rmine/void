@@ -59,6 +59,13 @@ spec:
 
     singleBinary:
       replicas: 1
+      resources:
+        requests:
+          cpu: 50m
+          memory: 256Mi
+        limits:
+          cpu: 200m
+          memory: 1024Mi
 
     chunksCache:
       allocatedMemory: 1024
