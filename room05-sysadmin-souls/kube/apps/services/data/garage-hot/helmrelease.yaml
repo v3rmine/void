@@ -22,7 +22,7 @@ spec:
         size: "100Mi"
       data:
         storageClass: longhorn
-        size: "1Gi"
+        size: "10Gi"
     deployment:
       replicaCount: 1
     resources:
