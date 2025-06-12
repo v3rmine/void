@@ -49,6 +49,9 @@ spec:
           endpoint: https://garage-hot.serv4.reta.re
           region: garage
 
+    singleBinary:
+      replicas: 1
+
     # --- Ruler configuration (if you plan to use Loki for alerting) ---
     ruler:
       enabled: false # Set to true if you are using Loki for recording rules/alerts
