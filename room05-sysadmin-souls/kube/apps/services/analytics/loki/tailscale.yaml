@@ -3,10 +3,11 @@ kind: Service
 metadata:
   name: loki-lb
   namespace: loki
+  tailscale.com/hostname: loki
 spec:
   loadBalancerClass: tailscale
   type: LoadBalancer
   ports:
-  - port: 3100
-  selector:
-    app: loki
+    - name: loki
+      port: 3100
+      targetPort: 3100
