@@ -42,6 +42,9 @@ in {
     vim
     iperf
     prometheus-node-exporter
+    htop
+    iotop-c
+    iftop
   ];
 
   systemd.services.prometheus-node-exporter = {
@@ -112,8 +115,9 @@ in {
   nix.enable = false;
 
   # System Config
+  boot.kernel.sysctl = { "fs.file-max" = 65536; };
   boot.tmp.cleanOnBoot = true;
-  zramSwap.enable = true;
+  zramSwap.enable = false;
   swapDevices = [{
     device = "/var/lib/swap/swapfile";
     size = 1024;
