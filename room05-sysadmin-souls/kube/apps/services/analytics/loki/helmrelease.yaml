@@ -65,7 +65,7 @@ spec:
         s3:
           endpoint: https://garage-hot.serv4.reta.re
           region: garage
-          s3ForcePathStyle: false
+          s3ForcePathStyle: true
           insecure: false
 
     singleBinary:
