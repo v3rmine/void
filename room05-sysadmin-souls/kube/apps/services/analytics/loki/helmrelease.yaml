@@ -73,7 +73,7 @@ spec:
         app: loki
       service:
         annotations:
-          tailscale.com/expose: true
+          tailscale.com/expose: "true"
           tailscale.com/hostname: loki
       replicas: 1
       resources:
