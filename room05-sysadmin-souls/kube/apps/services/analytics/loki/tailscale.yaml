@@ -3,7 +3,8 @@ kind: Service
 metadata:
   name: loki-lb
   namespace: loki
-  tailscale.com/hostname: loki
+  annotations:
+    tailscale.com/hostname: loki
 spec:
   loadBalancerClass: tailscale
   type: LoadBalancer
