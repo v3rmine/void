@@ -58,9 +58,6 @@ spec:
         size: 10Gi
         storageClassName: longhorn
 
-      compactor:
-        retention_enabled: true
-
       storage:
         bucketNames:
           chunks: loki-chunks
