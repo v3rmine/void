@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: loki-lb
+  namespace: loki
+spec:
+  loadBalancerClass: tailscale
+  type: LoadBalancer
+  ports:
+  - port: 3100
+  selector:
+    app: loki
