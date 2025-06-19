@@ -1,4 +1,4 @@
-{ modulesPath, pkgs, ... }:
+{ modulesPath, pkgs, lib, ... }:
 let
   impermanence = builtins.fetchTarball
     "https://github.com/nix-community/impermanence/archive/master.tar.gz";
@@ -21,11 +21,69 @@ in {
     };
   };
 
+  services.logrotate = {
+    enable = true;
+    settings = {
+      "/root/logs/anubis-traefik/access.log" = {
+        frequency = "hourly";
+        size = "1M"; # Rotate when size reach 1MB
+        rotate = 1; # Keep only last version for vector
+        missingok = true; # Ignore if file is missing
+        postrotate = ''
+          ${pkgs.podman}/bin/podman kill -s USR1 anubis-traefik
+        '';
+      };
+    };
+  };
+
+  services.vector = {
+    enable = true;
+    journaldAccess = true;
+    settings = {
+      api.enabled = true;
+
+      sources = {
+        journald.type = "journald";
+        outer_traefik = {
+          type = "file";
+          include = [ "/root/logs/anubis-traefik/access.log" ];
+          fingerprint.strategy = "device_and_inode";
+          rotate_wait_secs = 30;
+        };
+      };
+
+      sinks = {
+        loki_journald = {
+          type = "loki";
+          inputs = [ "journald" ];
+          endpoint = "http://loki:3100";
+          encoding = { codec = "json"; };
+
+          labels.source = "laonastes_journald";
+        };
+        loki_outer_traefik = {
+          type = "loki";
+          inputs = [ "outer_traefik" ];
+          endpoint = "http://loki:3100";
+          encoding = { codec = "json"; };
+
+          labels.source = "laonastes_outer_traefik";
+        };
+      };
+    };
+  };
+  systemd.services.vector.serviceConfig = {
+    AmbientCapabilities =
+      lib.mkForce "CAP_NET_BIND_SERVICE CAP_DAC_READ_SEARCH";
+    CapabilityBoundingSet = "CAP_DAC_READ_SEARCH";
+  };
+
   virtualisation = {
     podman = {
       enable = true;
       # Create a `docker` alias for podman, to use it as a drop-in replacement
       dockerCompat = true;
+      dockerSocket = { enable = true; };
       # Required for containers under podman-compose to be able to talk to each other.
       defaultNetwork.settings.dns_enabled = true;
     };
@@ -33,8 +91,7 @@ in {
 
   services.tailscale = {
     enable = true;
-    extraUpFlags =
-      [ "--ssh" ];
+    extraUpFlags = [ "--ssh" ];
   };
 
   environment.systemPackages = with pkgs; [
@@ -50,7 +107,9 @@ in {
   systemd.services.prometheus-node-exporter = {
     enable = true;
     unitConfig = { Type = "simple"; };
-    serviceConfig = { ExecStart = "${pkgs.prometheus-node-exporter}/bin/node_exporter"; };
+    serviceConfig = {
+      ExecStart = "${pkgs.prometheus-node-exporter}/bin/node_exporter";
+    };
     wantedBy = [ "multi-user.target" ];
   };
 
@@ -100,6 +159,7 @@ in {
       "/var/lib/containers/storage"
       "/var/lib/swap"
       "/root/pangolin"
+      "/root/logs"
     ];
   };
 
@@ -122,9 +182,7 @@ in {
     device = "/var/lib/swap/swapfile";
     size = 1024;
   }];
-  boot.kernel.sysctl = {
-    "vm.swappiness" = 130;
-  };
+  boot.kernel.sysctl = { "vm.swappiness" = 130; };
 
   powerManagement.cpuFreqGovernor = "performance";
   users.mutableUsers = false;
