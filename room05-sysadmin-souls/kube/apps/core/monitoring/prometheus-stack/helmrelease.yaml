@@ -97,10 +97,10 @@ spec:
           limits:
             cpu: 200m
             memory: 512Mi
-        additionalScrapeConfigs:
-          - job_name: "laonastes-node-exporter"
-            static_config:
-              - targets: ["laonastes:9100"]
+        # additionalScrapeConfigs:
+        #   - job_name: "laonastes-node-exporter"
+        #     static_config:
+        #       - targets: ["laonastes:9100"]
           # - job_name: "laonastes-traefik"
           #   static_config:
           #     - targets: ["laonastes:80"]
