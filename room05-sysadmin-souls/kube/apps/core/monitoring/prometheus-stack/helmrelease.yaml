@@ -101,9 +101,9 @@ spec:
           - job_name: "laonastes-node-exporter"
             static_config:
               - targets: ["laonastes:9100"]
-          - job_name: "laonastes-traefik"
-            static_config:
-              - targets: ["laonastes:80"]
+          # - job_name: "laonastes-traefik"
+          #   static_config:
+          #     - targets: ["laonastes:80"]
 
 
       # Further reduce memory by setting a lower retention or disabling compaction for small clusters
