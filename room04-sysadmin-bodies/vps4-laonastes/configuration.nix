@@ -24,13 +24,13 @@ in {
   services.logrotate = {
     enable = true;
     settings = {
-      "/root/logs/anubis-traefik/access.log" = {
+      "/var/log/logs/anubis-traefik/access.log" = {
         frequency = "hourly";
         size = "1M"; # Rotate when size reach 1MB
         rotate = 1; # Keep only last version for vector
         missingok = true; # Ignore if file is missing
         postrotate = ''
-          ${pkgs.podman}/bin/podman kill -s USR1 anubis-traefik
+          ${pkgs.systemd}/bin/systemctl start anubis-traefik-logrotate
         '';
       };
     };
@@ -46,7 +46,7 @@ in {
         journald.type = "journald";
         outer_traefik = {
           type = "file";
-          include = [ "/root/logs/anubis-traefik/access.log" ];
+          include = [ "/var/log/logs/anubis-traefik/access.log" ];
           fingerprint.strategy = "device_and_inode";
           rotate_wait_secs = 30;
         };
@@ -76,6 +76,17 @@ in {
     AmbientCapabilities =
       lib.mkForce "CAP_NET_BIND_SERVICE CAP_DAC_READ_SEARCH";
     CapabilityBoundingSet = "CAP_DAC_READ_SEARCH";
+  };
+  systemd.services.logrotate.serviceConfig = {
+    PrivateNetwork = lib.mkForce false;
+    RestrictAddressFamilies = lib.mkForce "AF_UNIX";
+    BindPaths = "/run/systemd/private /run/dbus/system_bus_socket";
+  };
+  systemd.services.anubis-traefik-logrotate = {
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.podman}/bin/podman kill -s USR1 anubis-traefik";
+    };
   };
 
   virtualisation = {
@@ -159,7 +170,7 @@ in {
       "/var/lib/containers/storage"
       "/var/lib/swap"
       "/root/pangolin"
-      "/root/logs"
+      "/var/log/logs"
     ];
   };
 
