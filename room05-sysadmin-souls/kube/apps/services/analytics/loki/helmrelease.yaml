@@ -78,11 +78,11 @@ spec:
       replicas: 1
       resources:
         requests:
-          cpu: 50m
-          memory: 256Mi
+          cpu: 100m
+          memory: 512Mi
         limits:
-          cpu: 200m
-          memory: 1024Mi
+          cpu: 400m
+          memory: 2048Mi
 
     chunksCache:
       allocatedMemory: 1024
