@@ -66,7 +66,7 @@ write_files:
     defer: true
     append: true
     content: |
-      10.0.0.11:/proxmox-backup /var/proxmox-backups nfs defaults,noauto,nofail,x-systemd.automount,x-systemd.device-timeout=5 0 0
+      10.0.0.11:/proxmox-backup /var/proxmox-backups nfs defaults,nofail,intr,hard,rsize=8192,wsize=8192,timeo=14 0 0
 
 # Configure power management settings
 power_state:
