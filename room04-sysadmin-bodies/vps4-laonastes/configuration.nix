@@ -50,6 +50,7 @@ in {
           fingerprint.strategy = "device_and_inode";
           rotate_wait_secs = 30;
         };
+        system.type = "host_metrics";
       };
 
       sinks = {
@@ -69,6 +70,11 @@ in {
 
           labels.source = "laonastes_outer_traefik";
         };
+        prometheus = {
+          type = "prometheus_exporter";
+          inputs = [ "system" ];
+          address = "0.0.0.0:9598";
+        };
       };
     };
   };
@@ -87,6 +93,18 @@ in {
       Type = "oneshot";
       ExecStart = "${pkgs.podman}/bin/podman kill -s USR1 anubis-traefik";
     };
+  };
+
+  systemd.services."podman-compose@" = {
+    path = [ pkgs.podman ];
+    serviceConfig = {
+      Type = "simple";
+      EnvironmentFile = "%h/.config/containers/compose/projects/%i.env";
+      ExecStartPre = [ "-${pkgs.podman-compose}/bin/podman-compose up --no-start" "${pkgs.podman}/bin/podman pod start pod_%i" ];
+      ExecStart = "${pkgs.podman-compose} wait";
+      ExecStop = "${pkgs.podman}/bin/podman pod stop pod_%i";
+    };
+    wantedBy = [ "default.target" ];
   };
 
   virtualisation = {
