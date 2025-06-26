@@ -110,9 +110,6 @@ spec:
           - job_name: "laonastes-traefik"
             static_configs:
               - targets: ["laonastes:80"]
-          - job_name: "laonastes-vector-system"
-            static_configs:
-              - targets: ["laonastes:9598"]
 
 
       # Further reduce memory by setting a lower retention or disabling compaction for small clusters
