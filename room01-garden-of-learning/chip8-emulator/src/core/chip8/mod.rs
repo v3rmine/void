@@ -1,9 +1,9 @@
-use execute::Execute;
 use nom::Parser;
+use opcode::OpCode;
 
 use super::{EmulatorReset, EmulatorTick};
 
-mod execute;
+mod opcode;
 
 const FONTSET_SIZE: usize = 80;
 const FONTSET: [u8; FONTSET_SIZE] = [
@@ -102,6 +102,26 @@ impl Chip8Emulator {
         self.program_counter += 2;
 
         op
+    }
+
+    fn execute(&mut self, raw_op: u16) {
+        let digit1 = (raw_op & 0xF000) >> 12;
+        let digit2 = (raw_op & 0x0F00) >> 8;
+        let digit3 = (raw_op & 0x00F0) >> 4;
+        let digit4 = raw_op & 0x000F;
+        let op = OpCode::from((digit1, digit2, digit3, digit4));
+
+        match op {
+            OpCode::NOP(..) => return,
+            OpCode::CLS(..) => {
+                self.screen = [false; SCREEN_WIDTH * SCREEN_HEIGHT];
+            }
+            OpCode::RET(..) => {
+                let return_address = self.pop();
+                self.program_counter = return_address;
+            }
+            _ => todo!(),
+        }
     }
 }
 
