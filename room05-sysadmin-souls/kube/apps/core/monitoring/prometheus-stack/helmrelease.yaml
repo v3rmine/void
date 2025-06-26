@@ -101,6 +101,12 @@ spec:
           - job_name: "laonastes-node-exporter"
             static_configs:
               - targets: ["laonastes:9100"]
+          - job_name: "laonastes-process-exporter"
+            static_configs:
+              - targets: ["laonastes:9256"]
+          - job_name: "laonastes-systemd-exporter"
+            static_configs:
+              - targets: ["laonastes:9558"]
           - job_name: "laonastes-traefik"
             static_configs:
               - targets: ["laonastes:80"]
