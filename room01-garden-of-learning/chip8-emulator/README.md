@@ -1,9 +1,10 @@
 # chip8 emulator
 - https://chip-8.github.io/links/
+- https://www.reddit.com/r/EmuDev/
 - https://tobiasvl.github.io/blog/write-a-chip-8-emulator/
 - https://aquova.net/emudev/chip8/
 
-## Execution Worflow 
+## Execution Worflow
 1. Chip8 ROM => Flat IR
 2. Flat IR => AST
 3. AST => Target IR (WASM? LLVM?)

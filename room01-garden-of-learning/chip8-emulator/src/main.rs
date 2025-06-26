@@ -2,6 +2,8 @@ use bevy::app::ScheduleRunnerPlugin;
 use bevy::prelude::*;
 use bevy_ratatui::{RatatuiContext, RatatuiPlugins};
 
+mod core;
+
 fn main() {
     // Because connect_subsecond does not work outside of dx serve (which does not work with TUIs)
     dioxus_devtools::connect_at("ws://127.0.0.1:8080/_dioxus".to_string(), |msg| {

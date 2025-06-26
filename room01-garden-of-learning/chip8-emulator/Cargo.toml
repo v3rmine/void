@@ -7,8 +7,17 @@ edition = "2024"
 bevy = { version = "0.16.0", default-features = false }
 bevy_ratatui = "0.9.0"
 crossterm = "0.29.0"
-dioxus-devtools = "0.7.0-alpha.0"
 ratatui = "0.29.0"
+# Parsing
+nom = { version = "8.0.0", default-features = false }
+# Tracing/Logging
+tracing = "0.1.41"
+tracing-subscriber = "0.3.19"
+# JIT
+wasmi = "0.47.0"
+# Hot reload
+dioxus-devtools = "0.7.0-alpha.1"
+crabtime = "1.1.3"
 
 # Enable a small amount of optimization in the dev profile.
 [profile.dev]
