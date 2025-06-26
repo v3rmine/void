@@ -95,7 +95,35 @@ in {
     };
   };
 
+  services.prometheus.exporters = {
+    node = {
+      enable = true;
+      port = 9100;
+    };
+    process = {
+      enable = true;
+      port = 9256;
+      settings = {
+        process_names = [
+          { name = "{{.Matches.Wrapped}} {{ .Matches.Args }}"; cmdline = [ "^/nix/store[^ ]*/(?P<Wrapped>[^ /]*) (?P<Args>.*)" ]; }
+          { comm = [ "node" "traefik" "gerbil" "anubis" ]; }
+        ];
+      };
+    };
+    systemd = {
+      enable = false;
+      port = 9558;
+    };
+  };
+
+  services.cadvisor = {
+    enable = true;
+    listenAddress = "0.0.0.0";
+    port = 9888;
+  };
+
   systemd.services."podman-compose@" = {
+    enable = false;
     path = [ pkgs.podman ];
     serviceConfig = {
       Type = "simple";
@@ -127,20 +155,10 @@ in {
     podman-compose
     vim
     iperf
-    prometheus-node-exporter
     htop
     iotop-c
     iftop
   ];
-
-  systemd.services.prometheus-node-exporter = {
-    enable = true;
-    unitConfig = { Type = "simple"; };
-    serviceConfig = {
-      ExecStart = "${pkgs.prometheus-node-exporter}/bin/node_exporter";
-    };
-    wantedBy = [ "multi-user.target" ];
-  };
 
   # Networking and SSH
   networking.hostName = "laonastes";
