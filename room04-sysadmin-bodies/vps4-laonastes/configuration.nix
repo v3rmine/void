@@ -50,7 +50,6 @@ in {
           fingerprint.strategy = "device_and_inode";
           rotate_wait_secs = 30;
         };
-        system.type = "host_metrics";
       };
 
       sinks = {
@@ -69,11 +68,6 @@ in {
           encoding = { codec = "json"; };
 
           labels.source = "laonastes_outer_traefik";
-        };
-        prometheus = {
-          type = "prometheus_exporter";
-          inputs = [ "system" ];
-          address = "0.0.0.0:9598";
         };
       };
     };
