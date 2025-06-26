@@ -34,6 +34,7 @@ const KEY_COUNT: usize = 16;
 
 const START_ADDRESS: u16 = 0x200;
 
+#[derive(Debug)]
 pub struct Chip8Emulator {
     program_counter: u16,
     ram: [u8; RAM_SIZE],
@@ -89,28 +90,36 @@ impl Chip8Emulator {
         }
     }
 
-    fn fetch(&mut self) -> u16 {
+    #[tracing::instrument]
+    fn fetch(&mut self) -> OpCode {
         let pc = self.program_counter as usize;
-        let next_op = |s| {
-            nom::number::be_u16::<_, (_, nom::error::ErrorKind)>()
-                .parse(s)
-                .map(|(_left, res)| res)
-        };
-        let op = next_op(&self.ram[pc..(pc + 2)]).unwrap();
+        let mut op_parser = nom::combinator::map(
+            nom::number::be_u16::<_, (_, nom::error::ErrorKind)>(),
+            |raw_op| {
+                OpCode::from((
+                    // The & operation applies a bitmask.  The >> operation is a right bit shift.
+                    // 0xF000 masks the first nibble (4 bits) of the opcode.  >> 12 shifts it to the right by 12 bits, placing it in the least significant nibble.
+                    (raw_op & 0xF000) >> 12,
+                    // 0x0F00 masks the second nibble of the opcode. >> 8 shifts it to the right by 8 bits, placing it in the least significant nibble.
+                    (raw_op & 0x0F00) >> 8,
+                    // 0x00F0 masks the third nibble of the opcode. >> 4 shifts it to the right by 4 bits, placing it in the least significant nibble.
+                    (raw_op & 0x00F0) >> 4,
+                    // 0x000F masks the fourth nibble of the opcode. No shift is needed as it's already in the least significant nibble.
+                    raw_op & 0x000F,
+                ))
+            },
+        );
+        // We only take the next 2 bytes in the RAM
+        let (_left, op) = op_parser.parse(&self.ram[pc..(pc + 2)]).unwrap();
 
-        // we fetched 2 bytes
+        // We fetched 2 bytes so we increase the PC
         self.program_counter += 2;
 
         op
     }
 
-    fn execute(&mut self, raw_op: u16) {
-        let digit1 = (raw_op & 0xF000) >> 12;
-        let digit2 = (raw_op & 0x0F00) >> 8;
-        let digit3 = (raw_op & 0x00F0) >> 4;
-        let digit4 = raw_op & 0x000F;
-        let op = OpCode::from((digit1, digit2, digit3, digit4));
-
+    #[tracing::instrument]
+    fn execute(&mut self, op: OpCode) {
         match op {
             OpCode::NOP(..) => return,
             OpCode::CLS(..) => {
