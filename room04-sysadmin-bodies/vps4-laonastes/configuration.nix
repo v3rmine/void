@@ -114,6 +114,7 @@ in {
     enable = true;
     listenAddress = "0.0.0.0";
     port = 9888;
+    extraOptions = [ "--docker_only" "--docker=\"unix:///var/run/podman/podman.sock\"" ];
   };
 
   systemd.services."podman-compose@" = {
