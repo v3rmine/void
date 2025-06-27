@@ -1,8 +1,9 @@
 # chip8 emulator
+- MAIN TUTORIAL: https://aquova.net/emudev/chip8/
+
 - https://chip-8.github.io/links/
 - https://www.reddit.com/r/EmuDev/
 - https://tobiasvl.github.io/blog/write-a-chip-8-emulator/
-- https://aquova.net/emudev/chip8/
 
 ## Execution Worflow
 1. Chip8 ROM => Flat IR

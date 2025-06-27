@@ -8,3 +8,11 @@ pub trait EmulatorTick {
 pub trait EmulatorReset {
     fn reset(&mut self);
 }
+
+pub trait EmulatorIO {
+    fn get_display(&self) -> &[bool];
+    fn keypress(&mut self, idx: usize, pressed: bool);
+    fn load(&mut self, data: &[u8]);
+}
+
+pub trait Emulator: EmulatorIO + EmulatorReset + EmulatorTick {}
