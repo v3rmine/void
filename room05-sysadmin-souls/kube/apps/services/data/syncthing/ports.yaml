@@ -13,17 +13,14 @@ spec:
       protocol: TCP
       port: 22000     # Port the service exposes internally
       targetPort: 22000 # Port on the container to forward to
-      nodePort: 22000
     - name: syncthing-udp
       protocol: UDP
       port: 22000
       targetPort: 22000
-      nodePort: 22000
     - name: syncthing-discovery
       protocol: UDP
       port: 21027
       targetPort: 21027
-      nodePort: 21027
 
     # Syncthing Web UI (only exposed internally to ClusterIP/NodePort)
     # Note: If NodePort 8384 is not specified, K8s assigns a random high port
