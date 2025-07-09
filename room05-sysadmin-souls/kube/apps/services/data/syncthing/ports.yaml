@@ -1,18 +1,18 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: syncthing-service
+  name: syncthing
   namespace: syncthing
 spec:
   selector:
     app: syncthing
-  type: NodePort
+  type: ClusterIP
   ports:
     # Syncthing Discovery / Syncing
     - name: syncthing-tcp
       protocol: TCP
-      port: 22000     # Port the service exposes internally
-      targetPort: 22000 # Port on the container to forward to
+      port: 22000
+      targetPort: 22000
     - name: syncthing-udp
       protocol: UDP
       port: 22000
