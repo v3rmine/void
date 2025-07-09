@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: syncthing-service
+  namespace: syncthing
+spec:
+  selector:
+    app: syncthing
+  type: NodePort
+  ports:
+    # Syncthing Discovery / Syncing
+    - name: syncthing-tcp
+      protocol: TCP
+      port: 22000     # Port the service exposes internally
+      targetPort: 22000 # Port on the container to forward to
+      nodePort: 22000
+    - name: syncthing-udp
+      protocol: UDP
+      port: 22000
+      targetPort: 22000
+      nodePort: 22000
+    - name: syncthing-discovery
+      protocol: UDP
+      port: 21027
+      targetPort: 21027
+      nodePort: 21027
+
+    # Syncthing Web UI (only exposed internally to ClusterIP/NodePort)
+    # Note: If NodePort 8384 is not specified, K8s assigns a random high port
+    # It's better to explicitly map it if you want external access via NodePort
+    - name: syncthing-web-ui
+      protocol: TCP
+      port: 8384
+      targetPort: 8384

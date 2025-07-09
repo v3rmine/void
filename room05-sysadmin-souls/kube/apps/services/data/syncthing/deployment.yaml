@@ -34,6 +34,15 @@ spec:
             limits:
               cpu: 400m
               memory: 512Mi
+          ports:
+            - containerPort: 22000
+              protocol: TCP
+            - containerPort: 22000
+              protocol: UDP
+            - containerPort: 21027
+              protocol: UDP
+            - containerPort: 8384 # Only exposed internally, and via service if needed
+              protocol: TCP
           volumeMounts:
             - name: syncthing-config
               mountPath: /config

@@ -7,3 +7,4 @@ resources:
   - namespace.yaml
   - volumes.yaml
   - deployment.yaml
+  - ports.yaml
