@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: syncthing
+  namespace: syncthing
+  labels:
+    app: syncthing
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: syncthing
+  template:
+    metadata:
+      labels:
+        app: syncthing
+    spec:
+      containers:
+        - name: syncthing
+          image: lscr.io/linuxserver/syncthing:1.30.0
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: PUID
+              value: 1000
+            - name: PGID
+              value: 1000
+            - name: TZ
+              value: Europe/Paris
+          # Add resource limits/requests as per best practice
+          resources:
+            requests:
+              cpu: 200m
+              memory: 256Mi
+            limits:
+              cpu: 400m
+              memory: 512Mi
+          volumeMounts:
+            - name: syncthing-config
+              mountPath: /config
+            - name: syncthing-data
+              mountPath: /data
+      restartPolicy: Always
+      volumes:
+        - name: syncthing-config
+          persistentVolumeClaim:
+            claimName: syncthing-config-pvc
+        - name: syncthing-data
+          persistentVolumeClaim:
+            claimName: syncthing-data-pvc
