@@ -6,8 +6,8 @@ in {
   imports =
     [ (modulesPath + "/profiles/qemu-guest.nix") "${impermanence}/nixos.nix" ];
 
-  system.stateVersion = "24.11";
-  system.autoUpgrade.channel = "https://nixos.org/channels/nixos-24.11-small";
+  system.stateVersion = "25.05";
+  system.autoUpgrade.channel = "https://nixos.org/channels/nixos-25.05-small";
 
   networking = {
     firewall = {
@@ -155,6 +155,10 @@ in {
     iftop
   ];
 
+  services.cron.systemCronJobs = [
+    "0 5 * * * root journalctl --vacuum-size=128M"
+  ];
+
   # Networking and SSH
   networking.hostName = "laonastes";
   networking.domain = "";
@@ -201,7 +205,7 @@ in {
       "/var/lib/containers/storage"
       "/var/lib/swap"
       "/root/pangolin"
-      "/var/log/logs"
+      "/var/log"
     ];
   };
 
@@ -242,7 +246,7 @@ in {
     "/" = {
       device = "none";
       fsType = "tmpfs";
-      options = [ "defaults" "size=512M" "mode=755" ];
+      options = [ "defaults" "size=256M" "mode=755" ];
       neededForBoot = true;
     };
     "/persist" = {
