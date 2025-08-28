@@ -3,31 +3,54 @@ http:
     umami:
       plugin:
         umami-feeder:
-          umamiHost: "https://umami.serv4.reta.re"
+          umamiHost: "https://umami.v3rm.in"
           umamiUsername: <username>
           umamiPassword: <password>
-          umamiTeamId: <team-id>
-          createNewWebsites: true
-          trackErrors: true
+          umamiTeamId: <id>
+          trackErrors: false
           trackAllResources: false
+          websites:
+            prometheus.serv4.reta.re: <id>
+            pgadmin.serv4.reta.re: <id>
+            podinfo.serv4.reta.re: <id>
+            longhorn.serv4.reta.re: <id>
+            garage-hot.serv4.reta.re: <id>
+            grafana.serv4.reta.re: <id>
+            git.planchon.dev: <id>
 
     ratelimit:
       rateLimit:
         average: 100
         burst: 200
-        period: 1m
+        period: 1s
 
   routers:
-    # Bypass anubis
-    bypass-anubis-https:
-      rule: "Host(`cloud.reta.re`) || Host(`umami.serv4.reta.re`)"
-      service: inner-traefik-https
+    metrics:
+      rule: "Host(`laonastes`) && ClientIP(`10.89.0.1/16`) && PathPrefix(`/metrics`)"
+      service: prometheus@internal
+      entryPoints:
+        - web
+
+    http:
+      priority: 1
+      rule: "PathRegexp(`.*`)"
+      service: inner-traefik-http
       middlewares:
         - ratelimit
+        - umami
+      entryPoints:
+        - web
+
+    # Bypass anubis
+    bypass-anubis-https:
+      priority: 200
+      rule: "Host(`cloud.reta.re`) || Host(`umami.v3rm.in`)"
+      service: inner-traefik-https
       entryPoints:
         - websecure
     bypass-anubis-http:
-      rule: "Host(`cloud.reta.re`) || Host(`umami.serv4.reta.re`)"
+      priority: 200
+      rule: "Host(`cloud.reta.re`) || Host(`umami.v3rm.in`)"
       service: inner-traefik-http
       middlewares:
         - ratelimit
@@ -47,14 +70,10 @@ http:
       priority: 1
       rule: "PathRegexp(`.*`)"
       service: inner-traefik-https
+      middlewares:
+        - umami
       entryPoints:
         - anubiswebsecure
-    services-http:
-      priority: 1
-      rule: "PathRegexp(`.*`)"
-      service: inner-traefik-http
-      entryPoints:
-        - anubisweb
 
     # Anubis routers
     anubis-https:
@@ -64,30 +83,16 @@ http:
       service: anubis-https
       middlewares:
         - ratelimit
-        - umami
       entryPoints:
         - websecure
       tls:
         certResolver: letsencrypt
-    anubis-http:
-      # Setting Anubis to the lowest priority, so it only takes the slack
-      priority: 1
-      rule: "PathRegexp(`.*`)"
-      service: anubis-http
-      middlewares:
-        - ratelimit
-      entryPoints:
-        - web
 
   services:
     anubis-https:
       loadBalancer:
         servers:
           - url: "http://anubis-https:8443"
-    anubis-http:
-      loadBalancer:
-        servers:
-          - url: "http://anubis-http:8080"
     inner-traefik-https:
       loadBalancer:
         servers:
