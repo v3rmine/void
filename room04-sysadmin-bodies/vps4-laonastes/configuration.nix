@@ -2,6 +2,13 @@
 let
   impermanence = builtins.fetchTarball
     "https://github.com/nix-community/impermanence/archive/master.tar.gz";
+
+  run-autorestic = pkgs.writeShellScriptBin "run-autorestic.sh" ''
+    autorestic_conf="$(${pkgs.yq-go}/bin/yq eval-all '. as $item ireduce ({}; . * $item)' /etc/autorestic.yml /etc/autorestic-backends.yml)"
+    echo "$autorestic_conf" > /tmp/.autorestic.yml
+    ${pkgs.autorestic}/bin/autorestic -c /tmp/.autorestic.yml --ci cron > /var/log/autorestic.log 2>&1
+    rm -f /tmp/.autorestic.yml
+  '';
 in {
   imports =
     [ (modulesPath + "/profiles/qemu-guest.nix") "${impermanence}/nixos.nix" ];
@@ -19,6 +26,31 @@ in {
         };
       };
     };
+  };
+
+  environment.etc."autorestic.yml" = {
+    text = ''
+      version: 2
+
+      extras:
+        policies: &backup-policy
+          keep-daily: 7
+          keep-weekly: 52
+          keep-yearly: 10
+
+      locations:
+        pangolin:
+          from: /root/pangolin
+          to:
+            - backblaze
+          cron: '0 * * * *'
+          options:
+            backup:
+              compression: max
+              skip-if-unchanged: true
+            forget:
+              <<: *backup-policy
+    '';
   };
 
   services.logrotate = {
@@ -99,7 +131,10 @@ in {
       port = 9256;
       settings = {
         process_names = [
-          { name = "{{.Matches.Wrapped}} {{ .Matches.Args }}"; cmdline = [ "^/nix/store[^ ]*/(?P<Wrapped>[^ /]*) (?P<Args>.*)" ]; }
+          {
+            name = "{{.Matches.Wrapped}} {{ .Matches.Args }}";
+            cmdline = [ "^/nix/store[^ ]*/(?P<Wrapped>[^ /]*) (?P<Args>.*)" ];
+          }
           { comm = [ "node" "traefik" "gerbil" "anubis" ]; }
         ];
       };
@@ -114,7 +149,8 @@ in {
     enable = true;
     listenAddress = "0.0.0.0";
     port = 9888;
-    extraOptions = [ "--docker_only" "--docker=\"unix:///var/run/podman/podman.sock\"" ];
+    extraOptions =
+      [ "--docker_only" ''--docker="unix:///var/run/podman/podman.sock"'' ];
   };
 
   systemd.services."podman-compose@" = {
@@ -123,7 +159,10 @@ in {
     serviceConfig = {
       Type = "simple";
       EnvironmentFile = "%h/.config/containers/compose/projects/%i.env";
-      ExecStartPre = [ "-${pkgs.podman-compose}/bin/podman-compose up --no-start" "${pkgs.podman}/bin/podman pod start pod_%i" ];
+      ExecStartPre = [
+        "-${pkgs.podman-compose}/bin/podman-compose up --no-start"
+        "${pkgs.podman}/bin/podman pod start pod_%i"
+      ];
       ExecStart = "${pkgs.podman-compose} wait";
       ExecStop = "${pkgs.podman}/bin/podman pod stop pod_%i";
     };
@@ -151,12 +190,15 @@ in {
     vim
     iperf
     htop
-    iotop-c
-    iftop
+    restic
+    autorestic
+    yq-go
+    run-autorestic
   ];
 
   services.cron.systemCronJobs = [
     "0 5 * * * root journalctl --vacuum-size=128M"
+    "*/5 * * * * root ${run-autorestic}/bin/run-autorestic.sh"
   ];
 
   # Networking and SSH
@@ -194,6 +236,7 @@ in {
       "/etc/ssh/ssh_host_ed25519_key.pub"
       "/etc/ssh/ssh_host_rsa_key"
       "/etc/ssh/ssh_host_rsa_key.pub"
+      "/etc/autorestic-backends.yml"
     ];
     directories = [
       "/nix"
