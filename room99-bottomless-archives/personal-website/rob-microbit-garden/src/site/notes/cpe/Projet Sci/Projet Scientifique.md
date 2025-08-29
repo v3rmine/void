@@ -1,5 +1,6 @@
 ---
-{"dg-publish":true,"permalink":"/cpe/projet-sci/projet-scientifique/","tags":["EverGreen"]}
+dg-publish: true
+permalink: /cpe/projet-sci/projet-scientifique/
 ---
 
 

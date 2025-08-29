@@ -1,5 +1,6 @@
 ---
-{"dg-publish":true,"permalink":"/project/tool/micro-bit-v1-5-emulator/","tags":["Budding"]}
+dg-publish: true
+permalink: /project/tool/micro-bit-v1-5-emulator/
 ---
 
 
