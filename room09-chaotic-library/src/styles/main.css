@@ -1,0 +1,22 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-display: var(--font-stack);
+}
+
+:root {
+  --monospace-font-stack:
+    ui-monospace, iosevka, 'Fira Code', menlo, monaco, 'Cascadia Mono',
+    'Segoe UI Mono', 'Roboto Mono', 'Oxygen Mono', 'Ubuntu Monospace',
+    'Source Code Pro', 'Droid Sans Mono', 'Courier New', monospace;
+
+  scroll-behavior: smooth;
+}
+
+* {
+  transition:
+    0.3s color,
+    0.3s text-shadow,
+    0.5s background-color,
+    0.5s background-image;
+}

@@ -1,0 +1,20 @@
+{% extends "_templates/base.html.tera" %}
+
+{% block title %}Astrid{% endblock title %}
+
+{% block content %}
+
+<section>
+  <h1>Astrid</h1>
+  <bold>Jack of all trade developer</bold> — Lyon, FRA
+</section>
+
+<section>
+
+<h2>Recent Notes <a class="header-action" href="/notes/">View all</a></h2>
+<ul class="compact-post-list">
+</ul>
+
+</section>
+
+{% endblock %}

@@ -1,2 +1,2 @@
-mod custom_tera_view;
+pub mod livereload;
 pub mod view_engine;

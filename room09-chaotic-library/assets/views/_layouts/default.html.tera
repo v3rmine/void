@@ -1,0 +1,5 @@
+{% extends "_templates/base.html.tera" %}
+
+{% block content %}
+  {{ content | markdown }}
+{% endblock %}

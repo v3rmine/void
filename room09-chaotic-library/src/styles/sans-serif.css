@@ -1,0 +1,15 @@
+@font-face {
+  font-family: 'Atkinson Hyperligible';
+  src:
+    local('Atkinson Hyperligible Regular'),
+    local('Atkinson-Hyperligible-Regular'),
+    url('/static/fonts/atkinson-hyperlegible-regular-patched.woff2');
+  font-display: swap;
+}
+
+:root {
+  --font-stack:
+    'Atkinson Hyperligible', -apple-system, blinkmacsystemfont, 'Avenir Next',
+    avenir, 'Nimbus Sans L', roboto, noto, 'Segoe UI', arial, helvetica,
+    'Helvetica Neue', sans-serif;
+}

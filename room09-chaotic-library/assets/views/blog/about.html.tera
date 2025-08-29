@@ -1,0 +1,11 @@
+{% extends "_templates/base.html.tera" %}
+
+{% block title %}
+  About
+{% endblock title %}
+
+{% block content %}
+
+About
+
+{% endblock %}

@@ -1,0 +1,40 @@
+{% import "_icons.html.tera" as icons %}
+{% import "_macros.html.tera" as macros %}
+
+<!doctype html>
+<html lang="{{ lang }}">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{% block title %}{{ title | default(value="Astrid") }}{% endblock title %}</title>
+
+        <link rel="stylesheet" href="/static/styles/main.css" media="screen">
+        <link rel="stylesheet" href="/static/styles/serif.css" media="screen">
+        {% block extra_styles %}
+        {% if extra_styles %}
+          {% for style in extra_styles %}
+            {{ style }}
+          {% endfor %}
+        {% endif %}
+        {%endblock extra_styles %}
+
+        <link rel="alternate" type="application/rss+xml" href="/blog.rss">
+        <link rel="alternate" type="application/json" href="/blog.json">
+
+        <script async src="https://umami.v3rm.in/script.js" data-website-id="3629b11a-c586-4f95-9980-c6148164048d" data-domains="v3rm.in"></script>
+        {% block extra_scripts %}
+        {% if extra_scripts %}
+          {% for script in extra_scripts %}
+            {{ script }}
+          {% endfor %}
+        {% endif %}
+        {%endblock extra_scripts %}
+    </head>
+    <body>
+        {% block header %}{% include "_templates/header.html.tera" %}{% endblock header %}
+        <main>
+            {% block content %}{% endblock content %}
+        </main>
+        {% block footer %}{% include "_templates/footer.html.tera" %}{% endblock footer %}
+    </body>
+</html>

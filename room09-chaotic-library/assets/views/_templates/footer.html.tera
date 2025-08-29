@@ -1,0 +1,48 @@
+<footer>
+    <p>Copyright 2025 Astrid Planchon.
+    Any and all opinions listed here are my own and not representative of any of my employers, past, future, and/or present.</p>
+    <hr>
+    <p>
+        Analytics are measured with Umami.
+        {{ macros::external_link(link="https://umami.v3rm.in/share/VlGiEYEk5L2o3Mtp/Personal%20Website", content="See them here.", event="footer - checked analytics") }}
+    </p>
+    <hr>
+    <center>
+      {{ macros::external_link(
+        link="https://cyber.dabamos.de/88x31",
+        event="footer - checked 88x31 gif collection",
+        content='<img src="/static/img/88x31.gif" alt="88x31" title="baaadges" />'
+      ) }}
+      {{ macros::external_link(
+        link="https://ko-fi.com/planchon",
+        event="footer - checked my kofi &lt;3",
+        class="kofi",
+        content='',
+      ) }}
+      {{ macros::internal_link(
+        link="/secrets/piracy",
+        event="footer - checked piwacy page :eyes:",
+        content='<img src="/static/img/piracy.gif" alt="piracy" title="piwacy noooo yes?" />'
+      ) }}
+      {{ macros::external_link(
+        link="https://git.planchon.dev",
+        event="footer - checked my git mirror",
+        content='<img src="/static/img/violet.gif" alt="violet" title="btw just the best color" />'
+      ) }}
+      {{ macros::external_link(
+        link="https://github.com/v3rmine",
+        event="footer - checked my github",
+        content='<img src="/static/img/github.gif" alt="github" title="just my smol github" />'
+      ) }}
+      {{ macros::internal_link(
+        link="/feed.rss",
+        event="footer - checked RSS feed",
+        content='<img src="/static/img/rss.gif" alt="rss feed" title="yeees one of us!" />'
+      ) }}
+      {{ macros::external_link(
+        link="https://status.tracto.pl/status/public",
+        event="footer - checked status page",
+        content='<img src="/static/img/status.gif" alt="status page" title="at least 99.999% percent of uptime in last 10s" />'
+      ) }}
+    </center>
+</footer>

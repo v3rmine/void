@@ -1,0 +1,14 @@
+{% macro internal_link(link, event, content) %}
+  <a href="{{ link }}" data-umami-event="{{ event }}">{{ content }}</a>
+{% endmacro %}
+
+{% macro external_link(link, event, content, class="") %}
+  <a rel="noreferrer" href="{{ link }}" target="_blank" data-umami-event="{{ event }}"{% if class != "" %} class="{{ class }}"{% endif %}>{{ content }}</a>
+{% endmacro %}
+
+{% macro tags(tags) %}
+  {%for tag in tags | sort() %}
+    <a href="/tags/${tag}">{{ tag }}</a>
+    {% if not loop.last %} · {% endif %}
+  {% endfor %}
+{% endmacro %}

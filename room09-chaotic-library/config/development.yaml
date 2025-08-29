@@ -41,8 +41,6 @@ workers:
   #   - BackgroundAsync - Workers operate asynchronously in the background, processing tasks with async capabilities.
   mode: BackgroundAsync
 
-  
-
 # Mailer Configuration.
 mailer:
   # SMTP mailer configuration.
@@ -97,3 +95,13 @@ auth:
     secret: BsMWkjVoCqQP71h62CDU
     # Token expiration time in seconds
     expiration: 604800 # 7 days
+
+settings:
+  default_language: "fr"
+  other_languages: ["en"]
+  views_dir: "assets/views"
+  default_markdown_layout: "_layouts/default.html.tera"
+  i18n_dir: "assets/i18n"
+  i18n_shared: "assets/i18n/shared.ftl"
+  contents_dir: "contents"
+  views_blog_subdir: "blog"
