@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: kube-prometheus-stack
-      version: "73.1.0"
+      version: "77.5.0"
       sourceRef:
         kind: HelmRepository
         name: prometheus-community
@@ -19,6 +19,7 @@ spec:
       enabled: false
     grafana:
       enabled: true
+      defaultDashboardsEnabled: false
       persistence:
         type: pvc
         enabled: true
@@ -27,14 +28,14 @@ spec:
         size: 512Mi
 
     kubernetesServiceMonitors:
-      enabled: false
+      enabled: true
     kubeApiServer:
-      enabled: false
+      enabled: true
     # Often collected by Node Exporter anyway, or directly by Prometheus if configured for it
     kubelet:
-      enabled: false
+      enabled: true
     kubeControllerManager:
-      enabled: false
+      enabled: true
     # Component scraping coreDns. Use either this or kubeDns
     coreDns:
       enabled: true
