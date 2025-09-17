@@ -1,0 +1,15 @@
+{
+  "NoteLocation": "room09-chaotic-library/content/research/papers-notes",
+  "fileNaming": "",
+  "templateFileLocation": "",
+  "pdfDownloadLocation": "room09-chaotic-library/content/research/papers-pdf",
+  "openPdfAfterDownload": false,
+  "saveBibTex": false,
+  "bibTexFileLocation": "",
+  "noteAddFrontmatterAliases": false,
+  "noteAddFrontmatterAnnotation": false,
+  "s2apikey": "",
+  "pathSeparator": "",
+  "overridePdfs": false,
+  "openPdfAfterUpdate": false
+}

@@ -1,0 +1,554 @@
+{
+  "main": {
+    "id": "e24152684a99b6bc",
+    "type": "split",
+    "ophidian:layout-settings": {
+      "pane-relief:sliding-panes": {
+        "active": true
+      }
+    },
+    "children": [
+      {
+        "id": "e2d943e02fad316c",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "e8bf9d19ed8e98a8",
+            "type": "leaf",
+            "pane-relief:history-v1": {
+              "pos": 1,
+              "stack": [
+                {
+                  "title": "ICUFN 2024 The 15th International Conference on Ubiquitous and Future Networks",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"room09-chaotic-library/content/research/papers-notes/ICUFN 2024 The 15th International Conference on Ubiquitous and Future Networks.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"ICUFN 2024 The 15th International Conference on Ubiquitous and Future Networks\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":13,\"ch\":0},\"to\":{\"line\":13,\"ch\":0}},\"scroll\":0}"
+                },
+                {
+                  "state": "{}",
+                  "eState": "{}"
+                },
+                {
+                  "title": "IEEE Asia Pacific Conference on Circuit and Systems APCCAS 2022 Shenzhen China November 1113 2022",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"room09-chaotic-library/content/research/papers-notes/IEEE Asia Pacific Conference on Circuit and Systems APCCAS 2022 Shenzhen China November 1113 2022.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"IEEE Asia Pacific Conference on Circuit and Systems APCCAS 2022 Shenzhen China November 1113 2022\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":13,\"ch\":0},\"to\":{\"line\":13,\"ch\":0}},\"scroll\":0}"
+                },
+                {
+                  "title": "PhD Position AI-Based Embedded Real-Time Audio DSP",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"room09-chaotic-library/content/research/offers/PhD Position AI-Based Embedded Real-Time Audio DSP.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"PhD Position AI-Based Embedded Real-Time Audio DSP\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":36,\"ch\":192},\"to\":{\"line\":36,\"ch\":192}},\"scroll\":28.8356060987051}"
+                },
+                {
+                  "title": "ActionSound Latency Are Our Tools Fast Enough",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"room09-chaotic-library/content/research/papers-notes/ActionSound Latency Are Our Tools Fast Enough.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"ActionSound Latency Are Our Tools Fast Enough\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":13,\"ch\":0},\"to\":{\"line\":13,\"ch\":0}}}"
+                },
+                {
+                  "title": "Distilling DDSP Exploring RealTime Audio Generation on Embedded Systems",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"room09-chaotic-library/content/research/papers-notes/Distilling DDSP Exploring RealTime Audio Generation on Embedded Systems.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"Distilling DDSP Exploring RealTime Audio Generation on Embedded Systems\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":12,\"ch\":0},\"to\":{\"line\":12,\"ch\":0}}}"
+                },
+                {
+                  "title": "Wireless Hearables With Programmable Speech AI Accelerators",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"room09-chaotic-library/content/research/papers-notes/Wireless Hearables With Programmable Speech AI Accelerators.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"Wireless Hearables With Programmable Speech AI Accelerators\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":12,\"ch\":0},\"to\":{\"line\":12,\"ch\":0}}}"
+                },
+                {
+                  "title": "Distilling DDSP Exploring RealTime Audio Generation on Embedded Systems",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"room09-chaotic-library/content/research/papers-notes/Distilling DDSP Exploring RealTime Audio Generation on Embedded Systems.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"Distilling DDSP Exploring RealTime Audio Generation on Embedded Systems\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":12,\"ch\":0},\"to\":{\"line\":12,\"ch\":0}}}"
+                },
+                {
+                  "title": "ActionSound Latency Are Our Tools Fast Enough",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"room09-chaotic-library/content/research/papers-notes/ActionSound Latency Are Our Tools Fast Enough.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"ActionSound Latency Are Our Tools Fast Enough\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":12,\"ch\":0},\"to\":{\"line\":12,\"ch\":0}}}"
+                },
+                {
+                  "title": "Wireless Hearables With Programmable Speech AI Accelerators",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"room09-chaotic-library/content/research/papers-notes/Wireless Hearables With Programmable Speech AI Accelerators.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"Wireless Hearables With Programmable Speech AI Accelerators\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":12,\"ch\":0},\"to\":{\"line\":12,\"ch\":0}}}"
+                },
+                {
+                  "title": "Distilling DDSP Exploring RealTime Audio Generation on Embedded Systems",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"room09-chaotic-library/content/research/papers-notes/Distilling DDSP Exploring RealTime Audio Generation on Embedded Systems.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"Distilling DDSP Exploring RealTime Audio Generation on Embedded Systems\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":12,\"ch\":0},\"to\":{\"line\":12,\"ch\":0}}}"
+                },
+                {
+                  "title": "ActionSound Latency Are Our Tools Fast Enough",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"room09-chaotic-library/content/research/papers-notes/ActionSound Latency Are Our Tools Fast Enough.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"ActionSound Latency Are Our Tools Fast Enough\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":12,\"ch\":0},\"to\":{\"line\":12,\"ch\":0}},\"scroll\":0}"
+                },
+                {
+                  "title": "PhD Position AI-Based Embedded Real-Time Audio DSP",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"room09-chaotic-library/content/research/offers/PhD Position AI-Based Embedded Real-Time Audio DSP.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"PhD Position AI-Based Embedded Real-Time Audio DSP\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":37,\"ch\":58},\"to\":{\"line\":37,\"ch\":106}},\"scroll\":30.62435310798121}"
+                },
+                {
+                  "title": "Wireless Hearables With Programmable Speech AI Accelerators",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"room09-chaotic-library/content/research/papers-notes/Wireless Hearables With Programmable Speech AI Accelerators.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"Wireless Hearables With Programmable Speech AI Accelerators\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":11,\"ch\":0},\"to\":{\"line\":11,\"ch\":0}}}"
+                },
+                {
+                  "title": "Distilling DDSP Exploring RealTime Audio Generation on Embedded Systems",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"room09-chaotic-library/content/research/papers-notes/Distilling DDSP Exploring RealTime Audio Generation on Embedded Systems.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"Distilling DDSP Exploring RealTime Audio Generation on Embedded Systems\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":13,\"ch\":0},\"to\":{\"line\":13,\"ch\":0}}}"
+                },
+                {
+                  "title": "Distilling DDSP - Exploring Real-Time Audio Generation on Embedded Systems",
+                  "icon": "lucide-file-text",
+                  "state": "{\"type\":\"pdf\",\"state\":{\"file\":\"room09-chaotic-library/content/research/papers-pdf/Distilling DDSP - Exploring Real-Time Audio Generation on Embedded Systems.pdf\"},\"icon\":\"lucide-file-text\",\"title\":\"Distilling DDSP - Exploring Real-Time Audio Generation on Embedded Systems\"}",
+                  "eState": "{}"
+                },
+                {
+                  "title": "Distilling DDSP Exploring RealTime Audio Generation on Embedded Systems",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"room09-chaotic-library/content/research/papers-notes/Distilling DDSP Exploring RealTime Audio Generation on Embedded Systems.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"Distilling DDSP Exploring RealTime Audio Generation on Embedded Systems\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":12,\"ch\":0},\"to\":{\"line\":12,\"ch\":0}},\"scroll\":0}"
+                },
+                {
+                  "title": "PhD Position AI-Based Embedded Real-Time Audio DSP",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"room09-chaotic-library/content/research/offers/PhD Position AI-Based Embedded Real-Time Audio DSP.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"PhD Position AI-Based Embedded Real-Time Audio DSP\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":36,\"ch\":0},\"to\":{\"line\":36,\"ch\":0}},\"scroll\":28.264862874279824}"
+                },
+                {
+                  "title": "Distilling DDSP Exploring RealTime Audio Generation on Embedded Systems",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"room09-chaotic-library/content/research/papers-notes/Distilling DDSP Exploring RealTime Audio Generation on Embedded Systems.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"Distilling DDSP Exploring RealTime Audio Generation on Embedded Systems\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":13,\"ch\":0},\"to\":{\"line\":13,\"ch\":0}}}"
+                },
+                {
+                  "title": "Distilling DDSP - Exploring Real-Time Audio Generation on Embedded Systems",
+                  "icon": "lucide-file-text",
+                  "state": "{\"type\":\"pdf\",\"state\":{\"file\":\"room09-chaotic-library/content/research/papers-pdf/Distilling DDSP - Exploring Real-Time Audio Generation on Embedded Systems.pdf\"},\"icon\":\"lucide-file-text\",\"title\":\"Distilling DDSP - Exploring Real-Time Audio Generation on Embedded Systems\"}",
+                  "eState": "{}"
+                },
+                {
+                  "title": "Taskido README",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"rooom09-chaotic-library/content/_tools/Taskido/Taskido README.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"Taskido README\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":10,\"ch\":56},\"to\":{\"line\":10,\"ch\":56}},\"scroll\":234.6772898590535}"
+                },
+                {
+                  "title": "Distilling DDSP Exploring RealTime Audio Generation on Embedded Systems",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"rooom09-chaotic-library/content/research/papers-notes/Distilling DDSP Exploring RealTime Audio Generation on Embedded Systems.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"Distilling DDSP Exploring RealTime Audio Generation on Embedded Systems\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":13,\"ch\":0},\"to\":{\"line\":13,\"ch\":0}},\"scroll\":0}"
+                },
+                {
+                  "title": "PhD Position AI-Based Embedded Real-Time Audio DSP",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"rooom09-chaotic-library/content/research/offers/PhD Position AI-Based Embedded Real-Time Audio DSP.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"PhD Position AI-Based Embedded Real-Time Audio DSP\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":25,\"ch\":0},\"to\":{\"line\":25,\"ch\":0}},\"scroll\":4.751005398626622}"
+                },
+                {
+                  "title": "FINN",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"rooom09-chaotic-library/content/wiki/FINN.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"FINN\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":0,\"ch\":0},\"to\":{\"line\":0,\"ch\":0}},\"scroll\":0}"
+                },
+                {
+                  "title": "PhD Position AI-Based Embedded Real-Time Audio DSP",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"rooom09-chaotic-library/content/research/offers/PhD Position AI-Based Embedded Real-Time Audio DSP.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"PhD Position AI-Based Embedded Real-Time Audio DSP\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":28,\"ch\":255},\"to\":{\"line\":28,\"ch\":263}},\"scroll\":24.766764432774295}"
+                },
+                {
+                  "title": "FloPoCo",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"rooom09-chaotic-library/content/wiki/FloPoCo.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"FloPoCo\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":0,\"ch\":0},\"to\":{\"line\":0,\"ch\":0}}}"
+                },
+                {
+                  "title": "PhD Position AI-Based Embedded Real-Time Audio DSP",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"rooom09-chaotic-library/content/research/offers/PhD Position AI-Based Embedded Real-Time Audio DSP.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"PhD Position AI-Based Embedded Real-Time Audio DSP\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":14,\"ch\":628},\"to\":{\"line\":14,\"ch\":628}}}"
+                },
+                {
+                  "title": "FloPoCo",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"rooom09-chaotic-library/content/wiki/FloPoCo.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"FloPoCo\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":0,\"ch\":0},\"to\":{\"line\":0,\"ch\":0}},\"scroll\":0}"
+                },
+                {
+                  "title": "PhD Position AI-Based Embedded Real-Time Audio DSP",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"rooom09-chaotic-library/content/research/offers/PhD Position AI-Based Embedded Real-Time Audio DSP.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"PhD Position AI-Based Embedded Real-Time Audio DSP\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":14,\"ch\":634},\"to\":{\"line\":14,\"ch\":634}},\"scroll\":9.76370572149909}"
+                },
+                {
+                  "title": "home",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"room99-bottomless-archives/ideas/blog-arsonist/content/home.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"home\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":5,\"ch\":0},\"to\":{\"line\":5,\"ch\":0}}}"
+                },
+                {
+                  "title": "PhD Position AI-Based Embedded Real-Time Audio DSP",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"rooom09-chaotic-library/content/research/offers/PhD Position AI-Based Embedded Real-Time Audio DSP.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"PhD Position AI-Based Embedded Real-Time Audio DSP\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":3,\"ch\":0},\"to\":{\"line\":3,\"ch\":0}}}"
+                },
+                {
+                  "title": "reuse",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"room99-bottomless-archives/tools/yotta-flake/docs/tutorial/reuse.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"reuse\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":21,\"ch\":77},\"to\":{\"line\":21,\"ch\":77}},\"scroll\":0}"
+                },
+                {
+                  "title": "Garden Home",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"room99-bottomless-archives/personal-website/rob-microbit-garden/src/site/notes/Garden Home.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"Garden Home\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":4,\"ch\":0},\"to\":{\"line\":4,\"ch\":0}}}"
+                },
+                {
+                  "title": "MicroBit v1.5 Emulator",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"room99-bottomless-archives/personal-website/rob-microbit-garden/src/site/notes/project/Tool/MicroBit v1.5 Emulator.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"MicroBit v1.5 Emulator\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":4,\"ch\":0},\"to\":{\"line\":4,\"ch\":0}}}"
+                },
+                {
+                  "title": "PhD Position AI-Based Embedded Real-Time Audio DSP",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"rooom09-chaotic-library/content/research/offers/PhD Position AI-Based Embedded Real-Time Audio DSP.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"PhD Position AI-Based Embedded Real-Time Audio DSP\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":3,\"ch\":0},\"to\":{\"line\":3,\"ch\":0}}}"
+                },
+                {
+                  "title": "Projet Scientifique",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"room99-bottomless-archives/personal-website/rob-microbit-garden/src/site/notes/cpe/Projet Sci/Projet Scientifique.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"Projet Scientifique\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":5,\"ch\":0},\"to\":{\"line\":5,\"ch\":0}}}"
+                },
+                {
+                  "title": "Projet Bebop 2",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"room99-bottomless-archives/personal-website/rob-microbit-garden/src/site/notes/cpe/ROB2/Projet Bebop 2.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"Projet Bebop 2\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":3,\"ch\":0},\"to\":{\"line\":3,\"ch\":0}}}"
+                },
+                {
+                  "title": "Projet Scientifique",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"room99-bottomless-archives/personal-website/rob-microbit-garden/src/site/notes/cpe/Projet Sci/Projet Scientifique.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"Projet Scientifique\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":3,\"ch\":0},\"to\":{\"line\":3,\"ch\":0}},\"scroll\":0}"
+                },
+                {
+                  "title": "PhD Position AI-Based Embedded Real-Time Audio DSP",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"rooom09-chaotic-library/content/research/offers/PhD Position AI-Based Embedded Real-Time Audio DSP.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"PhD Position AI-Based Embedded Real-Time Audio DSP\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":3,\"ch\":0},\"to\":{\"line\":3,\"ch\":0}}}"
+                }
+              ]
+            },
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "room09-chaotic-library/content/research/offers/PhD Position AI-Based Embedded Real-Time Audio DSP.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "PhD Position AI-Based Embedded Real-Time Audio DSP"
+            }
+          },
+          {
+            "id": "d1a2c11ce4259f84",
+            "type": "leaf",
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": [
+                {
+                  "state": "{}",
+                  "eState": "{}"
+                },
+                {
+                  "title": "ICUFN 2024 The 15th International Conference on Ubiquitous and Future Networks",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"room09-chaotic-library/content/research/papers-notes/ICUFN 2024 The 15th International Conference on Ubiquitous and Future Networks.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"ICUFN 2024 The 15th International Conference on Ubiquitous and Future Networks\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":12,\"ch\":0},\"to\":{\"line\":12,\"ch\":0}}}"
+                },
+                {
+                  "title": "FINNR An EndtoEnd DeepLearning Framework for Fast Exploration of Quantized Neural Networks",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"room09-chaotic-library/content/research/papers-notes/FINNR An EndtoEnd DeepLearning Framework for Fast Exploration of Quantized Neural Networks.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"FINNR An EndtoEnd DeepLearning Framework for Fast Exploration of Quantized Neural Networks\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":12,\"ch\":0},\"to\":{\"line\":12,\"ch\":0}}}"
+                },
+                {
+                  "title": "Distilling DDSP Exploring RealTime Audio Generation on Embedded Systems",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"room09-chaotic-library/content/research/papers-notes/Distilling DDSP Exploring RealTime Audio Generation on Embedded Systems.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"Distilling DDSP Exploring RealTime Audio Generation on Embedded Systems\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":12,\"ch\":0},\"to\":{\"line\":12,\"ch\":0}},\"scroll\":0}"
+                },
+                {
+                  "title": "PhD Position AI-Based Embedded Real-Time Audio DSP",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"room09-chaotic-library/content/research/offers/PhD Position AI-Based Embedded Real-Time Audio DSP.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"PhD Position AI-Based Embedded Real-Time Audio DSP\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":40,\"ch\":178},\"to\":{\"line\":40,\"ch\":178}},\"scroll\":33.438457823572406}"
+                },
+                {
+                  "title": "FINNR An EndtoEnd DeepLearning Framework for Fast Exploration of Quantized Neural Networks",
+                  "icon": "lucide-file",
+                  "state": "{\"type\":\"markdown\",\"state\":{\"file\":\"room09-chaotic-library/content/research/papers-notes/FINNR An EndtoEnd DeepLearning Framework for Fast Exploration of Quantized Neural Networks.md\",\"mode\":\"source\",\"source\":false},\"icon\":\"lucide-file\",\"title\":\"FINNR An EndtoEnd DeepLearning Framework for Fast Exploration of Quantized Neural Networks\"}",
+                  "eState": "{\"cursor\":{\"from\":{\"line\":13,\"ch\":0},\"to\":{\"line\":13,\"ch\":0}}}"
+                }
+              ]
+            },
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "room09-chaotic-library/content/research/papers-notes/IEEE Asia Pacific Conference on Circuit and Systems APCCAS 2022 Shenzhen China November 1113 2022.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "IEEE Asia Pacific Conference on Circuit and Systems APCCAS 2022 Shenzhen China November 1113 2022"
+            }
+          }
+        ],
+        "currentTab": 1,
+        "stacked": true
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "e0beca2014b521b4",
+    "type": "split",
+    "children": [
+      {
+        "id": "443ca18362f77b15",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "e9b2f2169edbfd78",
+            "type": "leaf",
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": [
+                {
+                  "state": "{}",
+                  "eState": "{}"
+                }
+              ]
+            },
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "99bcaf4f1403989c",
+            "type": "leaf",
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": [
+                {
+                  "state": "{}",
+                  "eState": "{}"
+                }
+              ]
+            },
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "tag:#page  ",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 340.5110321044922
+  },
+  "right": {
+    "id": "39b1f62b3ee3ff5f",
+    "type": "split",
+    "children": [
+      {
+        "id": "916e4fde650a9f57",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "66b5f04ae57d3a5a",
+            "type": "leaf",
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": [
+                {
+                  "state": "{}",
+                  "eState": "{}"
+                }
+              ]
+            },
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "room09-chaotic-library/content/research/papers-notes/Wireless Hearables With Programmable Speech AI Accelerators.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for Wireless Hearables With Programmable Speech AI Accelerators"
+            }
+          },
+          {
+            "id": "73b7534ca5087ba4",
+            "type": "leaf",
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": [
+                {
+                  "state": "{}",
+                  "eState": "{}"
+                }
+              ]
+            },
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "room04-sysadmin-bodies/vps4-laonastes/README.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from README"
+            }
+          },
+          {
+            "id": "6f7fcdee7305194e",
+            "type": "leaf",
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": [
+                {
+                  "state": "{}",
+                  "eState": "{}"
+                }
+              ]
+            },
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "ac5966748601cd5d",
+            "type": "leaf",
+            "pane-relief:history-v1": {
+              "pos": 0,
+              "stack": [
+                {
+                  "state": "{}",
+                  "eState": "{}"
+                }
+              ]
+            },
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "room04-sysadmin-bodies/vps4-laonastes/README.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of README"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "bases:Create new base": false,
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "command-palette:Open command palette": false,
+      "obsidian-git:Open Git source control": false,
+      "omnisearch:Omnisearch": false,
+      "scholar:Open Scholar Library": false,
+      "scholar:Add to Scholar Library": false,
+      "obsidian-kanban:Create new board": false
+    }
+  },
+  "active": "d1a2c11ce4259f84",
+  "lastOpenFiles": [
+    "room09-chaotic-library/content/research/papers-notes/ICUFN 2024 The 15th International Conference on Ubiquitous and Future Networks.md",
+    "room09-chaotic-library/content/research/papers-notes/FINNR An EndtoEnd DeepLearning Framework for Fast Exploration of Quantized Neural Networks.md",
+    "room09-chaotic-library/content/research/papers-notes/Distilling DDSP Exploring RealTime Audio Generation on Embedded Systems.md",
+    "room09-chaotic-library/content/research/offers/PhD Position AI-Based Embedded Real-Time Audio DSP.md",
+    "room09-chaotic-library/content/research/papers-pdf/FINNR An EndtoEnd DeepLearning Framework for Fast Exploration of Quantized Neural Networks.pdf",
+    "room09-chaotic-library/content/research/papers-notes/IEEE Asia Pacific Conference on Circuit and Systems APCCAS 2022 Shenzhen China November 1113 2022.md",
+    "room09-chaotic-library/content/research/papers-notes/ActionSound Latency Are Our Tools Fast Enough.md",
+    "room09-chaotic-library/content/research/papers-pdf/Action-Sound Latency - Are Our Tools Fast Enough.pdf",
+    "room09-chaotic-library/content/research/papers-notes/Wireless Hearables With Programmable Speech AI Accelerators.md",
+    "room09-chaotic-library/content/research/papers-pdf/Wireless Hearables With Programmable Speech AI Accelerators.pdf",
+    "room09-chaotic-library/content/research/papers-pdf/Distilling DDSP - Exploring Real-Time Audio Generation on Embedded Systems.pdf",
+    "rooom09-chaotic-library/content/research/papers-notes/Distilling DDSP Exploring RealTime Audio Generation on Embedded Systems.md",
+    "room09-chaotic-library/content/_tools/Taskido/view.js",
+    "room09-chaotic-library/content/_tools/Taskido/view.css",
+    "room09-chaotic-library/content/_tools/Taskido/Taskido README.md",
+    "room09-chaotic-library/content/wiki/Syfala.md",
+    "room09-chaotic-library/content/wiki/FloPoCo.md",
+    "room09-chaotic-library/content/wiki/Faust.md",
+    "room09-chaotic-library/content/wiki/FINN.md",
+    "room09-chaotic-library/content/wiki/Brevitas.md",
+    "room09-chaotic-library/content/research/papers-pdf",
+    "room09-chaotic-library/content/research/papers-notes",
+    "room09-chaotic-library/content/research/offers",
+    "room09-chaotic-library/content/_tools/Taskido",
+    "room09-chaotic-library/content/Tasks.md",
+    "rooom09-chaotic-library/content/Tasks.md",
+    "rooom09-chaotic-library/content/_tools/Taskido/Taskido README.md",
+    "rooom09-chaotic-library/content/_tools/Taskido/view.css.md",
+    "rooom09-chaotic-library/content/_tools/Untitled.md",
+    "rooom09-chaotic-library/content/research/offers/PhD Position AI-Based Embedded Real-Time Audio DSP.md",
+    "rooom09-chaotic-library/content/wiki/Faust.md",
+    "rooom09-chaotic-library/content/wiki/Syfala.md",
+    "rooom09-chaotic-library/content/wiki/FINN.md",
+    "FINN-R.md",
+    "rooom09-chaotic-library/content/wiki/Brevitas.md",
+    "rooom09-chaotic-library/content/wiki/FloPoCo.md"
+  ]
+}
