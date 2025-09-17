@@ -711,6 +711,7 @@ dependencies = [
  "rand",
  "rsa",
  "sea-orm",
+ "sha2",
  "tokio",
  "tracing",
  "tracing-subscriber",

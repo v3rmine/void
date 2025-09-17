@@ -1,27 +1,19 @@
 use migration::MigratorTrait;
 use poise::serenity_prelude as serenity;
-use sea_orm::{
-    ColumnTrait, ConnectOptions, ConnectionTrait, Database, DatabaseConnection, EntityTrait,
-    QueryFilter,
-};
+use sea_orm::{ConnectOptions, ConnectionTrait, Database, DatabaseConnection};
 use tracing::level_filters::LevelFilter;
 
 mod commands;
 mod entities;
 mod event_handler;
+mod utils;
 
-struct Data {
+pub struct Data {
     pub database: DatabaseConnection,
 }
-impl Data {
-    pub async fn get_guild(&self, guild_id: serenity::GuildId) -> Option<entities::guild::Model> {
-        entities::guild::Entity::find()
-            .filter(entities::guild::Column::GuildId.eq(guild_id.to_string()))
-            .one(&self.database)
-            .await
-            .ok()
-            .flatten()
-    }
+
+pub struct InvocationData {
+    pub db_guild: Option<entities::guild::Model>,
 }
 
 type Error = Box<dyn std::error::Error + Send + Sync>;
@@ -73,7 +65,14 @@ async fn main() {
             },
             pre_command: |ctx| {
                 Box::pin(async move {
-                    // Store the DB GuildId in the context
+                    let guild = if let Some(guild_id) = ctx.guild_id() {
+                        ctx.data().get_guild(guild_id).await
+                    } else {
+                        None
+                    };
+
+                    ctx.set_invocation_data(InvocationData { db_guild: guild })
+                        .await;
                 })
             },
             ..Default::default()

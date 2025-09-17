@@ -40,8 +40,9 @@ impl MigrationTrait for Migration {
                             .not_null()
                             .default(Expr::current_timestamp()),
                     )
-                    .col(json(Event::Data).not_null())
+                    .col(binary(Event::Data).not_null())
                     .col(binary(Event::RowEncryptionKey).not_null())
+                    .col(binary(Event::RowEncryptionNonce).not_null())
                     .foreign_key(
                         ForeignKey::create()
                             .from_col(Event::Guild)
@@ -111,6 +112,7 @@ enum Event {
     Data,
     CreatedAt,
     RowEncryptionKey,
+    RowEncryptionNonce,
     TypeIndex,
     SubTypeIndex,
 }

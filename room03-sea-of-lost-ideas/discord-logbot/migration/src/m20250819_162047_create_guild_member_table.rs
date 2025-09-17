@@ -13,7 +13,10 @@ impl MigrationTrait for Migration {
                     .if_not_exists()
                     .col(pk_auto(GuildMember::Id))
                     .col(integer(GuildMember::Guild).not_null())
-                    .col(string(GuildMember::UserId).not_null())
+                    .col(binary(GuildMember::UserId).not_null())
+                    .col(binary(GuildMember::GuildUserBlindId).not_null())
+                    .col(binary(GuildMember::RowEncryptionKey).not_null())
+                    .col(binary(GuildMember::RowEncryptionNonce).not_null())
                     .col(timestamp_null(GuildMember::LastActiveAt))
                     .foreign_key(
                         ForeignKey::create()
@@ -28,11 +31,10 @@ impl MigrationTrait for Migration {
         manager
             .create_index(
                 Index::create()
-                    .name(GuildMember::GuildIdUserIdIndex.to_string())
+                    .name(GuildMember::GuildUserBlindIdIndex.to_string())
                     .table(GuildMember::Table)
                     .if_not_exists()
-                    .col(GuildMember::Guild)
-                    .col(GuildMember::UserId)
+                    .col(GuildMember::GuildUserBlindId)
                     .to_owned(),
             )
             .await
@@ -57,6 +59,9 @@ enum GuildMember {
     Id,
     Guild,
     UserId,
+    GuildUserBlindId,
+    RowEncryptionKey,
+    RowEncryptionNonce,
     LastActiveAt,
-    GuildIdUserIdIndex,
+    GuildUserBlindIdIndex,
 }

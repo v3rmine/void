@@ -17,6 +17,8 @@ pub struct Model {
     pub data: Json,
     #[sea_orm(column_type = "Binary(1)")]
     pub row_encryption_key: Vec<u8>,
+    #[sea_orm(column_type = "Binary(1)")]
+    pub row_encryption_nonce: Vec<u8>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
