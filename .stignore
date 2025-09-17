@@ -1,0 +1,8 @@
+**/target
+**/node_modules
+**/.embuild
+**/.terraform
+
+*.qcow2
+*.vmdk
+*.vera
