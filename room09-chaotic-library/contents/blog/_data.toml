@@ -1,0 +1,10 @@
+basename = "/blog"
+layout = "note.html.tera"
+page_type = "post"
+serie_id = "notes"
+extra_styles = [
+    '<link rel="stylesheet" href="/styles/prism-synthwave84.css" media="screen">',
+    '<link rel="stylesheet" href="/styles/prism-gruvbox-light.css" media="screen">',
+]
+prerender = true
+check_links = false

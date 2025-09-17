@@ -17,8 +17,14 @@ pub struct AppSettings {
     pub i18n_shared: String,
     #[serde(default = "default::contents_dir")]
     pub contents_dir: String,
-    #[serde(default = "default::views_blog_subdir")]
-    pub views_blog_subdir: String,
+    #[serde(default = "default::views_pages_subdir")]
+    pub views_pages_subdir: String,
+    #[serde(default = "default::website_name")]
+    pub website_name: String,
+    #[serde(default = "default::website_base_url")]
+    pub website_base_url: String,
+    #[serde(default = "default::author")]
+    pub author: String,
 }
 
 mod default {
@@ -40,8 +46,17 @@ mod default {
     pub fn contents_dir() -> String {
         "contents".to_string()
     }
-    pub fn views_blog_subdir() -> String {
-        "blog".to_string()
+    pub fn views_pages_subdir() -> String {
+        "pages".to_string()
+    }
+    pub fn website_name() -> String {
+        "".to_string()
+    }
+    pub fn website_base_url() -> String {
+        "https://example.com".to_string()
+    }
+    pub fn author() -> String {
+        "".to_string()
     }
 }
 

@@ -26,7 +26,7 @@ impl Initializer for ViewEngineInitializer {
 
     async fn after_routes(&self, router: AxumRouter, ctx: &AppContext) -> Result<AxumRouter> {
         let settings = AppSettings::from(ctx);
-        let mut tera_engine = CustomTeraView::build(&settings)?;
+        let mut tera_engine = CustomTeraView::from_settings(&settings)?;
 
         if std::path::Path::new(I18N_DIR).exists() {
             let arc = std::sync::Arc::new(

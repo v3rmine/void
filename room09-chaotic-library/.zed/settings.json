@@ -1,0 +1,20 @@
+// Folder-specific settings
+//
+// For a full list of overridable settings, and general information on folder-specific settings,
+// see the documentation: https://zed.dev/docs/configuring-zed#settings-files
+{
+  "file_types": {
+    "Tera (Markdown)": ["md"]
+  },
+  "lsp": {
+    "rust-analyzer": {
+      "initialization_options": {
+        "rust": {
+          // A true setting will set the target directory to target/rust-analyzer.
+          // You can set a custom directory with a string like "target/analyzer" instead of true.
+          "analyzerTargetDir": true
+        }
+      }
+    }
+  }
+}

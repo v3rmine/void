@@ -4,12 +4,12 @@ use walkdir::DirEntry;
 /// If the resulting path is empty, use "/" instead
 /// This creates a clean relative path for the blog entry
 pub fn direntry_to_string(entry: &DirEntry, root: Option<&str>) -> String {
-  entry
-    .path()
-    .to_string_lossy()
-    .strip_prefix(root.unwrap_or(""))
-    .map(|s| String::from(if s.len() > 0 { s } else { "/" }))
-    .unwrap()
+    entry
+        .path()
+        .to_string_lossy()
+        .strip_prefix(root.unwrap_or(""))
+        .map(|s| String::from(if s.len() > 0 { s } else { "/" }))
+        .unwrap()
 }
 
 /// Extract the name and parent path from a given path string
@@ -18,15 +18,14 @@ pub fn direntry_to_string(entry: &DirEntry, root: Option<&str>) -> String {
 /// 3. Format the parent path with a leading '/'
 /// 4. Return an empty tuple if the path has no components
 pub fn path_to_name_and_parent(path: &str) -> (String, String) {
-  path
-    .split('/')
-    .filter(|s| !s.is_empty())
-    .collect::<Vec<_>>()
-    .split_last()
-    .map(|(last, rest)| {
-      let rest = format!("/{}", rest.join("/"));
+    path.split('/')
+        .filter(|s| !s.is_empty())
+        .collect::<Vec<_>>()
+        .split_last()
+        .map(|(last, rest)| {
+            let rest = format!("/{}", rest.join("/"));
 
-      (last.to_string(), rest)
-    })
-    .unwrap_or_else(|| ("".to_string(), "".to_string()))
+            (last.to_string(), rest)
+        })
+        .unwrap_or_else(|| ("".to_string(), "".to_string()))
 }

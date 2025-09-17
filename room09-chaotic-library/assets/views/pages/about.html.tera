@@ -1,7 +1,7 @@
 {% extends "_templates/base.html.tera" %}
 
 {% block title %}
-  About
+  {{ website_name }} - About
 {% endblock title %}
 
 {% block content %}

@@ -1,4 +1,5 @@
 use async_trait::async_trait;
+use axum::Router as AxumRouter;
 use loco_rs::{
     app::{AppContext, Hooks, Initializer},
     bgworker::{BackgroundWorker, Queue},
@@ -12,8 +13,9 @@ use loco_rs::{
 use migration::Migrator;
 use std::path::Path;
 
+use crate::workers::link_checker::LinkCheckerWorkerArgs;
 #[allow(unused_imports)]
-use crate::{controllers, initializers, tasks, workers::downloader::DownloadWorker};
+use crate::{controllers, initializers, tasks, workers::link_checker::LinkCheckerWorker};
 
 pub struct App;
 #[async_trait]
@@ -53,8 +55,16 @@ impl Hooks for App {
             .add_route(controllers::content::routes(ctx))
             .add_route(controllers::page::routes(ctx))
     }
+
+    async fn after_routes(router: AxumRouter, ctx: &AppContext) -> Result<AxumRouter> {
+        LinkCheckerWorker::perform_later(ctx, LinkCheckerWorkerArgs {}).await?;
+
+        Ok(router)
+    }
+
     async fn connect_workers(ctx: &AppContext, queue: &Queue) -> Result<()> {
-        queue.register(DownloadWorker::build(ctx)).await?;
+        queue.register(LinkCheckerWorker::build(ctx)).await?;
+
         Ok(())
     }
 

@@ -1,5 +1,9 @@
 {% extends "_templates/base.html.tera" %}
 
+{% block title %}
+  {{ website_name }} - {{ data.this.data.title }}
+{% endblock title %}
+
 {% block content %}
   {{ content | markdown }}
 {% endblock %}

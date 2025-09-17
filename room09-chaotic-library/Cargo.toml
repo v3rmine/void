@@ -27,7 +27,6 @@ regex = { version = "1.11" }
 migration = { path = "migration" }
 sea-orm = { version = "1.1", features = [
     "sqlx-sqlite",
-    "sqlx-postgres",
     "runtime-tokio-rustls",
     "macros",
 ] }
@@ -46,6 +45,8 @@ toml = "0.9.5"
 walkdir = "2.5.0"
 serde_yml = "0.0.12"
 tower-livereload = "0.9.6"
+ureq = "3.1.2"
+scraper = "0.24.0"
 
 [[bin]]
 name = "blog-cli"

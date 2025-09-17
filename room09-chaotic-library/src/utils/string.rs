@@ -1,6 +1,6 @@
 pub fn slugify(input: &str) -> String {
-  input
-    .to_lowercase()
-    .replace(' ', "-")
-    .replace(&['!', '?', '.', ','][..], "")
+    input
+        .to_lowercase()
+        .replace(' ', "-")
+        .replace(&['!', '?', '.', ','][..], "")
 }

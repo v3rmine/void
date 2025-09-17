@@ -24,6 +24,9 @@ server:
   host: http://localhost
   # Out of the box middleware configuration. to disable middleware you can changed the `enable` field to `false` of comment the middleware block
   middlewares:
+    fallback:
+      enable: true
+      file: "assets/static/404.html"
     static:
       enable: true
       must_exist: true
@@ -32,6 +35,10 @@ server:
         uri: "/static"
         path: "assets/static"
       fallback: "assets/static/404.html"
+
+cache:
+  kind: InMem
+  max_capacity: 33554432 # 32MiB (default if not specified)
 
 # Worker Configuration
 workers:
@@ -104,4 +111,7 @@ settings:
   i18n_dir: "assets/i18n"
   i18n_shared: "assets/i18n/shared.ftl"
   contents_dir: "contents"
-  views_blog_subdir: "blog"
+  views_pages_subdir: "pages"
+  website_name: "Astrid"
+  website_base_url: "https://v3rm.in"
+  author: "Astrid"

@@ -1,18 +1,14 @@
 use loco_rs::{prelude::ViewRenderer, Error, Result};
 use serde::Serialize;
-#[cfg(debug_assertions)]
-use std::sync::{Arc, Mutex};
 use std::{fs, path::Path};
+use tracing::debug;
 
-use crate::common::AppSettings;
+use crate::{common::AppSettings, utils};
 
 type TeraPostProcessor = std::sync::Arc<dyn Fn(&mut tera::Tera) -> Result<()> + Send + Sync>;
 
 #[derive(Clone)]
 pub struct CustomTeraView {
-    #[cfg(debug_assertions)]
-    pub tera: std::sync::Arc<std::sync::Mutex<tera::Tera>>,
-    #[cfg(not(debug_assertions))]
     pub tera: tera::Tera,
     pub tera_post_process: Option<TeraPostProcessor>,
 
@@ -21,35 +17,12 @@ pub struct CustomTeraView {
 }
 
 impl CustomTeraView {
-    pub fn build(settings: &AppSettings) -> Result<Self> {
-        let view_engine = Self::from_settings(settings)?;
-
-        // Register a filter to convert markdown to HTML
-        #[cfg(debug_assertions)]
-        {
-            let mut tera = view_engine.tera.lock().unwrap();
-            tera.register_filter("markdown", Self::markdown_filter);
-        }
-
-        #[cfg(not(debug_assertions))]
-        view_engine
-            .tera
-            .register_filter("markdown", Self::markdown_filter);
-
-        Ok(view_engine)
-    }
-
     pub fn post_process(
         mut self,
         post_process: impl Fn(&mut tera::Tera) -> Result<()> + Send + Sync + 'static,
     ) -> Result<Self> {
         {
-            #[cfg(debug_assertions)]
-            let engine = &mut *self.tera.lock().unwrap();
-
-            #[cfg(not(debug_assertions))]
             let engine = &mut self.tera;
-
             post_process(engine)?;
         }
 
@@ -57,7 +30,8 @@ impl CustomTeraView {
         Ok(self)
     }
 
-    pub fn tera_from_settings(settings: &AppSettings) -> Result<tera::Tera> {
+    fn build_tera_from_settings(settings: &AppSettings) -> Result<tera::Tera> {
+        debug!("building Tera instance from settings");
         let path: &Path = settings.views_dir.as_ref();
 
         if !path.exists() {
@@ -68,20 +42,24 @@ impl CustomTeraView {
         }
 
         // Initialize Tera with all the files ending in .tera
-        Ok(tera::Tera::new(
+        let tera_instance = tera::Tera::new(
             path.join("**")
                 .join("*.tera")
                 .to_str()
                 .ok_or_else(|| Error::string("invalid blob"))?,
-        )?)
+        )?;
+
+        Ok(Self::add_filters(tera_instance)?)
     }
     pub fn from_settings(settings: &AppSettings) -> Result<Self> {
-        let tera = Self::tera_from_settings(settings)?;
+        let tera = Self::build_tera_from_settings(settings)?;
 
-        #[cfg(debug_assertions)]
-        let tera = Arc::new(Mutex::new(tera));
+        let mut ctx = tera::Context::default();
 
-        let ctx = tera::Context::default();
+        ctx.insert("author", &settings.author);
+        ctx.insert("website_name", &settings.website_name);
+        ctx.insert("website_base_url", &settings.website_base_url);
+
         Ok(Self {
             tera,
             tera_post_process: None,
@@ -90,14 +68,17 @@ impl CustomTeraView {
         })
     }
 
+    fn add_filters(mut tera_instance: tera::Tera) -> Result<tera::Tera> {
+        tera_instance.register_filter("markdown", Self::markdown_filter);
+
+        Ok(tera_instance)
+    }
+
     fn markdown_filter(
         value: &tera::Value,
         _: &std::collections::HashMap<String, tera::Value>,
     ) -> tera::Result<tera::Value> {
-        let mut markdown_parser = markdown_it::MarkdownIt::new();
-        markdown_it::plugins::cmark::add(&mut markdown_parser);
-        markdown_it::plugins::extra::add(&mut markdown_parser);
-
+        let markdown_parser = utils::new_markdown_parser();
         let s = tera::try_get_value!("markdown", "value", String, value);
 
         let html = markdown_parser.parse(&s).render();
@@ -108,7 +89,8 @@ impl CustomTeraView {
 
 impl ViewRenderer for CustomTeraView {
     fn render<S: Serialize>(&self, key: &str, data: S) -> Result<String> {
-        let mut context = tera::Context::from_serialize(data)?;
+        let mut context = self.default_context.clone();
+        context.extend(tera::Context::from_serialize(data)?);
 
         let is_markdown = key.ends_with(".md");
 
@@ -130,24 +112,17 @@ impl ViewRenderer for CustomTeraView {
                 &tera::Value::String(content_without_frontmatter.to_string()),
             );
 
-            dbg!(&context);
-
             layout
         } else {
             key.to_string()
         };
 
-        #[cfg(debug_assertions)]
-        {
-            tracing::debug!(key = key, "Tera rendering in non-optimized debug mode");
-            let mut tera = Self::tera_from_settings(&self.settings)?;
-            if let Some(post_process) = self.tera_post_process.as_deref() {
-                post_process(&mut tera)?;
-            }
-            Ok(tera.render(&key, &context)?)
-        }
-
-        #[cfg(not(debug_assertions))]
         Ok(self.tera.render(&key, &context)?)
+    }
+}
+
+impl<'a> ViewRenderer for &'a CustomTeraView {
+    fn render<S: Serialize>(&self, key: &str, data: S) -> Result<String> {
+        CustomTeraView::render(&self, key, data)
     }
 }
