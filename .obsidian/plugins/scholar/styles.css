@@ -1,0 +1,73 @@
+/* src/styles.css */
+.add-paper-title {
+  font-weight: 600;
+}
+.add-paper-description {
+  color: var(--text-faint);
+}
+.paper-search-result-heading {
+  margin-top: var(--size-4-4);
+  margin-bottom: var(--size-4-3);
+  margin-left: 0;
+  padding-left: 0;
+  color: var(--text-faint);
+  font-size: var(--font-smallest);
+  font-weight: var(--font-semibold);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.paper-search-result-title {
+  font-size: var(--font-ui-medium);
+  font-weight: var(--font-semibold);
+}
+.paper-search-result-authors {
+  margin-top: var(--size-4-1);
+  color: var(--text-faint);
+  font-weight: var(--font-light);
+  font-size: var(--font-ui-small);
+}
+.paper-search-result-abstract {
+  color: var(--text-muted);
+  font-weight: var(--font-light);
+  font-size: var(--font-ui-small);
+  margin-top: var(--size-4-1);
+  display: none;
+}
+.paper-search-result-abstract.is-show {
+  display: block;
+}
+.suggestion-item.is-added > .paper-search-result-title {
+  color: var(--text-accent);
+}
+.suggestion-item.is-added > .paper-search-result-title::before {
+  content: "[\2713]";
+  display: inline-block;
+  margin-right: 5px;
+}
+.pdf-path-suggestion {
+  padding: var(--size-4-2);
+}
+.pdf-path-existing {
+  font-size: var(--font-ui-medium);
+  font-weight: var(--font-medium);
+  color: var(--text-accent);
+  margin-bottom: var(--size-4-1);
+}
+.pdf-path-new {
+  font-size: var(--font-ui-medium);
+  font-weight: var(--font-medium);
+  color: var(--text-normal);
+  margin-bottom: var(--size-4-1);
+}
+.pdf-path-label {
+  color: var(--text-faint);
+  font-size: var(--font-ui-small);
+  font-weight: var(--font-light);
+  font-style: italic;
+}
+.modal-container .add-paper-pdf-description {
+  color: var(--text-faint);
+  margin-bottom: var(--size-4-3);
+  padding: 0 var(--size-4-3);
+  text-align: center;
+}

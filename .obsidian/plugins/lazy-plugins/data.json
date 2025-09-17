@@ -1,0 +1,56 @@
+{
+  "dualConfigs": false,
+  "showConsoleLog": false,
+  "desktop": {
+    "shortDelaySeconds": 3,
+    "longDelaySeconds": 15,
+    "delayBetweenPlugins": 40,
+    "defaultStartupType": "long",
+    "showDescriptions": true,
+    "enableDependencies": false,
+    "plugins": {
+      "obsidian-annotator": {
+        "startupType": "instant"
+      },
+      "dataview": {
+        "startupType": "short"
+      },
+      "obsidian-git": {
+        "startupType": "instant"
+      },
+      "obsidian-hider": {
+        "startupType": "instant"
+      },
+      "obsidian-icon-folder": {
+        "startupType": "instant"
+      },
+      "obsidian-kanban": {
+        "startupType": "short"
+      },
+      "obsidian-linter": {
+        "startupType": "instant"
+      },
+      "obsidian-minimal-settings": {
+        "startupType": "instant"
+      },
+      "omnisearch": {
+        "startupType": "instant"
+      },
+      "obsidian-style-settings": {
+        "startupType": "instant"
+      },
+      "pane-relief": {
+        "startupType": "long"
+      },
+      "scholar": {
+        "startupType": "long"
+      },
+      "obsidian-tasks-plugin": {
+        "startupType": "long"
+      },
+      "typst": {
+        "startupType": "long"
+      }
+    }
+  }
+}

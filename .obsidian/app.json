@@ -1,0 +1,10 @@
+{
+  "alwaysUpdateLinks": true,
+  "showUnsupportedFiles": true,
+  "userIgnoreFilters": [
+    "/.*\\/target\\/.*/",
+    "/.*\\/node_modules\\/.*/",
+    "room99-bottomless-archives/"
+  ],
+  "spellcheck": false
+}
