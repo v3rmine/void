@@ -1,0 +1,24 @@
+# Display this help screen
+help:
+    @just --list --list-submodules
+
+mod disk "justfiles/disk.just"
+mod packages "justfiles/packages.just"
+mod filesystem "justfiles/filesystem.just"
+mod users "justfiles/users.just"
+
+setup-virtual:
+    just disk::create-virtual-disk
+    just disk::connect-virtual-disk
+    just disk::format-disk
+    just disk::mount-parts
+
+    just packages::get-packages
+
+    just users::create-lfs-group
+    just users::create-lfs-users
+
+    just filesystem::create-stage-1-filesystem
+
+    just disk::unmount-parts
+    just disk::disconnect-virtual-disk
