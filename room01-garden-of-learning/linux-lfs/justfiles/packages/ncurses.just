@@ -3,6 +3,7 @@ set working-directory := "../.."
 build-pass-2:
     #!/usr/bin/env -S sudo -u lfs -- bash
     source ~/.bashrc
+    set -euo pipefail
 
     pushd $LFS/sources
     ncurses_file="$(find -name "ncurses-*.tgz" | head -n1)"

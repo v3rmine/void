@@ -3,6 +3,7 @@ set working-directory := "../.."
 build-pass-1:
     #!/usr/bin/env -S sudo -u lfs -- bash
     source ~/.bashrc
+    set -euo pipefail
 
     pushd $LFS/sources
     binutils_file="$(find -name "binutils-*.tar.xz" | head -n1)"
