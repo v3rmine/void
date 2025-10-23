@@ -6,14 +6,14 @@ LFS := "$PWD/lfs"
 help:
     @just --list filesystem --list-submodules
 
-create-stage-1-filesystem:
+create-filesystem:
     #!/usr/bin/env bash
     umask 022
 
     mkdir -pv {{ LFS }}/{etc,var} {{ LFS }}/usr/{bin,lib,sbin}
 
     for i in bin lib sbin; do
-    ln -sv usr/$i {{ LFS }}/$i
+        ln -sv "usr/$i" "{{ LFS }}/$i"
     done
 
     case $(uname -m) in
@@ -26,3 +26,6 @@ create-stage-1-filesystem:
     case $(uname -m) in
       x86_64) chown -v lfs {{ LFS }}/lib64 ;;
     esac
+
+purge-filesystem:
+    find {{ LFS }} -maxdepth 1 -mindepth 1 -print | grep -v "sources" | xargs rm -r
