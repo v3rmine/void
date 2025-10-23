@@ -41,6 +41,15 @@ mod bash "packages/bash.just"
 mod coreutils "packages/coreutils.just"
 mod diffutils "packages/diffutils.just"
 mod file "packages/file.just"
+mod findutils "packages/findutils.just"
+mod gawk "packages/gawk.just"
+mod grep "packages/grep.just"
+mod gzip "packages/gzip.just"
+mod make "packages/make.just"
+mod patch "packages/patch.just"
+mod sed "packages/sed.just"
+mod tar "packages/tar.just"
+mod xz "packages/xz.just"
 
 build-pass-1:
     just packages::binutils::build-pass-1
@@ -56,3 +65,13 @@ build-pass-2:
     just packages::coreutils::build-pass-2
     just packages::diffutils::build-pass-2
     just packages::file::build-pass-2
+    just packages::findutils::build-pass-2
+    just packages::gawk::build-pass-2
+    just packages::grep::build-pass-2
+    just packages::gzip::build-pass-2
+    just packages::make::build-pass-2
+    just packages::patch::build-pass-2
+    just packages::sed::build-pass-2
+    just packages::tar::build-pass-2
+    just packages::xz::build-pass-2
+    just packages::binutils::build-pass-2
