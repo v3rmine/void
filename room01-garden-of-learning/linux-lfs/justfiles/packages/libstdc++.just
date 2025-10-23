@@ -3,6 +3,7 @@ set working-directory := "../.."
 build-pass-1:
     #!/usr/bin/env -S sudo -u lfs -- bash
     source ~/.bashrc
+    set -euo pipefail
 
     pushd $LFS/sources
     gcc_file="$(find -name "gcc-*.tar.xz" | head -n1)"

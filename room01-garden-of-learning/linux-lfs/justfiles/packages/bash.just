@@ -3,6 +3,7 @@ set working-directory := "../.."
 build-pass-2:
     #!/usr/bin/env -S sudo -u lfs -- bash
     source ~/.bashrc
+    set -euo pipefail
 
     pushd $LFS/sources
     bash_file="$(find -name "bash-*.tar.gz" | head -n1)"
