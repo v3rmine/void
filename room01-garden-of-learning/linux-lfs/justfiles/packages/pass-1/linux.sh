@@ -2,7 +2,7 @@
 set -euo pipefail
 # Ensure script is runned by lfs
 if [ "$UID" != "$(id -u lfs)" ]; then
-  exec su "lfs" "$0" -- "$@"
+    exec su "lfs" "$0" -- "$@"
 fi
 # Source LFS variables
 source "$HOME/.bashrc"
@@ -13,7 +13,7 @@ linux_folder="$(echo "$linux_file" | sed -E "s/(^\.\/|\.tar\.xz)//g")-pass-1"
 
 if [ ! -d "$linux_folder" ]; then
     mkdir -vp "$linux_folder"
-    tar -xvf "$linux_file"
+    tar -xvf "$linux_file" -C "$linux_folder" --strip-component 1
 fi
 pushd "$linux_folder"
 
