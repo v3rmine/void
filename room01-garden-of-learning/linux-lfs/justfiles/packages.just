@@ -30,36 +30,44 @@ get-packages packages-source-url="https://mirror.koddos.net/lfs/lfs-packages/lfs
 clear-unpacked-sources:
     pushd {{ LFS }}/sources && find . -maxdepth 1 -type d -exec rm -rv {} ';' && popd
 
-build-pass-1:
+build-pass-1 package="":
     #!/usr/bin/env bash
     set -euo pipefail
-    build { bash "./justfiles/packages/pass-1/$1.sh" }
+    build() { bash "./justfiles/packages/pass-1/$@.sh"; }
 
-    build binutils
-    build gcc
-    build linux
-    build glibc
-    build libstdc++
+    if [ -z "{{ package }}" ]; then
+        build binutils
+        build gcc
+        build linux
+        build glibc
+        build libstdc++
+    else
+        build "{{ package }}"
+    fi
 
-build-pass-2:
+build-pass-2 package="":
     #!/usr/bin/env bash
     set -euo pipefail
-    build { bash "./justfiles/packages/pass-2/$1.sh" }
+    build() { bash "./justfiles/packages/pass-2/$1.sh"; }
 
-    build m4
-    build ncurses
-    build bash
-    build coreutils
-    build diffutils
-    build file
-    build findutils
-    build gawk
-    build grep
-    build gzip
-    build make
-    build patch
-    build sed
-    build tar
-    build xz
-    build binutils
-    build gcc
+    if [ -z "{{ package }}" ]; then
+        build m4
+        build ncurses
+        build bash
+        build coreutils
+        build diffutils
+        build file
+        build findutils
+        build gawk
+        build grep
+        build gzip
+        build make
+        build patch
+        build sed
+        build tar
+        build xz
+        build binutils
+        build gcc
+    else
+        build "{{ package }}"
+    fi
