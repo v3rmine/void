@@ -64,9 +64,9 @@ mount-filesystem-for-chroot:
     fi
 
 # Create chroot filesystem
-create-chroot-filesystem:
+create-chroot-filesystem exit-at-end="1":
     #!/usr/bin/env bash
-    set -euxo pipefail
+    set -euo pipefail
     umask 022
 
     # Ensure we are chrooted
@@ -74,6 +74,8 @@ create-chroot-filesystem:
         echo "[ERROR]: we are not in the chroot"
         exit 1
     fi
+
+    set -x
 
     mkdir -pv /{boot,home,mnt,opt,srv}
 
@@ -94,3 +96,5 @@ create-chroot-filesystem:
 
     install -dv -m 0750 /root
     install -dv -m 1777 /tmp /var/tmp
+
+    if [ "{{ exit-at-end }}" != "1" ]; then exit 0; fi
