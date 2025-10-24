@@ -6,30 +6,36 @@ LFS := "$PWD/lfs"
 help:
     @just --list packages --list-submodules
 
+# Get packages tarball from internet
 get-packages packages-source-url="https://mirror.koddos.net/lfs/lfs-packages/lfs-packages-12.4.tar":
     #!/usr/bin/env bash
+    set -euo pipefail
+
     check_packages() {
-        pushd {{ LFS }}/sources
+        pushd "{{ LFS }}/sources"
             md5sum -c md5sums
         popd
     }
 
+    set -x
     if ! check_packages >/dev/null 2>&1; then
         umask 022
 
-        mkdir -pv {{ LFS }}/sources
-        chmod -v a+wt {{ LFS }}/sources
+        mkdir -pv "{{ LFS }}/sources"
+        chmod -v a+wt "{{ LFS }}/sources"
 
-        wget --no-check-certificate -qO- {{ packages-source-url }} | tar xvf - -C {{ LFS }}/sources --strip-component 1
+        wget --no-check-certificate -qO- "{{ packages-source-url }}" | tar xvf - -C "{{ LFS }}/sources" --strip-component 1
 
         check_packages
 
-        chown root:root {{ LFS }}/sources/*
+        chown root:root "{{ LFS }}"/sources/*
     fi
 
+# Clear unpacked sources
 clear-unpacked-sources:
-    pushd {{ LFS }}/sources && find . -maxdepth 1 -type d -exec rm -rv {} ';' && popd
+    pushd "{{ LFS }}/sources" && find . -maxdepth 1 -type d -exec rm -rv {} ';' && popd
 
+# Build the 1st pass's packages
 build-pass-1 package="":
     #!/usr/bin/env bash
     set -euo pipefail
@@ -45,6 +51,7 @@ build-pass-1 package="":
         build "{{ package }}"
     fi
 
+# Build the 2nd pass's packages
 build-pass-2 package="":
     #!/usr/bin/env bash
     set -euo pipefail

@@ -6,8 +6,13 @@ mod disk "justfiles/disk.just"
 mod packages "justfiles/packages.just"
 mod filesystem "justfiles/filesystem.just"
 mod users "justfiles/users.just"
+mod chroot "justfiles/chroot.just"
 
+# Setup whole LFS
 setup-virtual:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
     just disk::create-virtual-disk
     just disk::connect-virtual-disk
     just disk::format-disk
@@ -18,7 +23,21 @@ setup-virtual:
     just users::create-lfs-group
     just users::create-lfs-users
 
-    just filesystem::create-stage-1-filesystem
+    just filesystem::create-base-filesystem
+
+    just packages::build-pass-1
+    just packages::build-pass-2
+
+    just filesystem::patch-ownership-for-chroot
+    just filesystem::mount-filesystem-for-chroot
+
+    # We are now chrooted
+    just chroot::enter-chroot
+    if [ "$(ls -di /)" != "2 /" ]; then
+        echo "[ERROR]: we are not in the chroot"
+        exit 1
+    fi
+
 
     just disk::unmount-parts
     just disk::disconnect-virtual-disk
