@@ -32,12 +32,9 @@ setup-virtual:
     just filesystem::mount-filesystem-for-chroot
 
     # We are now chrooted
-    just chroot::enter-chroot
-    if [ "$(ls -di /)" != "2 /" ]; then
-        echo "[ERROR]: we are not in the chroot"
-        exit 1
-    fi
+    just chroot::enter-chroot <<"EOF"
 
+    EOF
 
     just disk::unmount-parts
     just disk::disconnect-virtual-disk
