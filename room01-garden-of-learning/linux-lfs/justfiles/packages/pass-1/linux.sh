@@ -11,10 +11,12 @@ pushd "$LFS/sources"
 linux_file="$(find . -name "linux-*.tar.xz" | head -n1)"
 linux_folder="$(echo "$linux_file" | sed -E "s/(^\.\/|\.tar\.xz)//g")-pass-1"
 
-if [ ! -d "$linux_folder" ]; then
-    mkdir -vp "$linux_folder"
-    tar -xvf "$linux_file" -C "$linux_folder" --strip-component 1
+if [ -d "$linux_folder" ]; then
+    rm -rf "$linux_folder"
 fi
+
+mkdir -vp "$linux_folder"
+tar -xvf "$linux_file" -C "$linux_folder" --strip-component 1
 pushd "$linux_folder"
 
 build_n_install() {

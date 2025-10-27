@@ -1,6 +1,6 @@
 set working-directory := ".."
 
-LFS := "$PWD/lfs"
+LFS := "/mnt/lfs"
 
 # Display this help screen
 help:
@@ -38,7 +38,7 @@ patch-ownership-for-chroot:
     #!/usr/bin/env bash
     set -euxo pipefail
 
-    chown --from lfs -R root:root "{{ LFS }}/{usr,var,etc,tools}"
+    chown --from lfs -R root:root "{{ LFS }}"/{usr,var,etc,tools}
     case $(uname -m) in
       x86_64) chown --from lfs -R root:root "{{ LFS }}/lib64" ;;
     esac
@@ -64,37 +64,75 @@ mount-filesystem-for-chroot:
     fi
 
 # Create chroot filesystem
-create-chroot-filesystem exit-at-end="1":
-    #!/usr/bin/env bash
-    set -euo pipefail
-    umask 022
+create-chroot-filesystem:
+    #!/bin/env bash
+    set -euxo pipefail
 
-    # Ensure we are chrooted
-    if [ "$(ls -di /)" != "2 /" ]; then
-        echo "[ERROR]: we are not in the chroot"
-        exit 1
-    fi
+    mkdir -vp "{{ LFS }}/tools/scripts/lfs"
+    cp -v ./justfiles/chroot/create-chroot-filesystem.sh "{{ LFS }}/tools/scripts/lfs/create-chroot-filesystem.sh"
+    chown -v root:root "{{ LFS }}/tools/scripts/lfs/create-chroot-filesystem.sh"
+    chmod -v u+x "{{ LFS }}/tools/scripts/lfs/create-chroot-filesystem.sh"
+    just chroot::enter-chroot <<"EOF"
+    /tools/scripts/lfs/create-chroot-filesystem.sh
+    EOF
 
-    set -x
+# Create chroot essential files
+create-chroot-essentials:
+    #!/bin/env bash
+    set -euxo pipefail
 
-    mkdir -pv /{boot,home,mnt,opt,srv}
+    mkdir -vp "{{ LFS }}/tools/scripts/lfs"
+    cp -v ./justfiles/chroot/create-chroot-essentials.sh "{{ LFS }}/tools/scripts/lfs/create-chroot-essentials.sh"
+    chown -v root:root "{{ LFS }}/tools/scripts/lfs/create-chroot-essentials.sh"
+    chmod -v u+x "{{ LFS }}/tools/scripts/lfs/create-chroot-essentials.sh"
+    just chroot::enter-chroot <<"EOF"
+    /tools/scripts/lfs/create-chroot-essentials.sh
+    EOF
 
-    mkdir -pv /etc/{opt,sysconfig}
-    mkdir -pv /lib/firmware
-    mkdir -pv /media/{floppy,cdrom}
-    mkdir -pv /usr/{,local/}{include,src}
-    mkdir -pv /usr/lib/locale
-    mkdir -pv /usr/local/{bin,lib,sbin}
-    mkdir -pv /usr/{,local/}share/{color,dict,doc,info,locale,man}
-    mkdir -pv /usr/{,local/}share/{misc,terminfo,zoneinfo}
-    mkdir -pv /usr/{,local/}share/man/man{1..8}
-    mkdir -pv /var/{cache,local,log,mail,opt,spool}
-    mkdir -pv /var/lib/{color,misc,locate}
+# Cleanup chroot after build
+cleanup-chroot-after-build:
+    #!/bin/env bash
+    set -euxo pipefail
 
-    ln -sfv /run /var/run
-    ln -sfv /run/lock /var/lock
+    just chroot::enter-chroot <<"EOF"
+    rm -rf /usr/share/{info,man,doc}/*
+    find /usr/{lib,libexec} -name \*.la -delete
+    rm -rf /tools
+    EOF
 
-    install -dv -m 0750 /root
-    install -dv -m 1777 /tmp /var/tmp
+    just packages::clear-unpacked-sources
 
-    if [ "{{ exit-at-end }}" != "1" ]; then exit 0; fi
+# Backup temporary filesystem
+backup-temporary-filesystem file="lfs-temporary-filesystem.tar.xz":
+    #!/bin/env bash
+    set -euxo pipefail
+
+    unmount() {
+        if mountpoint -q "{{ LFS }}$1"; then
+            umount "{{ LFS }}$1"
+        fi
+    }
+
+    unmount /dev/shm
+    unmount /dev/pts
+    unmount /sys
+    unmount /proc
+    unmount /run
+    unmount /dev
+
+    initial_dir="$(pwd)"
+
+    pushd "{{ LFS }}"
+    tar -cJpf "$initial_dir/{{ file }}" .
+    popd
+
+# Restore temporary filesystem
+restore-temporary-filesystem file="lfs-temporary-filesystem.tar.xz":
+    #!/bin/env bash
+    set -euxo pipefail
+
+    initial_dir="$(pwd)"
+
+    pushd "{{ LFS }}"
+    rm -rf ./*
+    tar -xpf "$initial_dir/{{ file }}

@@ -31,10 +31,13 @@ setup-virtual:
     just filesystem::patch-ownership-for-chroot
     just filesystem::mount-filesystem-for-chroot
 
-    # We are now chrooted
-    just chroot::enter-chroot <<"EOF"
+    just filesystem::create-chroot-filesystem
+    just filesystem::create-chroot-essentials
 
-    EOF
+    just packages::build-pass-3
+
+    just filesystem::cleanup-chroot-after-build
+    just filesystem::backup-temporary-filesystem
 
     just disk::unmount-parts
     just disk::disconnect-virtual-disk

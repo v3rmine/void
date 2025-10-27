@@ -1,6 +1,6 @@
 set working-directory := ".."
 
-LFS := "$PWD/lfs"
+LFS := "/mnt/lfs"
 
 # Display this help screen
 help:
