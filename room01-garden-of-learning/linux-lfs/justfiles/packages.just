@@ -1,6 +1,6 @@
 set working-directory := ".."
 
-LFS := "$PWD/lfs"
+LFS := "/mnt/lfs"
 
 # Display this help screen
 help:
@@ -75,6 +75,30 @@ build-pass-2 package="":
         build xz
         build binutils
         build gcc
+    else
+        build "{{ package }}"
+    fi
+
+# Build the 3rd pass's packages
+build-pass-3 package="":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    build() {
+        pkg="$1"
+        mkdir -vp "{{ LFS }}/tools/scripts/packages"
+        cp -v "./justfiles/packages/pass-3/$pkg.sh" "{{ LFS }}/tools/scripts/packages/$pkg.sh"
+        chown -v root:root "{{ LFS }}/tools/scripts/packages/$pkg.sh"
+        chmod -v u+x "{{ LFS }}/tools/scripts/packages/$pkg.sh"
+        echo "/tools/scripts/packages/$pkg.sh" | just chroot::enter-chroot
+    }
+
+    if [ -z "{{ package }}" ]; then
+        build gettext
+        build bison
+        build perl
+        build python
+        build texinfo
+        build util-linux
     else
         build "{{ package }}"
     fi

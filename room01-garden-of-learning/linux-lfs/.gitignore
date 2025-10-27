@@ -3,3 +3,6 @@
 
 # LFS mount
 lfs/
+
+# Backups
+*.tar.xz

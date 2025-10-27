@@ -8,7 +8,7 @@ fi
 source "$HOME/.bashrc"
 
 pushd "$LFS/sources"
-xz_file="$(find . -name "tar-*.tar.xz" | head -n1)"
+xz_file="$(find . -name "xz-*.tar.xz" | head -n1)"
 xz_folder="$(echo "$xz_file" | sed -E "s/(^\.\/|\.tar\.xz)//g")-pass-2"
 
 if [ ! -d "$xz_folder" ]; then
