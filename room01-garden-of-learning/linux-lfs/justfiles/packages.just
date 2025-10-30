@@ -24,7 +24,10 @@ get-packages packages-source-url="https://mirror.koddos.net/lfs/lfs-packages/lfs
         mkdir -pv "{{ LFS }}/sources"
         chmod -v a+wt "{{ LFS }}/sources"
 
+        pushd "{{ LFS }}/sources"
         wget --no-check-certificate -qO- "{{ packages-source-url }}" | tar xvf - -C "{{ LFS }}/sources" --strip-component 1
+        wget --no-check-certificate "https://github.com/PCRE2Project/pcre2/releases/download/pcre2-10.46/pcre2-10.46.tar.bz2"
+        popd
 
         check_packages
 
@@ -99,6 +102,28 @@ build-pass-3 package="":
         build python
         build texinfo
         build util-linux
+    else
+        build "{{ package }}"
+    fi
+
+# Build the 4th pass's packages
+build-pass-4 package="":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    build() {
+        pkg="$1"
+        mkdir -vp "{{ LFS }}/tools/scripts/packages"
+        cp -v "./justfiles/packages/pass-4/$pkg.sh" "{{ LFS }}/tools/scripts/packages/$pkg.sh"
+        chown -v root:root "{{ LFS }}/tools/scripts/packages/$pkg.sh"
+        chmod -v u+x "{{ LFS }}/tools/scripts/packages/$pkg.sh"
+        echo "/tools/scripts/packages/$pkg.sh" | just chroot::enter-chroot
+    }
+
+    if [ -z "{{ package }}" ]; then
+        build man-pages
+        build iana-etc
+        build glibc
+        build zlib
     else
         build "{{ package }}"
     fi
