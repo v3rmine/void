@@ -21,7 +21,7 @@ spec:
         storageClass: longhorn
         size: "100Mi"
       data:
-        storageClass: nfs-csi
+        storageClass: nfs-csi-kube
     deployment:
       replicaCount: 1
     resources:
