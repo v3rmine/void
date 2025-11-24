@@ -20,9 +20,11 @@ spec:
       meta:
         storageClass: longhorn
         size: "100Mi"
+        persistentVolumeReclaimPolicy: Retain
       data:
         storageClass: longhorn
         size: "10Gi"
+        persistentVolumeReclaimPolicy: Retain
     deployment:
       replicaCount: 1
     resources:
