@@ -7,4 +7,4 @@ spec:
   interval: 12h
   url: https://git.deuxfleurs.fr/Deuxfleurs/garage.git
   ref:
-    branch: main
+    branch: main-v1
