@@ -13,7 +13,7 @@ spec:
         name: garage
   values:
     garage:
-      replicationMode: "1"
+      replicationFactor: "1"
       compressionLevel: "1"
     persistence:
       enabled: true
