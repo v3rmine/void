@@ -22,7 +22,7 @@ spec:
         size: "100Mi"
       data:
         storageClass: nfs-csi-kube
-        size: "128Gi"
+        size: "256Gi"
     deployment:
       replicaCount: 1
     resources:
