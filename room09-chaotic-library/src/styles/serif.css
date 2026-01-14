@@ -7,7 +7,7 @@
 }
 
 :root {
-  --font-stack:
+  --font-serif-stack:
     quando, constantia, 'Lucida Bright', lucidabright, 'Lucida Serif', lucida,
     'DejaVu Serif', 'Bitstream Vera Serif', 'Liberation Serif', georgia, serif;
 }

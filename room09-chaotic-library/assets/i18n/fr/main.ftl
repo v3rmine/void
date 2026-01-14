@@ -1,4 +1,1 @@
-hello-world = Hallo Welt!
-greeting = Hallochen { $name }!
-        .placeholder = Hallo Freund!
-about = Uber
+description = Jack of all trade developer — Lyon, FRA

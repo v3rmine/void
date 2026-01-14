@@ -5,10 +5,6 @@
 {% block content %}
 
 <section>
-  <h1>Astrid</h1>
-</section>
-
-<section>
 
 <!--<h2>Recent Notes <a class="header-action" href="/notes/">View all</a></h2>-->
 <ul>

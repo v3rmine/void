@@ -3,12 +3,8 @@
 {% block content %}
 
 <section>
-  <h1>{{ website_name }}</h1>
-</section>
 
-<section>
-
-<!--<h2>Recent Notes <a class="header-action" href="/notes/">View all</a></h2>-->
+<h2>Recent Notes</h2>
 <ul>
 {% for content in data.posts[lang] %}
   <li>

@@ -4,8 +4,11 @@
 // see the documentation: https://zed.dev/docs/configuring-zed#settings-files
 {
   "file_types": {
-    "Tera (Markdown)": ["md"]
+    "Tera (Markdown)": ["md"],
+    "Tera (XML)": ["*.xml.tera"],
+    "Tera (JSON)": ["*.json.tera"]
   },
+  "tab_size": 2,
   "lsp": {
     "rust-analyzer": {
       "initialization_options": {
