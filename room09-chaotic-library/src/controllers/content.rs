@@ -18,10 +18,12 @@ fn generate_render_content(
     );
 
     // Return a GET handler that renders the specified blog page template
-    get(|ViewEngine(v): ViewEngine<CustomTeraView>| async move {
-        // Here we move to take ownership of the template string
-        views::content::content(&template, v, &lang, &metadata, *prerendered)
-    })
+    get(
+        |State(ctx): State<AppContext>, ViewEngine(v): ViewEngine<CustomTeraView>| async move {
+            // Here we move to take ownership of the template string
+            views::content::content(&ctx, &template, v, &lang, &metadata, *prerendered).await
+        },
+    )
 }
 
 pub struct Content {

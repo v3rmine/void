@@ -1,13 +1,13 @@
-<footer>
-    <!--<p>Copyright 2025 Astrid Planchon.
-    Any and all opinions listed here are my own and not representative of any of my employers, past, future, and/or present.</p>-->
-    <!--<hr>-->
-    <!--<p>
+<footer class="footer">
+    <p>Copyright 2025 Astrid Planchon.
+    Any and all opinions listed here are my own and not representative of any of my employers, past, future, and/or present.</p>
+    <hr>
+    <p>
         Analytics are measured with Umami.
-        {{ macros::external_link(link="https://umami.v3rm.in/share/VlGiEYEk5L2o3Mtp/Personal%20Website", content="See them here.", event="footer - checked analytics") }}
-    </p>-->
-    <!--<hr>-->
-    <!--<center>
+        {{ macros::external_link(link="https://umami.v3rm.in/share/u1YfbEjiYguX61y2/v3rm.in", content="See them here.", event="footer - checked analytics") }}
+    </p>
+    <hr>
+    <center class="taglist-88x31">
       {{ macros::external_link(
         link="https://cyber.dabamos.de/88x31",
         event="footer - checked 88x31 gif collection",
@@ -44,5 +44,5 @@
         event="footer - checked status page",
         content='<img src="/static/img/status.gif" alt="status page" title="at least 99.999% percent of uptime in last 10s" />'
       ) }}
-    </center>-->
+    </center>
 </footer>

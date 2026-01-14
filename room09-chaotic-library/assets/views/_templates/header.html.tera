@@ -1,38 +1,7 @@
-<header>
-<nav>
-<ul>
-    <li><a href="/"><img class="logo" width="40px" alt="logo" src="/static/img/pp.jpg" />Home</a></li>
-    <!--<li><a href="/blog">Blog</a></li>-->
-    <!--<li><a href="/projects">Projects</a></li>-->
-    <!--<li><a href="/contact">Contact</a></li>-->
-    <!-- <li><a href="/resume">Resume</a></li> -->
-    <!--<li><a class="text-neutral" href="/blogroll">Blogroll</a></li>-->
-    <!--<li class="right">
-        <a href="/search" title="search the blog" data-umami-event="header - checked used the search">
-          {{ icons::search() }}
-        </a>
-    </li>-->
-    <!--<li>
-        <a href="/feeds" title="rss feed" data-umami-event="header - checking the global rss feed">
-            {{ icons::rss() }}
-        </a>
-    </li>-->
-    <!--<li class="theme-switch" hidden>
-        <label class="theme-light" onclick="localStorage.setItem('theme', 'light')">
-          <input id="_theme-light" type="radio" name="theme-buttons" class="theme-controller" value="astridpastel" hidden />
-          {{ icons::sun() }}
-        </label>
-        <label class="theme-dark" onclick="localStorage.setItem('theme', 'dark')">
-          <input id="_theme-dark" type="radio" name="theme-buttons" class="theme-controller" value="astridcoffee" hidden />
-          {{ icons::moon() }}
-        </label>
-        <script async>
-          document.addEventListener("DOMContentLoaded", function () {
-            let themeSwitcher = document.getElementById(`_theme-${localStorage.getItem("theme")}`);
-            if (themeSwitcher) themeSwitcher.checked = true;
-          });
-        </script>
-    </li>-->
-</ul>
-</nav>
+<header class="flex flex-col gap-4 items-end text-right">
+  <a href="/">
+    <img class="logo" width="40px" alt="logo" src="/static/img/pp.jpg" />
+  </a>
+  <p class="text-lg font-bold">{{ author }}</p>
+  <p class="italic">{{ macros::t(key="description") }}</p>
 </header>

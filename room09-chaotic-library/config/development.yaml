@@ -35,6 +35,11 @@ server:
         uri: "/static"
         path: "assets/static"
       fallback: "assets/static/404.html"
+    timeout_request:
+      enable: true
+      timeout: 5000
+    compression:
+      enable: false
 
 cache:
   kind: InMem

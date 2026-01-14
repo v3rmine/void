@@ -9,12 +9,15 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = (import nixpkgs) { inherit system; };
-
         naersk' = pkgs.callPackage naersk { };
 
       in {
         # For `nix build` & `nix run`:
-        defaultPackage = naersk'.buildPackage { src = ./.; };
+        defaultPackage = naersk'.buildPackage {
+          src = ./.;
+          CARGO_BUILD_RUSTFLAGS =
+            "-Clink-arg=-Wl,--compress-debug-sections=zlib";
+        };
 
         # For `nix develop`:
         devShell =

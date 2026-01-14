@@ -30,7 +30,7 @@ impl Initializer for ViewEngineInitializer {
 
         if std::path::Path::new(I18N_DIR).exists() {
             let arc = std::sync::Arc::new(
-                ArcLoader::builder(&I18N_DIR, unic_langid::langid!("en-US"))
+                ArcLoader::builder(&I18N_DIR, unic_langid::langid!("fr"))
                     .shared_resources(Some(&[I18N_SHARED.into()]))
                     .customize(|bundle| bundle.set_use_isolating(false))
                     .build()

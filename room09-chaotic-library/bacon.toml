@@ -19,10 +19,11 @@ on_change_strategy = "kill_then_restart"
 
 [jobs.watch-scss]
 command = ["pnpm", "run", "build"]
-watch = ["src/styles"]
+watch = ["assets/views", "assets/styles"]
 need_stdout = true
 allow_warnings = true
-background = true
+background = false
+on_change_strategy = "wait_then_restart"
 
 # You may define here keybindings that would be specific to
 # a project, for example a shortcut to launch a specific job.
