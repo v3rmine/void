@@ -1,7 +1,0 @@
-<header class="flex flex-col gap-4 items-end text-right">
-  <a href="/">
-    <img class="logo" width="40px" alt="logo" src="/static/img/pp.jpg" />
-  </a>
-  <p class="text-lg font-bold">{{ author }}</p>
-  <p class="italic">{{ macros::t(key="description") }}</p>
-</header>

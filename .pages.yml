@@ -1,22 +1,72 @@
 media: media
 content:
-  - name: blog
-    label: Blog
+  - name: garden
+    label: Garden
     type: collection
-    path: 'room09-chaotic-library/content/blog'
+    path: 'room09-chaotic-library/content/garden'
     view:
-      fields: [ title, published, date ]
+      fields: [ title, draft, date, updated ]
     fields:
-      - name: published
-        label: Published
+      - name: draft
+        label: Draft
         type: boolean
         default: true
       - name: date
         label: Date
         type: date
+      - name: updated
+        label: Updated
+        type: date
       - name: title
         label: Title
         type: string
+      - name: guid
+        label: GUID
+        type: uuid
+        required: true
+      - name: taxonomies
+        label: Taxonomies
+        type: object
+        fields:
+          - name: tags
+            label: Tags
+            type: string
+            list: true
+      - name: body
+        label: Body
+        type: rich-text
+  - name: notes
+    label: Notes
+    type: collection
+    path: 'room09-chaotic-library/content/notes'
+    view:
+      fields: [ title, draft, date, updated ]
+    fields:
+      - name: draft
+        label: Draft
+        type: boolean
+        default: true
+      - name: date
+        label: Date
+        type: date
+      - name: updated
+        label: Updated
+        type: date
+      - name: title
+        label: Title
+        type: string
+      - name: guid
+        label: GUID
+        type: uuid
+        required: true
+      - name: taxonomies
+        label: Taxonomies
+        type: object
+        fields:
+          - name: tags
+            label: Tags
+            type: string
+            list: true
       - name: body
         label: Body
         type: rich-text
@@ -24,3 +74,5 @@ content:
     label: Zola config
     path: 'room09-chaotic-library/config.toml'
     type: file
+    format: code
+    fields: [{ name: body, type: code, options: { language: toml } }]

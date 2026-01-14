@@ -1,7 +1,0 @@
-.page-wrapper {
-  @apply p-10 max-w-3xl mx-auto min-h-[100vh] flex flex-col;
-
-  section {
-    @apply grow;
-  }
-}

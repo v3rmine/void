@@ -1,0 +1,222 @@
+title = "Astrid"
+base_url = "https://v3rm.in"
+description = "My burrow, its MINE è-é"
+
+compile_sass = true
+minify_html = true
+generate_feeds = true
+# Only the first file will be used in the navbar feed button,
+# other feeds will still be available in page's head.
+feed_filenames = ["rss.xml", "atom.xml"]
+build_search_index = true
+author = "Astrid"
+
+# Based on https://github.com/welpo/tabi
+#
+# To translate the entire theme, there must be a file with the same ISO 639-1 or BCP 47
+# language code in the `i18n` directory of your site or the Duckquill theme.
+# For example, "i18n/fr.toml" for French or "i18n/zh-Hans.toml" for Simplified Chinese.
+# Otherwise the theme will be in English.
+#
+# ISO 639-1: https://localizely.com/iso-639-1-list/
+# BCP 47: https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry
+default_language = "en"
+taxonomies = [{ name = "tags", feed = true }]
+
+theme = "duckquill"
+
+[markdown]
+smart_punctuation = true
+bottom_footnotes = true
+github_alerts = true
+
+[markdown.highlighting]
+error_on_missing_language = true
+style = "class"
+light_theme = "solarized-light"
+dark_theme = "solarized-dark"
+
+[search]
+# index_format = "elasticlunr_json"
+index_format = "fuse_json"
+
+# [languages.fr]
+# title = "Astrid"
+# description = "Ma tanière è-é"
+# generate_feeds = true
+
+# Configuration of the link checker.
+[link_checker]
+# Skip link checking for external URLs that start with these prefixes
+skip_prefixes = []
+# Skip anchor checking for external URLs that start with these prefixes
+skip_anchor_prefixes = []
+# Treat internal link problems as either "error" or "warn", default is "error"
+internal_level = "error"
+# Treat external link problems as either "error" or "warn", default is "error"
+external_level = "error"
+
+# Various slugification strategies, see below for details
+# Defaults to everything being a slug
+[slugify]
+paths = "on"
+taxonomies = "on"
+anchors = "on"
+# Whether to remove date prefixes for page path slugs.
+# For example, content/posts/2016-10-08_a-post-with-dates.md => posts/a-post-with-dates
+# When true, content/posts/2016-10-08_a-post-with-dates.md => posts/2016-10-08-a-post-with-dates
+paths_keep_dates = false
+
+[extra]
+# Which theme should be used by default (light/dark).
+default_theme = "light"
+# Sets theme and browser theme color.
+# See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta/name/theme-color
+accent_color = "#ff7800"
+# Ditto but for the dark theme.
+# If not set regular variant will be used.
+accent_color_dark = "#ffa348"
+# Whether to use fonts bundled with Duckquill instead of system ones.
+# Keep in mind that it also changes the style of headings.
+#
+# bundled_fonts = true
+#
+# Use emoji as a favicon.
+# Only one emoji is being rendered, everything else is truncated.
+#
+# emoji_favicon = "🦆🪶"
+#
+# URL to website's issue tracker
+issues_url = "https://github.com/v3rmine/void/issues"
+# URL to website's source code
+source_url = "https://git.sr.ht/~v3rmine/void/tree/main/item/room09-chaotic-library"
+# Additional CSS styles; expects them to be in the "./static/" directory.
+# If you are using Sass it will be generated there automatically.
+styles = ["mods.css"]
+#
+# Additional JavaScript scripts; expects them to be in the "./static/" directory.
+# scripts = []
+#
+# Whether to show "copy code" button on all code blocks
+# that have the language set.
+# See https://www.getzola.org/documentation/content/syntax-highlighting/
+show_copy_button = true
+# Whether to show estimated read time in posts.
+show_reading_time = true
+#
+# Whether to show a share button in article's quick actions.
+# Uses https://shareopenly.org.
+show_share_button = false
+# Whether to show the backlinks button for linked articles in the article's quick actions
+show_backlinks = true
+# Whether to enable the KaTeX library for rendering LaTeX.
+# Note: This will make your page significantly heavier.
+# Instead, consider enabling it per page/section.
+# katex = true
+#
+# Whether to render table of contents on all pages.
+# Will not be rendered if page doesn't have any headings.
+# Can be set per page/section.
+# toc = true
+#
+# Whether to render inline table of contents at the top of all pages,
+# in addition to floating quick navigation buttons.
+# Can be set per page/section.
+# toc_inline = true
+#
+# Whether to use numbered (ordered) list for table of contents.
+# Can be set per page/section.
+# toc_ordered = true
+#
+# Custom separator used across the theme.
+# separator = "•"
+# Custom separator used in title tag and posts metadata.
+# title_separator = "-"
+#
+# Whether to use Content Security Policy.
+# Keep in mind that although this can potentially increase security,
+# it can break some stuff, in which case you will need to set custom policy.
+csp = [
+	{ directive = "font-src", domains = ["'self'"] },
+	{ directive = "img-src", domains = ["'self'", "https:", "data:"] },
+	{ directive = "media-src", domains = ["'self'", "https:"] },
+	{ directive = "script-src", domains = ["'self'"] },
+	{ directive = "style-src", domains = ["'self'", "'unsafe-inline'"] },
+	{ directive = "frame-src", domains = ["https://player.vimeo.com", "https://www.youtube-nocookie.com", "https://eldritch.cafe"] },
+	{ directive = "connect-src", domains = ["https://eldritch.cafe"] },
+	{ directive = "base-uri", domains = ["'none'"] },
+	{ directive = "form-action", domains = ["'none'"] }
+]
+# Uncomment this to disable the card displayed in share previews
+# card = false
+
+[extra.nav]
+# Whether to automatically hide nav when not hovered or focused
+auto_hide = false
+# Whether to show the Atom/RSS feed button in the nav
+show_feed = true
+# Whether to show the manual theme switcher in the nav
+show_theme_switcher = true
+# Whether to show the link to the source repository in the nav
+show_repo = false
+# Links used in the nav.
+# For local files use same link format as in Markdown,
+# i.e. "@/blog/_index.md".
+# See https://www.getzola.org/documentation/content/linking/#internal-links
+links = [
+    { name = "Sections", menu = [
+        { url = "@/garden/_index.md", name = "Garden" },
+    	{ url = "@/notes/_index.md", name = "Notes"},
+        { url = "@/projects/_index.md", name = "Projects" }
+    ] },
+	{ url = "https://ko-fi.com/v3rmine", name = "Coffee" }
+]
+
+[extra.footer]
+# Links used in the footer.
+# Same as the nav ones.
+links = [
+    { url = "@/garden/_index.md", name = "Garden" },
+   	{ url = "@/notes/_index.md", name = "Notes"},
+    { url = "@/projects/_index.md", name = "Projects" },
+	{ url = "https://ko-fi.com/v3rmine", name = "Coffee" }
+]
+# Social links in the footer.
+# Any URL-encoded SVG can be used as an icon.
+# https://simpleicons.org is the recommended source of SVG icons.
+# For URL encoding use https://yoksel.github.io/url-encoder/.
+# Make sure that "external quotes" are set to "double".
+socials = [
+	{ url = "https://eldritch.cafe/@v3rmine", name = "Mastodon", icon = "%3Csvg role='img' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Ctitle%3EMastodon%3C/title%3E%3Cpath d='M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z'/%3E%3C/svg%3E" },
+]
+# Whether to show "© Title, YEAR"
+show_copyright = true
+# Whether to show "Powered by Zola and Duckquill"
+show_powered_by = true
+# Whether to show link to website source
+show_source = true
+# Custom copyright text
+#
+copyright = "© Copyright 2026 Astrid Planchon.<br>Any and all opinions listed here are my own<br>and not representative of any of my employers,<br>past, future, and/or present."
+
+# Based on https://carlschwan.eu/2020/12/29/adding-comments-to-your-static-blog-with-mastodon/
+#
+# Mastodon-powered commenting.
+# Values can be overridden in the front-matter, e.g.
+# for multi-author blogs or guest posts.
+#
+# These variables are also used for Mastodon verification,
+# the needed rel="me" link is set in the head based on these.
+[extra.comments]
+# Your Mastodon API host; instance that you have an account on.
+host = "eldritch.cafe"
+# Your Mastodon username; used to determine who the original poster is.
+user = "v3rmine"
+# Whether to show the QR code to Mastodon post
+show_qr = true
+
+[extra.debug]
+# Display outlines around all elements for debugging purposes
+layout = false
+# Don't load any styles for debugging purposes
+no_styles = false
