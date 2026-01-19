@@ -24,7 +24,7 @@ runcmd:
   # Infect with NixOS
   - >
     curl https://raw.githubusercontent.com/elitak/nixos-infect/master/nixos-infect
-    | PROVIDER="hetznercloud" NIX_CHANNEL="nixos-25.11" bash 2>&1 | tee /tmp/infect.log
+    | PROVIDER="hetznercloud" NIX_CHANNEL="nixos-25.11-small" bash 2>&1 | tee /tmp/infect.log
 
 write_files:
   - path: /etc/nixos/configuration.nix

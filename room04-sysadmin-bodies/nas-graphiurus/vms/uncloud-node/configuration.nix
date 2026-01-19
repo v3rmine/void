@@ -55,7 +55,7 @@ let
   };
 in {
   system.stateVersion = "25.11";
-  system.autoUpgrade.channel = "https://nixos.org/channels/nixos-25.11";
+  system.autoUpgrade.channel = "https://nixos.org/channels/nixos-25.11-small";
 
   networking.firewall.enable = false;
   networking.firewall.allowedTCPPorts = [
@@ -235,7 +235,7 @@ in {
     openFirewall = true;
     allowSFTP = false;
     settings = {
-      PermitRootLogin = "yes";
+      PermitRootLogin = "without-password";
       PasswordAuthentication = false;
       KbdInteractiveAuthentication = false;
     };
@@ -245,6 +245,11 @@ in {
       AllowAgentForwarding no
       AllowStreamLocalForwarding yes
       AuthenticationMethods publickey
+      ClientAliveCountMax 2
+      LogLevel verbose
+      MaxAuthTries 3
+      MaxSessions 2
+      TCPKeepAlive no
     '';
   };
   users.users.root.openssh.authorizedKeys.keys = [
@@ -253,14 +258,16 @@ in {
 
   # Boot
   boot.extraSystemdUnitPaths = [ "/var/lib/systemd/system/" ];
-  boot.kernelModules = [];
   boot.supportedFilesystems = [ "nfs" ];
   services.rpcbind.enable = true;
   zramSwap.enable = true;
 
   # Secure settings
-  users.mutableUsers = true;
-  security.sudo.enable = true;
+  users.mutableUsers = false;
+  services.udev.enable = false;
+  services.lvm.enable = false;
+  security.sudo.enable = false;
+  # If I disable it I cannot boot anymore
   nix.enable = true;
 
   # Networking
@@ -287,8 +294,12 @@ in {
 
   # Hardware configuration
   imports = [ (modulesPath + "/profiles/qemu-guest.nix") "${impermanence}/nixos.nix" ];
-  boot.loader.grub.enable = lib.mkDefault true; # Use the boot drive for GRUB
-  boot.loader.grub.device = "/dev/vda";
+  boot.loader.grub = {
+    enable = lib.mkDefault true; # Use the boot drive for GRUB
+    efiSupport = true;
+    efiInstallAsRemovable = true;
+    device = "/dev/vda";
+  };
   boot.tmp.cleanOnBoot = true;
   boot.growPartition = lib.mkDefault true;
   boot.initrd.availableKernelModules =
