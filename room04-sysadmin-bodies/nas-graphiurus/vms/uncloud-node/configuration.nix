@@ -198,18 +198,16 @@ in {
       "/etc/autorestic-backends.yml"
     ];
     directories = [
+      "/boot"
       "/nix"
-      "/var/lib/nixos"
-      "/var/lib/tailscale"
       "/tmp"
       "/var/tmp"
-      "/etc/containers"
-      "/var/lib/containers/storage"
-      "/var/lib/swap"
+      "/var/lib/nixos"
+      "/var/lib/tailscale"
+      "/var/lib/docker"
       "/var/lib/uncloud"
       "/var/lib/systemd/system"
       "/var/log"
-      "/boot"
     ];
   };
 
@@ -248,7 +246,7 @@ in {
       ClientAliveCountMax 2
       LogLevel verbose
       MaxAuthTries 3
-      MaxSessions 2
+      MaxSessions 4
       TCPKeepAlive no
     '';
   };
@@ -264,7 +262,6 @@ in {
 
   # Secure settings
   users.mutableUsers = false;
-  services.udev.enable = false;
   services.lvm.enable = false;
   security.sudo.enable = false;
   # If I disable it I cannot boot anymore
@@ -294,12 +291,8 @@ in {
 
   # Hardware configuration
   imports = [ (modulesPath + "/profiles/qemu-guest.nix") "${impermanence}/nixos.nix" ];
-  boot.loader.grub = {
-    enable = lib.mkDefault true; # Use the boot drive for GRUB
-    efiSupport = true;
-    efiInstallAsRemovable = true;
-    device = "/dev/vda";
-  };
+  boot.loader.grub.device = "/dev/vda";
+  boot.loader.grub.storePath = "/persist/nix/store";
   boot.tmp.cleanOnBoot = true;
   boot.growPartition = lib.mkDefault true;
   boot.initrd.availableKernelModules =
