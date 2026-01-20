@@ -85,19 +85,33 @@ in {
           keep-daily: 7
           keep-weekly: 52
           keep-yearly: 10
-
-      locations:
-        systemd-services:
-          from: /persist/var/lib/systemd/system
+        backblaze-standard: &backblaze-standard
           to:
             - backblaze
-          cron: '0 * * * *'
           options:
             backup:
               compression: max
               skip-if-unchanged: true
             forget:
               <<: *backup-policy
+
+      locations:
+        systemd-services:
+          <<: *backblaze-standard
+          from: /persist/var/lib/systemd/system
+          cron: '0 * * * *'
+        syncthing:
+          <<: *backblaze-standard
+          from:
+            - /persist/var/lib/docker/volumes/palmr_data
+            - /persist/var/lib/docker/volumes/syncthing-config
+            - /persist/var/lib/docker/volumes/syncthing-data
+          cron: '0 * * * *'
+        palmr:
+          <<: *backblaze-standard
+          from:
+            - /persist/var/lib/docker/volumes/palmr_data
+          cron: '0 * * * *'
     '';
   };
 
