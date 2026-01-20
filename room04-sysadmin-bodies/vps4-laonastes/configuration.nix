@@ -13,8 +13,8 @@ in {
   imports =
     [ (modulesPath + "/profiles/qemu-guest.nix") "${impermanence}/nixos.nix" ];
 
-  system.stateVersion = "25.05";
-  system.autoUpgrade.channel = "https://nixos.org/channels/nixos-25.05-small";
+  system.stateVersion = "25.11";
+  system.autoUpgrade.channel = "https://nixos.org/channels/nixos-25.11-small";
 
   networking = {
     firewall = {
@@ -37,32 +37,35 @@ in {
           keep-daily: 7
           keep-weekly: 52
           keep-yearly: 10
-
-      locations:
-        pangolin:
-          from: /root/pangolin
+        backblaze-standard: &backblaze-standard
           to:
             - backblaze
-          cron: '0 * * * *'
           options:
             backup:
               compression: max
               skip-if-unchanged: true
             forget:
               <<: *backup-policy
+
+
+      locations:
+        pangolin:
+          <<: *backblaze-standard
+          from: /root/pangolin
+          cron: '0 * * * *'
     '';
   };
 
   services.logrotate = {
     enable = true;
     settings = {
-      "/var/log/logs/anubis-traefik/access.log" = {
+      "/var/log/logs/traefik/access.log" = {
         frequency = "hourly";
         size = "1M"; # Rotate when size reach 1MB
         rotate = 1; # Keep only last version for vector
         missingok = true; # Ignore if file is missing
         postrotate = ''
-          ${pkgs.systemd}/bin/systemctl start anubis-traefik-logrotate
+          ${pkgs.systemd}/bin/systemctl start traefik-logrotate
         '';
       };
     };
@@ -78,7 +81,7 @@ in {
         journald.type = "journald";
         outer_traefik = {
           type = "file";
-          include = [ "/var/log/logs/anubis-traefik/access.log" ];
+          include = [ "/var/log/logs/traefik/access.log" ];
           fingerprint.strategy = "device_and_inode";
           rotate_wait_secs = 30;
         };
@@ -104,53 +107,21 @@ in {
       };
     };
   };
-  systemd.services.vector.serviceConfig = {
+  systemd.services."vector".serviceConfig = {
     AmbientCapabilities =
       lib.mkForce "CAP_NET_BIND_SERVICE CAP_DAC_READ_SEARCH";
     CapabilityBoundingSet = "CAP_DAC_READ_SEARCH";
   };
-  systemd.services.logrotate.serviceConfig = {
+  systemd.services."logrotate".serviceConfig = {
     PrivateNetwork = lib.mkForce false;
     RestrictAddressFamilies = lib.mkForce "AF_UNIX";
     BindPaths = "/run/systemd/private /run/dbus/system_bus_socket";
   };
-  systemd.services.anubis-traefik-logrotate = {
+  systemd.services."traefik-logrotate" = {
     serviceConfig = {
       Type = "oneshot";
-      ExecStart = "${pkgs.podman}/bin/podman kill -s USR1 anubis-traefik";
+      ExecStart = "${pkgs.podman}/bin/podman kill -s USR1 traefik";
     };
-  };
-
-  services.prometheus.exporters = {
-    node = {
-      enable = true;
-      port = 9100;
-    };
-    process = {
-      enable = true;
-      port = 9256;
-      settings = {
-        process_names = [
-          {
-            name = "{{.Matches.Wrapped}} {{ .Matches.Args }}";
-            cmdline = [ "^/nix/store[^ ]*/(?P<Wrapped>[^ /]*) (?P<Args>.*)" ];
-          }
-          { comm = [ "node" "traefik" "gerbil" "anubis" ]; }
-        ];
-      };
-    };
-    systemd = {
-      enable = false;
-      port = 9558;
-    };
-  };
-
-  services.cadvisor = {
-    enable = true;
-    listenAddress = "0.0.0.0";
-    port = 9888;
-    extraOptions =
-      [ "--docker_only" ''--docker="unix:///var/run/podman/podman.sock"'' ];
   };
 
   systemd.services."podman-compose@" = {
