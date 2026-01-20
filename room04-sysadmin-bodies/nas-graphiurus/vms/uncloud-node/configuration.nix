@@ -103,7 +103,6 @@ in {
         syncthing:
           <<: *backblaze-standard
           from:
-            - /persist/var/lib/docker/volumes/palmr_data
             - /persist/var/lib/docker/volumes/syncthing-config
             - /persist/var/lib/docker/volumes/syncthing-data
           cron: '0 * * * *'
