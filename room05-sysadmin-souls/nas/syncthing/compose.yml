@@ -1,0 +1,25 @@
+services:
+  syncthing:
+    image: lscr.io/linuxserver/syncthing:latest
+    pull_policy: always
+    container_name: syncthing
+    hostname: syncthing
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
+    volumes:
+      - syncthing-config:/config
+      - syncthing-data:/data
+    x-ports:
+      - syncthing.serv4.reta.re:8384/http
+      - 22000:22000/tcp@host
+      - 22000:22000/udp@host
+      - 21027:21027/udp@host
+    x-machines:
+      - nas
+
+volumes:
+  syncthing-config:
+  syncthing-data:

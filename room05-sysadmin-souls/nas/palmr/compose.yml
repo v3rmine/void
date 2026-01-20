@@ -1,0 +1,24 @@
+services:
+  palmr:
+    image: kyantech/palmr:v3.2.4-beta
+    # pull_policy: always
+    container_name: palmr
+    environment:
+      STORAGE_URL: "https://palmr.v3rm.in"  # REQUIRED for internal storage: Full storage URL with protoco
+    volumes:
+      - palmr_data:/app/server
+      - palmr_uploads:/app/server/uploads
+    x-ports:
+      - share.v3rm.in:5487/http # Web interface
+      - palmr.v3rm.in:9379/http # Internal storage (S3-compatible, REQUIRED for file uploads when using internal storage)
+    x-machines:
+      - nas
+
+volumes:
+  palmr_data:
+  palmr_uploads:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=nas-nfs,rw,vers=4.1
+      device: ":/uncloud-palmr-upoads"

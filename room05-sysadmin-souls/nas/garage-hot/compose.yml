@@ -1,0 +1,24 @@
+services:
+  garage-hot:
+    image: dxflrs/garage:v2.1.0
+    container_name: garage-hot
+    restart: unless-stopped
+    configs:
+      - source: garage_config
+        target: /etc/garage.toml
+        mode: 0600
+    volumes:
+      - garage-hot-meta:/var/lib/garage/meta
+      - garage-hot-data:/var/lib/garage/data
+    x-ports:
+      - garage-hot.serv4.reta.re:3900/http
+    x-machines:
+      - nas
+
+configs:
+  garage_config:
+    file: ./garage.toml
+
+volumes:
+  garage-hot-meta:
+  garage-hot-data:

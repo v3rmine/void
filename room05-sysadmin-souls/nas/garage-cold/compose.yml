@@ -1,0 +1,29 @@
+services:
+  garage-cold:
+    image: dxflrs/garage:v2.1.0
+    container_name: garage-cold
+    restart: unless-stopped
+    configs:
+      - source: garage_config
+        target: /etc/garage.toml
+        mode: 0600
+    volumes:
+      - garage-cold-meta:/var/lib/garage/meta
+      - garage-cold-data:/var/lib/garage/data
+    x-ports:
+      - garage-cold.serv4.reta.re:3900/http
+    x-machines:
+      - nas
+
+configs:
+  garage_config:
+    file: ./garage.toml
+
+volumes:
+  garage-cold-meta:
+  garage-cold-data:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=nas-nfs,rw,vers=4.1
+      device: ":/uncloud-garage"
