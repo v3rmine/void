@@ -2,6 +2,13 @@
 let
   impermanence = builtins.fetchTarball
     "https://github.com/nix-community/impermanence/archive/master.tar.gz";
+
+  run-autorestic = pkgs.writeShellScriptBin "run-autorestic.sh" ''
+    autorestic_conf="$(${pkgs.yq-go}/bin/yq eval-all '. as $item ireduce ({}; . * $item)' /etc/autorestic.yml /etc/autorestic-backends.yml)"
+    echo "$autorestic_conf" > /tmp/.autorestic.yml
+    ${pkgs.autorestic}/bin/autorestic -c /tmp/.autorestic.yml --ci cron > /var/log/autorestic.log 2>&1
+    rm -f /tmp/.autorestic.yml
+  '';
 in {
   system.stateVersion = "25.11";
   system.autoUpgrade.channel = "https://nixos.org/channels/nixos-25.11-small";
@@ -16,6 +23,10 @@ in {
     cryptsetup
     smartmontools
     openseachest
+    restic
+    autorestic
+    yq-go
+    run-autorestic
   ];
 
   boot.kernelModules = [ "dm_crypt" ];
@@ -116,6 +127,38 @@ in {
     '';
   };
 
+  environment.etc."autorestic.yml" = {
+    text = ''
+      version: 2
+
+      extras:
+        policies: &backup-policy
+          keep-daily: 7
+          keep-weekly: 52
+          keep-yearly: 10
+        backblaze-standard: &backblaze-standard
+          to:
+            - backblaze
+          options:
+            backup:
+              compression: max
+              skip-if-unchanged: true
+            forget:
+              <<: *backup-policy
+
+      locations:
+        immich:
+          <<: *backblaze-standard
+          from: /media/merged/uncloud/immich
+          cron: '0 2 * * *'
+    '';
+  };
+
+  services.cron.systemCronJobs = [
+    "0 5 * * * root journalctl --vacuum-size=128M"
+    "*/5 * * * * root ${run-autorestic}/bin/run-autorestic.sh"
+  ];
+
   time.timeZone = "Europe/Paris";
 
   # Impermanence
@@ -128,6 +171,7 @@ in {
       "/etc/ssh/ssh_host_rsa_key"
       "/etc/ssh/ssh_host_rsa_key.pub"
       "/var/lib/hdd_key"
+      "/etc/autorestic-backends.yml"
     ];
     directories = [
       "/boot"
