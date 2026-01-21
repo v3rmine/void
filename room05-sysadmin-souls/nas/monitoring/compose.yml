@@ -1,0 +1,52 @@
+services:
+  loki:
+    image: grafana/loki:latest
+    pull_policy: always
+    container_name: loki
+    restart: unless-stopped
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - loki-data:/loki
+    x-ports:
+      - 3100:3100/tcp@host
+    x-machines:
+      - nas
+
+  grafana:
+    image: grafana/grafana:latest
+    pull_policy: always
+    container_name: grafana
+    restart: unless-stopped
+    environment:
+      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+    entrypoint:
+      - sh
+      - -euc
+      - |
+        mkdir -p /etc/grafana/provisioning/datasources
+        cat <<EOF > /etc/grafana/provisioning/datasources/ds.yaml
+        apiVersion: 1
+        datasources:
+        - name: Loki
+          type: loki
+          access: proxy
+          orgId: 1
+          url: http://loki:3100
+          basicAuth: false
+          isDefault: true
+          version: 1
+          editable: false
+        EOF
+        /run.sh
+    volumes:
+      - grafana-data:/var/lib/grafana
+    x-ports:
+      - grafana.serv4.reta.re:3000/http
+    x-machines:
+      - nas
+
+volumes:
+  grafana-data:
+  loki-data:

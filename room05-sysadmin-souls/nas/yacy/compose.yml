@@ -1,0 +1,20 @@
+services:
+  yacy:
+    image: yacy/yacy_search_server:latest
+    pull_policy: always
+    container_name: yacy
+    restart: unless-stopped
+    volumes:
+      - yacy-data:/opt/yacy_search_server/DATA
+    environment:
+      YACY_UPNP_ENABLED: false
+      YACY_CLUSTER_MODE: privatepeer
+      YACY_CRAWLER_USERAGENT_NAME: astridsearch
+      YACY_CRAWLER_USERAGENT_STRING: astridsearch ($$SYSTEM$$) https://astriiid.fr/garden/search-engine/
+    x-ports:
+      - yacy.serv4.reta.re:8090/http
+    x-machines:
+      - nas
+
+volumes:
+  yacy-data:

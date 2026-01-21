@@ -1,0 +1,29 @@
+services:
+  suwayomi:
+    image: ghcr.io/suwayomi/suwayomi-server:preview
+    pull_policy: always
+    user: 1000:1000
+    restart: on-failure:3
+    environment:
+      TZ: Europe/Paris
+      FLARESOLVERR_ENABLED: true
+      FLARESOLVERR_URL: http://flaresolverr:8191
+    volumes:
+      - suwayomi-data:/home/suwayomi/.local/share/Tachidesk
+    x-ports:
+      - suwayomi.serv4.reta.re:4567/http
+    x-machines:
+      - nas
+
+  flaresolverr:
+    image: ghcr.io/thephaseless/byparr:latest
+    pull_policy: always
+    container_name: flaresolverr
+    environment:
+      TZ: Europe/Paris
+    restart: unless-stopped
+    x-machines:
+      - nas
+
+volumes:
+  suwayomi-data:
