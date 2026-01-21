@@ -20,5 +20,12 @@ kube-overview namespace:
   @kubectl -n {{namespace}} api-resources --verbs=list --namespaced -o name \
   | grep -Ev '(^events.events.k8s.io$|^events$)' | xargs -I '{}' bash -c 'x="$(kubecolor --force-colors get --show-kind --ignore-not-found -n {{namespace}} {})" && if [[ ! -z "$x" ]]; then echo "--- {} ---"; echo -e "$x"; echo -e "---------\n"; fi'
 
+kube-dangerous-purge namespace:
+  kubectl api-resources --verbs=list --namespaced -o name \
+  | grep '{{namespace}}' | xargs -I '{}' bash -c 'kubectl patch crd {} -n {{namespace}} -p '"'"'{"metadata":{"finalizers":[]}}'"'"' --type=merge && kubectl delete crd {}' 
+
 garage-hot *PARAMS:
   @kubectl exec -it -n garage-hot pods/garage-0 -- /garage {{PARAMS}}
+
+garage-cold *PARAMS:
+  @kubectl exec -it -n garage-cold pods/garage-0 -- /garage {{PARAMS}}
