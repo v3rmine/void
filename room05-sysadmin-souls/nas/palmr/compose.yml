@@ -7,7 +7,11 @@ services:
       STORAGE_URL: "https://palmr.v3rm.in"  # REQUIRED for internal storage: Full storage URL with protoco
     volumes:
       - palmr_data:/app/server
-      - palmr_uploads:/app/server/uploads
+      - palmr-uploads:/app/server/uploads
+    deploy:
+      resources:
+        limits:
+          memory: 1G
     x-ports:
       - share.v3rm.in:5487/http # Web interface
       - palmr.v3rm.in:9379/http # Internal storage (S3-compatible, REQUIRED for file uploads when using internal storage)
@@ -16,9 +20,9 @@ services:
 
 volumes:
   palmr_data:
-  palmr_uploads:
+  palmr-uploads:
     driver: local
     driver_opts:
       type: nfs
       o: addr=nas-nfs,rw,vers=4.1
-      device: ":/uncloud-palmr-upoads"
+      device: ":/uncloud-palmr-uploads"

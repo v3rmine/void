@@ -11,6 +11,10 @@ services:
       YACY_CLUSTER_MODE: privatepeer
       YACY_CRAWLER_USERAGENT_NAME: astridsearch
       YACY_CRAWLER_USERAGENT_STRING: astridsearch ($$SYSTEM$$) https://astriiid.fr/garden/search-engine/
+    deploy:
+      resources:
+        limits:
+          memory: 1G
     x-ports:
       - yacy.serv4.reta.re:8090/http
     x-machines:

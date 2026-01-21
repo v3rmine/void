@@ -10,6 +10,10 @@ services:
       FLARESOLVERR_URL: http://flaresolverr:8191
     volumes:
       - suwayomi-data:/home/suwayomi/.local/share/Tachidesk
+    deploy:
+      resources:
+        limits:
+          memory: 1G
     x-ports:
       - suwayomi.serv4.reta.re:4567/http
     x-machines:
