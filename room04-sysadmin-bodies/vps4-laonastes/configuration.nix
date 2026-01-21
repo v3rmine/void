@@ -4,10 +4,32 @@ let
     "https://github.com/nix-community/impermanence/archive/master.tar.gz";
 
   run-autorestic = pkgs.writeShellScriptBin "run-autorestic.sh" ''
+    # Merge location and backend autorestic confs
     autorestic_conf="$(${pkgs.yq-go}/bin/yq eval-all '. as $item ireduce ({}; . * $item)' /etc/autorestic.yml /etc/autorestic-backends.yml)"
     echo "$autorestic_conf" > /tmp/.autorestic.yml
+    # Run the cron task of autorestic
     ${pkgs.autorestic}/bin/autorestic -c /tmp/.autorestic.yml --ci cron > /var/log/autorestic.log 2>&1
     rm -f /tmp/.autorestic.yml
+  '';
+
+  blocklist-traefik = pkgs.writeShellScriptBin "blocklist-traefik.sh" ''
+    # Ensure list exists
+    ${pkgs.ipset}/bin/ipset list scanners-ipv4 >/dev/null 2>&1 \
+      || ${pkgs.ipset}/bin/ipset create scanners-ipv4 hash:ip hashsize 4096 counters family inet
+    ${pkgs.ipset}/bin/ipset list scanners-ipv6 >/dev/null 2>&1 \
+      || ${pkgs.ipset}/bin/ipset create scanners-ipv6 hash:ip hashsize 4096 counters family inet6
+    # IPs that make >100 http request get banned:
+    ips=$(for file in /var/log/logs/traefik/*; do
+      grep 'RequestScheme":"http"' $file \
+        | awk 'match($0, /"ClientHost"[[:space:]]*:[[:space:]]*"([^"]+)"/, a) { print a[1] }';
+    done \
+      | sort \
+      | uniq -c \
+      | awk '{if ($1 >= 100) print $2}')
+    echo "$ips" | grep -F '.' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv4 -exist
+    echo "$ips" | grep -F ':' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv6 -exist
+    # Make banned IP list persistent
+    ${pkgs.ipset}/bin/ipset save > /etc/iptables/ipsets
   '';
 in {
   imports =
@@ -18,11 +40,11 @@ in {
 
   networking = {
     firewall = {
-      enable = false;
+      enable = true;
       interfaces = {
         "ens6" = {
-          allowedTCPPorts = [ 22 80 443 8080 ];
-          allowedUDPPorts = [ 53 443 51820 ];
+          allowedTCPPorts = [ 22 80 443 8080 22000 ];
+          allowedUDPPorts = [ 53 443 51820 22000 21027 ];
         };
       };
     };
@@ -56,17 +78,24 @@ in {
     '';
   };
 
+  networking.firewall.extraCommands = ''
+    iptables -A INPUT -m set --match-set scanners-ipv4 src -j DROP
+    ip6tables -A INPUT -m set --match-set scanners-ipv6 src -j DROP
+  '';
+
   services.logrotate = {
     enable = true;
     settings = {
       "/var/log/logs/traefik/access.log" = {
-        frequency = "hourly";
+        frequency = "daily";
         size = "1M"; # Rotate when size reach 1MB
-        rotate = 1; # Keep only last version for vector
+        rotate = 5; # Keep the last 5 version for ipset
         missingok = true; # Ignore if file is missing
         postrotate = ''
           ${pkgs.systemd}/bin/systemctl start traefik-logrotate
         '';
+        nocompress = true; # Do not compress for postprocess by ipset
+        notifempty = true; # Do not rotate if empty
       };
     };
   };
@@ -91,7 +120,7 @@ in {
         loki_journald = {
           type = "loki";
           inputs = [ "journald" ];
-          endpoint = "http://loki:3100";
+          endpoint = "http://nas-uncloud:3100";
           encoding = { codec = "json"; };
 
           labels.source = "laonastes_journald";
@@ -99,7 +128,7 @@ in {
         loki_outer_traefik = {
           type = "loki";
           inputs = [ "outer_traefik" ];
-          endpoint = "http://loki:3100";
+          endpoint = "http://nas-uncloud:3100";
           encoding = { codec = "json"; };
 
           labels.source = "laonastes_outer_traefik";
@@ -123,6 +152,8 @@ in {
       ExecStart = "${pkgs.podman}/bin/podman kill -s USR1 traefik";
     };
   };
+
+  systemd.services."podman-restart".enable = true;
 
   systemd.services."podman-compose@" = {
     enable = false;
@@ -165,6 +196,8 @@ in {
     autorestic
     yq-go
     run-autorestic
+    blocklist-traefik
+    iptables
   ];
 
   services.cron.systemCronJobs = [
@@ -208,6 +241,7 @@ in {
       "/etc/ssh/ssh_host_rsa_key"
       "/etc/ssh/ssh_host_rsa_key.pub"
       "/etc/autorestic-backends.yml"
+      "/etc/iptables/ipsets"
     ];
     directories = [
       "/nix"
