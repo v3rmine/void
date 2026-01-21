@@ -111,6 +111,37 @@ in {
           from:
             - /persist/var/lib/docker/volumes/palmr_data
           cron: '0 * * * *'
+        garage-hot:
+          <<: *backblaze-standard
+          from:
+            - /persist/var/lib/docker/volumes/garage-hot-meta
+            - /persist/var/lib/docker/volumes/garage-hot-data
+          cron: '0 * * * *'
+        garage-cold:
+          <<: *backblaze-standard
+          from:
+            - /persist/var/lib/docker/volumes/garage-cold-meta
+          cron: '0 * * * *'
+        grafana:
+          <<: *backblaze-standard
+          from:
+            - /persist/var/lib/docker/volumes/grafana-data
+          cron: '0 * * * *'
+        loki:
+          <<: *backblaze-standard
+          from:
+            - /persist/var/lib/docker/volumes/loki-data
+          cron: '0 * * * *'
+        suwayomi:
+          <<: *backblaze-standard
+          from:
+            - /persist/var/lib/docker/volumes/suwayomi-data
+          cron: '0 * * * *'
+        yacy:
+          <<: *backblaze-standard
+          from:
+            - /persist/var/lib/docker/volumes/yacy-data
+          cron: '0 * * * *'
     '';
   };
 
