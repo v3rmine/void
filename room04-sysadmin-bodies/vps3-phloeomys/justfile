@@ -1,22 +1,11 @@
-credentials_file := "../../.secrets/terraform/hetzner.tfvars"
+boot sshport="8080":
+  env NIX_SSHOPTS="-p {{sshport}}" nixos-rebuild boot \
+    --target-host root@46.225.11.44 \
+    -I nixos-config=./configuration.nix \
+    -I nixpkgs=channel:nixos-25.11
 
-init:
-  tofu init
-
-source-secrets:
- jq -r '[to_entries | .[] | "\(.key)=\"\(.value)\""] | join(" ")' ../../.secrets/nixos/secrets.json
-
-plan: init
-  tofu plan -var-file={{credentials_file}}
-
-apply:
-  tofu apply -var-file={{credentials_file}}
-
-show:
-  tofu show -var-file={{credentials_file}}
-
-destroy:
-  tofu destroy -var-file={{credentials_file}}
-
-nixos-setup host:
-  env "$(just source-secrets)" nix run --impure github:nix-community/nixos-anywhere -- --flake ./#default --target-host {{host}}
+deploy sshport="8080":
+  env NIX_SSHOPTS="-p {{sshport}}" nixos-rebuild switch \
+    --target-host root@46.225.11.44 \
+    -I nixos-config=./configuration.nix \
+    -I nixpkgs=channel:nixos-25.11
