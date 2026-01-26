@@ -1,0 +1,120 @@
+- name: Home
+  # Optionally, if you only have a single page you can hide the desktop navigation for a cleaner look
+  hide-desktop-navigation: true
+  columns:
+    - size: small
+      widgets:
+        - type: calendar
+          first-day-of-week: monday
+
+        - type: to-do
+
+        - type: twitch-channels
+          channels:
+            - euuhhh__
+            - cleore__
+
+    - size: full
+      widgets:
+        - type: search
+          search-engine: kagi
+
+        - type: group
+          widgets:
+            - type: rss
+              limit: 15
+              cache: 12h
+              feeds:
+                - url: https://selfh.st/rss/
+                  title: selfh.st
+                - url: https://okazu.yuricon.com/feed/
+                  title: Okazu
+                - url: https://sebsauvage.net/links/
+                  title: Sebsauvage
+                - url: https://soatok.blog/feed/
+                  title: Dhole Moments
+            - type: lobsters
+              cache: 6h
+            - type: hacker-news
+              cache: 6h
+
+        - type: videos
+          cache: 6h
+          channels:
+            - UC4OjGShlHwNNd6jQ23GVJ5A # McSkyz
+            - UCQVaKQcp4OxSg1eC6SF3NTw # Feldup
+            - UCYcJNtSv9jSCB0tWMb09O_Q # euuhhh
+            - UCEis9ox9psDyjEMj_08iGag # Cleore
+            - UCF0vn3Wu0Vvl46FZhZjyLkw # CleMore
+            - UCHaI6GYWwFO9H5pIyjw-VLA # Cleore VOD
+            - UCB9gfNOymNLIm5J8lf4MhtA # Sylvain Lyve
+            - UCAoUBng0Mfu0qn4lPimS6MA # G Milgram
+            - UC4peNo-31r7fhQZgu0_JRIA # Sheshounet
+            - UCjkfbqVQcXyW2OfJm81og7w # Le Shesh
+            - UCseGV3amBLISlIOMQodPfVQ # Sylvqin
+            - UCYPwq5uafGQrr4PW8GQRxew # Esquive la Boule de Feu
+            - UCwAbnkkraK7wB5A9OfX3l9g # Le Radis irradié
+            - UCLIA8-BMYvcjz_WU_J9G1Rw # Arcade
+            - UCJlL6pThsMthXZKRhUwVElg # ache
+          playlists:
+            - PLN1ty9vGjkMldI6KKRu5S7boZ2B08XZyL # SIP & GOSSIP
+            - PLN1ty9vGjkMli4nu0BJu93mdCOhHbUJ2f # FLIP & GO SLEEP
+
+    - size: small
+      widgets:
+        - type: weather
+          cache: 1h
+          location: Lyon, France
+          units: metric
+          hour-format: 24h
+          # Optionally hide the location from being displayed in the widget
+          # hide-location: true
+
+        - type: bookmarks
+          groups:
+            - title: nas
+              links:
+                - title: Grafana
+                  url: https://grafana.serv4.reta.re
+                - title: Palmr
+                  url: https://share.v3rm.in
+                - title: Suwayomi
+                  url: https://suwayomi.serv4.reta.re
+                - title: Yacy
+                  url: https://yacy.serv4.reta.re
+                - title: Immich
+                  url: https://photos.planchon.dev
+            - title: phloeomys
+              links:
+                - title: Old blog
+                  url: https://v3rm.in
+                - title: WIP blog
+                  url: https://astriiid.fr
+                - title: Miniflux
+                  url: https://rss.reta.re
+                - title: Shaarli
+                  url: https://links.planchon.dev
+                - title: Filestash
+                  url: https://remote.reta.re
+            - title: laonastes
+              links:
+                - title: iocaine demo
+                  url: https://iocaine-demo.serv4.reta.re
+            - title: seed
+              links:
+                - title: Filebrowser
+                  url: https://glisglis.pistis.usbx.me/filebrowser
+                - title: qBittorrent
+                  url: https://glisglis.pistis.usbx.me/qbittorrent
+
+
+        # - type: releases
+        #   cache: 1d
+        #   # Without authentication the Github API allows for up to 60 requests per hour. You can create a
+        #   # read-only token from your Github account settings and use it here to increase the limit.
+        #   # token: ...
+        #   repositories:
+        #     - glanceapp/glance
+        #     - go-gitea/gitea
+        #     - immich-app/immich
+        #     - syncthing/syncthing

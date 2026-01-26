@@ -1,0 +1,25 @@
+services:
+  glance:
+    container_name: glance
+    image: glanceapp/glance:latest
+    pull_policy: always
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    configs:
+      - source: glance_config
+        target: /app/config/glance.yml
+        mode: 0600
+      - source: glance_home_config
+        target: /app/config/home.yml
+        mode: 0600
+    x-ports:
+      - dash.reta.re:8080/http
+    x-machines:
+      - phloeomys
+
+configs:
+  glance_config:
+    file: ./config/glance.yml
+  glance_home_config:
+    file: ./config/home.yml
