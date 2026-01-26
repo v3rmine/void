@@ -109,9 +109,9 @@ in {
 
   networking.firewall.extraCommands = ''
     iptables -A INPUT -m set --match-set scanners-ipv4 src -j DROP
-    iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -m set --match-set scanners-ipv4 src -j DROP
+    iptables -A FORWARD -m set --match-set scanners-ipv4 src -j DROP
     ip6tables -A INPUT -m set --match-set scanners-ipv6 src -j DROP
-    ip6tables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -m set --match-set scanners-ipv6 src -j DROP
+    ip6tables -A FORWARD -m set --match-set scanners-ipv6 src -j DROP
   '';
 
   services.logrotate = {
@@ -185,22 +185,6 @@ in {
   };
 
   systemd.services."podman-restart".enable = true;
-
-  systemd.services."podman-compose@" = {
-    enable = false;
-    path = [ pkgs.podman ];
-    serviceConfig = {
-      Type = "simple";
-      EnvironmentFile = "%h/.config/containers/compose/projects/%i.env";
-      ExecStartPre = [
-        "-${pkgs.podman-compose}/bin/podman-compose up --no-start"
-        "${pkgs.podman}/bin/podman pod start pod_%i"
-      ];
-      ExecStart = "${pkgs.podman-compose} wait";
-      ExecStop = "${pkgs.podman}/bin/podman pod stop pod_%i";
-    };
-    wantedBy = [ "default.target" ];
-  };
 
   virtualisation = {
     podman = {
