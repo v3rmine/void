@@ -7,36 +7,65 @@ let
     # Merge location and backend autorestic confs
     autorestic_conf="$(${pkgs.yq-go}/bin/yq eval-all '. as $item ireduce ({}; . * $item)' /etc/autorestic.yml /etc/autorestic-backends.yml)"
     echo "$autorestic_conf" > /tmp/.autorestic.yml
+
     # Run the cron task of autorestic
     ${pkgs.autorestic}/bin/autorestic -c /tmp/.autorestic.yml --ci cron > /var/log/autorestic.log 2>&1
     rm -f /tmp/.autorestic.yml
   '';
 
-  blocklist-traefik = pkgs.writeShellScriptBin "blocklist-traefik.sh" ''
-    # Ensure list exists
+  fill-blocklists = pkgs.writeShellScriptBin "fill-blocklists.sh" ''
+    # Ensure lists exists
     ${pkgs.ipset}/bin/ipset list scanners-ipv4 >/dev/null 2>&1 \
       || ${pkgs.ipset}/bin/ipset create scanners-ipv4 hash:ip hashsize 4096 counters family inet
     ${pkgs.ipset}/bin/ipset list scanners-ipv6 >/dev/null 2>&1 \
       || ${pkgs.ipset}/bin/ipset create scanners-ipv6 hash:ip hashsize 4096 counters family inet6
+
     # IPs that make >100 http request get banned:
-    ips=$(for file in /var/log/logs/traefik/*; do
+    http_requester_ips=$(for file in /var/log/logs/traefik/*; do
       grep 'RequestScheme":"http"' $file \
         | awk 'match($0, /"ClientHost"[[:space:]]*:[[:space:]]*"([^"]+)"/, a) { print a[1] }';
     done \
       | sort \
       | uniq -c \
       | awk '{if ($1 >= 100) print $2}')
-    echo "$ips" | grep -F '.' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv4 -exist
-    echo "$ips" | grep -F ':' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv6 -exist
+
+    echo "$http_requester_ips" | grep -F '.' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv4 -exist
+    echo "$http_requester_ips" | grep -F ':' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv6 -exist
+
+    # IPs that have been rejected more than 10k times by iocaine
+    iocaine_rejected_ips=$(journalctl CONTAINER_NAME=pangolin_iocaine_1 -o json -r \
+      | yq -p=json '.MESSAGE | from_json| select(."verdict.type" == "accept") | .request.header.x-forwarded-for' \
+      | grep -v "\---" \
+      | sort \
+      | uniq -c \
+      | awk '{if ($1 >= 10000) print $2}')
+
+    echo "$iocaine_rejected_ips" | grep -F '.' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv4 -exist
+    echo "$iocaine_rejected_ips" | grep -F ':' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv6 -exist
+
     # Make banned IP list persistent
     ${pkgs.ipset}/bin/ipset save > /etc/iptables/ipsets
+  '';
+  flush-blocklists = pkgs.writeShellScriptBin "flush-blocklists.sh" ''
+      # Ensure lists exists
+      ${pkgs.ipset}/bin/ipset list scanners-ipv4 >/dev/null 2>&1 \
+        || ${pkgs.ipset}/bin/ipset create scanners-ipv4 hash:ip hashsize 4096 counters family inet
+      ${pkgs.ipset}/bin/ipset list scanners-ipv6 >/dev/null 2>&1 \
+        || ${pkgs.ipset}/bin/ipset create scanners-ipv6 hash:ip hashsize 4096 counters family inet6
+
+      # Flush lists from previous values
+      ${pkgs.ipset}/bin/ipset flush scanners-ipv4
+      ${pkgs.ipset}/bin/ipset flush scanners-ipv6
+
+      # Make banned IP list persistent
+      ${pkgs.ipset}/bin/ipset save > /etc/iptables/ipsets
   '';
 in {
   imports =
     [ (modulesPath + "/profiles/qemu-guest.nix") "${impermanence}/nixos.nix" ];
 
   system.stateVersion = "25.11";
-  system.autoUpgrade.channel = "https://nixos.org/channels/nixos-25.11-small";
+  system.autoUpgrade.channel = "https://nixos.org/channels/nixos-25.11";
 
   networking = {
     firewall = {
@@ -80,7 +109,9 @@ in {
 
   networking.firewall.extraCommands = ''
     iptables -A INPUT -m set --match-set scanners-ipv4 src -j DROP
+    iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -m set --match-set scanners-ipv4 src -j DROP
     ip6tables -A INPUT -m set --match-set scanners-ipv6 src -j DROP
+    ip6tables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -m set --match-set scanners-ipv6 src -j DROP
   '';
 
   services.logrotate = {
@@ -88,8 +119,8 @@ in {
     settings = {
       "/var/log/logs/traefik/access.log" = {
         frequency = "daily";
-        size = "1M"; # Rotate when size reach 1MB
-        rotate = 5; # Keep the last 5 version for ipset
+        maxsize = "5M"; # Rotate when size reach 1MB
+        rotate = 3; # Keep the last 5 version for ipset
         missingok = true; # Ignore if file is missing
         postrotate = ''
           ${pkgs.systemd}/bin/systemctl start traefik-logrotate
@@ -189,20 +220,23 @@ in {
 
   environment.systemPackages = with pkgs; [
     podman-compose
+    git
     vim
-    iperf
     htop
     restic
     autorestic
-    yq-go
     run-autorestic
-    blocklist-traefik
+    yq-go
+    fill-blocklists
+    flush-blocklists
     iptables
   ];
 
   services.cron.systemCronJobs = [
-    "0 5 * * * root journalctl --vacuum-size=128M"
+    "0 * * * * root journalctl --vacuum-size=128M"
     "*/5 * * * * root ${run-autorestic}/bin/run-autorestic.sh"
+    "*/15 * * * * root ${fill-blocklists}/bin/fill-blocklists.sh"
+    "0 0 * * MON root ${flush-blocklists}/bin/flush-blocklists.sh"
   ];
 
   # Networking and SSH
