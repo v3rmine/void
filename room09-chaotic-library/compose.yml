@@ -1,0 +1,7 @@
+services:
+  personal-website:
+    build: .
+    x-ports:
+      - astriiid.fr:80/http
+    x-machines:
+      - phloeomys
