@@ -57,11 +57,12 @@ in {
   system.stateVersion = "25.11";
   system.autoUpgrade.channel = "https://nixos.org/channels/nixos-25.11-small";
 
-  networking.firewall.enable = false;
-  networking.firewall.allowedTCPPorts = [
-  ];
-  networking.firewall.allowedUDPPorts = [
-  ];
+  networking.firewall = {
+    enable = false;
+    allowedTCPPorts = [ 22 ];
+    allowedUDPPorts = [];
+  };
+
   environment.systemPackages = with pkgs; [
     docker-compose
     vim
@@ -205,6 +206,28 @@ in {
     wantedBy = [ "multi-user.target" ];
   };
 
+  systemd.services."newt" = {
+    enable = true;
+    after = [ "network-online.target" ];
+    wants = [ "network-online.target" ];
+    path = [ custom-newt ];
+    serviceConfig = {
+      Type = "simple";
+      Restart = "always";
+      RestartSec = 2;
+      # Hardening options.
+      NoNewPrivileges = true;
+      PrivateTmp = true;
+      ProtectControlGroups = true;
+      ProtectHome = true;
+      ProtectKernelTunables = true;
+      ProtectSystem = "full";
+      RestrictAddressFamilies = "AF_INET AF_INET6 AF_UNIX AF_NETLINK";
+      RestrictNamespaces = true;
+    };
+    wantedBy = [ "multi-user.target" ];
+  };
+
   # System
   services.cron.systemCronJobs = [
     "0 5 * * * root journalctl --vacuum-size=128M"
@@ -212,12 +235,14 @@ in {
   ];
 
   virtualisation = {
+    containerd.enable = true;
     docker = {
       enable = true;
       daemon.settings = {
         features = {
           containerd-snapshotter = true;
         };
+        storage-driver = "overlayfs";
         live-restore = true;
       };
     };
@@ -249,6 +274,7 @@ in {
       "/var/lib/nixos"
       "/var/lib/tailscale"
       "/var/lib/docker"
+      "/var/lib/containerd"
       "/var/lib/uncloud"
       "/var/lib/systemd/system"
       "/var/log"
