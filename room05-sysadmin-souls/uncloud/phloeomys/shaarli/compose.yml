@@ -1,0 +1,21 @@
+services:
+  shaarli:
+    build:
+      context: .
+      args:
+        VERSION: v0.13.0
+    container_name: shaarli
+    volumes:
+      - shaarli-data:/var/www/shaarli/data
+    healthcheck:
+      test: nc -z 127.0.0.1 80 || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    x-ports:
+      - links.planchon.dev:80/http
+    x-machines:
+      - phloeomys
+
+volumes:
+  shaarli-data:

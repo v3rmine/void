@@ -1,7 +1,10 @@
 services:
   immich-server:
     container_name: immich_server
-    image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION:-release}
+    build:
+      context: .
+      args:
+        IMMICH_VERSION: ${IMMICH_VERSION:-release}
     # extends:
     #   file: hwaccel.transcoding.yml
     #   service: cpu # set to one of [nvenc, quicksync, rkmpp, vaapi, vaapi-wsl] for accelerated transcoding
@@ -12,11 +15,12 @@ services:
     env_file:
       - .env
     depends_on:
-      - redis
-      - database
+      - immich-redis
+      - immich-database
     restart: always
     healthcheck:
-      disable: false
+      # Disable to let disk go to rest
+      disable: true
     deploy:
       resources:
         limits:
@@ -44,7 +48,7 @@ services:
     x-machines:
       - nas
 
-  redis:
+  immich-redis:
     container_name: immich_redis
     image: docker.io/valkey/valkey:9@sha256:fb8d272e529ea567b9bf1302245796f21a2672b8368ca3fcb938ac334e613c8f
     healthcheck:
@@ -53,7 +57,7 @@ services:
     x-machines:
       - nas
 
-  database:
+  immich-database:
     container_name: immich_postgres
     image: ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0@sha256:bcf63357191b76a916ae5eb93464d65c07511da41e3bf7a8416db519b40b1c23
     environment:

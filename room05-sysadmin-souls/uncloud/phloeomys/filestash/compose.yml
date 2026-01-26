@@ -1,0 +1,22 @@
+services:
+  filestash:
+    image: machines/filestash:latest
+    pull_policy: always
+    container_name: filestash
+    env_file: ".env"
+    volumes:
+      - filestash-config:/app/data/state
+      - filestash-localdata:/data
+    healthcheck:
+      test: curl --silent --fail 127.0.0.1:8334 || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    x-ports:
+      - remote.reta.re:8334/http
+    x-machines:
+      - phloeomys
+
+volumes:
+  filestash-config:
+  filestash-localdata:
