@@ -1,0 +1,9 @@
+declare-handler default {
+  sources {
+    training-corpus \
+      "/data/corpus/1984.txt" \
+      "/data/corpus/the-validity-of-gender-skippitydooooo.txt" \
+      "/data/corpus/mr-nobody-script-2009.txt"
+    wordlists "/data/corpus/words.txt"
+  }
+}

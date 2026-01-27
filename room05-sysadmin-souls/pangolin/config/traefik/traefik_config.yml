@@ -1,0 +1,86 @@
+api:
+  insecure: true
+  dashboard: true
+
+providers:
+  http:
+    endpoint: "http://pangolin:3001/api/v1/traefik-config"
+    pollInterval: "5s"
+  file:
+    filename: "/etc/traefik/dynamic_config.yml"
+
+accessLog:
+  filePath: "/logs/access.log"
+  format: json
+  fields:
+    defaultMode: keep
+    names:
+      StartUTC: drop
+    headers:
+      defaultMode: keep
+
+experimental:
+  plugins:
+    badger:
+      moduleName: "github.com/fosrl/badger"
+      version: "v1.3.0"
+  localPlugins:
+    iocaineBouncer:
+      moduleName: "git.mstar.dev/mstar/traefik-iocaine-middleware"
+
+# accessLog:
+#   format: json
+#   fields:
+#     defaultMode: keep
+#     headers:
+#       defaultMode: keep
+
+log:
+  level: "INFO" # "DEBUG"
+  format: "common"
+  maxSize: 100
+  maxBackups: 3
+  maxAge: 3
+  compress: true
+
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      httpChallenge:
+        entryPoint: web
+      email: v3rmine@astriiid.fr
+      storage: "/letsencrypt/acme.json"
+      caServer: "https://acme-v02.api.letsencrypt.org/directory"
+
+entryPoints:
+  web:
+    address: ":80"
+    http:
+      middlewares:
+        - ratelimit@file
+        - iocaine@file
+  websecure:
+    address: ":443"
+    transport:
+      respondingTimeouts:
+        readTimeout: "30m"
+    http:
+      middlewares:
+        - ratelimit@file
+        - iocaine@file
+      tls:
+        certResolver: "letsencrypt"
+  tcp-22:
+    address: ":22/tcp"
+  tcp-22000:
+    address: ":22000/tcp"
+  udp-22000:
+    address: ":22000/udp"
+  udp-21027:
+    address: ":21027/udp"
+
+serversTransport:
+  insecureSkipVerify: true
+
+ping:
+  entryPoint: "web"

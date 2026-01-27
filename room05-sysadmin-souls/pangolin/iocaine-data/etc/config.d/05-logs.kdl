@@ -1,0 +1,10 @@
+declare-handler default {
+  logging {  
+    enable #true  
+    reverse-proxy "traefik"
+    
+    classification {  
+      enable #true  
+    }
+  }  
+}

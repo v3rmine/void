@@ -1,0 +1,8 @@
+declare-handler default {
+  checks {
+    asn {
+      database-path "/data/ip-to-asn.mmdb"
+      filter_aggressives #true
+    }
+  }
+}

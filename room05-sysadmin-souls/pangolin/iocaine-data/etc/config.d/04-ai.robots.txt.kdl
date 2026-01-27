@@ -1,0 +1,7 @@
+declare-handler default {
+  checks {
+    ai-robots-txt {
+      path "/data/ai.robots.txt-robots.json"
+    }
+  }
+}

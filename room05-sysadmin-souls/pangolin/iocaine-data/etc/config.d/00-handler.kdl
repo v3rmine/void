@@ -1,0 +1,16 @@
+declare-handler default path="/data/lophiomys-imhausi" language="roto" {
+  inherits "minimal"
+
+  checks {
+    enable "commercial-scrapers"
+
+    demo-host {
+      host "iocaine-demo.serv4.reta.re"
+    }
+
+    generated-urls {
+      identifiers "down-the-burrow"
+    }
+  }
+}
+

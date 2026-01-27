@@ -1,0 +1,101 @@
+services:
+  pangolin:
+    image: fosrl/pangolin:1.14.1
+    container_name: pangolin
+    hostname: pangolin
+    restart: always
+    volumes:
+      - ./config:/app/config
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/api/v1/"]
+      interval: "3s"
+      timeout: "3s"
+      retries: 15
+    # oom_kill_disable: true
+    # mem_limit: 256M
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: '0.3'
+    #       memory: 256M
+
+  gerbil:
+    image: fosrl/gerbil:1.3.0
+    container_name: gerbil
+    restart: always
+    depends_on:
+      pangolin:
+        condition: service_healthy
+    command:
+      - --reachableAt=http://gerbil:3003
+      - --generateAndSaveKeyTo=/var/config/key
+      - --remoteConfig=http://pangolin:3001/api/v1/
+    volumes:
+      - ./config/:/var/config
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    ports:
+      - 51820:51820/udp
+      - 22:22 # Forgejo
+      - 22000:22000/tcp # Syncthing tcp
+      - 22000:22000/udp # Syncthing udp
+      - 21027:21027/udp # Syncthing discovery
+      - 443:443/tcp # Port for traefik because of the network_mode
+      - 443:443/udp # Traefik http3
+      - 80:80 # Port for traefik because of the network_mode
+    # oom_kill_disable: true
+    # mem_limit: 128M
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: '0.1'
+    #       memory: 128M
+
+  traefik:
+    image: traefik:v3.6
+    container_name: traefik
+    hostname: traefik
+    restart: always
+    network_mode: service:gerbil # Ports appear on the gerbil service
+    depends_on:
+      pangolin:
+        condition: service_healthy
+    command:
+      - --configFile=/etc/traefik/traefik_config.yml
+    volumes:
+      - ./config/traefik:/etc/traefik:ro # Volume to store the Traefik configuration
+      - ./config/letsencrypt:/letsencrypt # Volume to store the Let's Encrypt certificates
+      - /var/log/logs/traefik:/logs # Volume to store access logs
+      - ./plugins-local:/plugins-local
+    # oom_kill_disable: true
+    # mem_limit: 128M
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: '0.1'
+    #       memory: 128M
+
+  iocaine:
+    image: git.madhouse-project.org/iocaine/iocaine:3
+    restart: always
+    hostname: iocaine
+    ports:
+      - '127.0.0.1:42069:42069'
+    volumes:
+      - ./iocaine-data:/data
+      - iocaine-state:/run/iocaine
+    command: --config-path /data/etc/config.d
+    environment:
+      - RUST_LOG=iocaine=error
+    logging:
+      driver: "journald"
+
+volumes:
+  iocaine-state:
+
+networks:
+  default:
+    driver: bridge
+    name: pangolin
+    enable_ipv6: true
