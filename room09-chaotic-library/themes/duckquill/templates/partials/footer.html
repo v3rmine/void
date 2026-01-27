@@ -64,4 +64,14 @@
 			{%- endfor %}
 		</ul>
 	{%- endif %}
+
+	{%- if config.extra.goatcounter %}
+		<noscript>
+		{%- if config.extra.goatcounter.user -%}
+			<img src="https://{{ config.extra.goatcounter.user }}.{{config.extra.goatcounter.host}}/count?p={{ current_path | default(value='/') }}">
+		{%- else -%}
+			<img src="https://{{config.extra.goatcounter.host}}/count?p={{ current_path | default(value='/') }}">
+		{%- endif -%}
+		</noscript>
+	{%- endif %}
 </footer>

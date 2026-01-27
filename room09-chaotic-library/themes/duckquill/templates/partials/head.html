@@ -111,7 +111,16 @@
 
 	{%- if scripts | length > 0 %}
 		{%- for script in scripts %}
-			<script type="text/javascript" defer {% if script == "count.js" %}data-goatcounter="https://{{ config.extra.goatcounter.user }}.{{ config.extra.goatcounter.host | default(value='goatcounter.com') }}/count"{% endif %} src="{{ get_url(path=script) | safe }}"></script>
+			<script
+				type="text/javascript"
+				defer
+				{% if script == "count.js" and config.extra.goatcounter.user %}
+					data-goatcounter="https://{{ config.extra.goatcounter.user }}.{{ config.extra.goatcounter.host | default(value='goatcounter.com') }}/count"
+				{% else %}
+					data-goatcounter="https://{{ config.extra.goatcounter.host | default(value='goatcounter.com') }}/count"
+				{% endif %}
+				src="{{ get_url(path=script) | safe }}">
+			</script>
 		{%- endfor %}
 	{%- endif %}
 

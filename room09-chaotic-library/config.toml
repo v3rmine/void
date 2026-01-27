@@ -215,6 +215,9 @@ user = "v3rmine"
 # Whether to show the QR code to Mastodon post
 show_qr = true
 
+[extra.goatcounter]
+host = "stats.astriiid.fr"
+
 [extra.debug]
 # Display outlines around all elements for debugging purposes
 layout = false
