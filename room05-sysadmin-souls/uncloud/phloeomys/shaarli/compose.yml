@@ -3,7 +3,7 @@ services:
     build:
       context: .
       args:
-        VERSION: v0.13.0
+        VERSION: v0.16.1
     container_name: shaarli
     volumes:
       - shaarli-data:/var/www/shaarli/data
