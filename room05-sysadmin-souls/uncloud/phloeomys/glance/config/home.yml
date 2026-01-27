@@ -25,6 +25,8 @@
               limit: 15
               cache: 12h
               feeds:
+                - url: https://halimedemf.substack.com/feed
+                  title: Halimede.
                 - url: https://selfh.st/rss/
                   title: selfh.st
                 - url: https://okazu.yuricon.com/feed/
@@ -96,6 +98,8 @@
                   url: https://links.planchon.dev
                 - title: Filestash
                   url: https://remote.reta.re
+                - title: Goatcounter
+                  url: https://stats.v3rn.in
             - title: laonastes
               links:
                 - title: iocaine demo
