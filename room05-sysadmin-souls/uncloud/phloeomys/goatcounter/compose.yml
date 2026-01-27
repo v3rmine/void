@@ -1,0 +1,16 @@
+services:
+  goatcounter:
+    container_name: goatcounter
+    image: arp242/goatcounter:latest
+    pull_policy: always
+    restart: unless-stopped
+    volumes:
+      - goatcounter-data:/home/goatcounter/goatcounter-data
+    x-ports:
+      - stats.v3rm.in:8080/http
+      - stats.astriiid.fr:8080/http
+    x-machines:
+      - phloeomys
+
+volumes:
+  goatcounter-data:
