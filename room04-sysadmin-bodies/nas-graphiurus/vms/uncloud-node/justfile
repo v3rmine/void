@@ -15,5 +15,14 @@ show:
 destroy:
   tofu destroy -var-file={{credentials_file}}
 
-deploy:
-  nixos-rebuild switch --target-host root@10.0.0.14 -I nixos-config=./configuration.nix -I nixpkgs=channel:nixos-25.11-small
+boot sshport="8080":
+  env NIX_SSHOPTS="-p {{sshport}}" nixos-rebuild boot \
+    --target-host root@10.0.0.14 \
+    -I nixos-config=./configuration.nix \
+    -I nixpkgs=channel:nixos-25.11
+
+deploy sshport="8080":
+  env NIX_SSHOPTS="-p {{sshport}}" nixos-rebuild switch \
+    --target-host root@10.0.0.14 \
+    -I nixos-config=./configuration.nix \
+    -I nixpkgs=channel:nixos-25.11

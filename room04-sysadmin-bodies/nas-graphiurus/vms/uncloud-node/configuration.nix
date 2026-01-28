@@ -41,8 +41,8 @@ let
 
   custom-newt = pkgs.stdenv.mkDerivation rec {
     pname = "newt";
-    version = "1.8.1";
-    src = builtins.fetchurl "https://github.com/fosrl/newt/releases/download/1.8.1/newt_linux_amd64";
+    version = "1.9.0";
+    src = builtins.fetchurl "https://github.com/fosrl/newt/releases/download/1.9.0/newt_linux_amd64";
     dontUnpack = true;
 
     installPhase = ''
@@ -55,11 +55,11 @@ let
   };
 in {
   system.stateVersion = "25.11";
-  system.autoUpgrade.channel = "https://nixos.org/channels/nixos-25.11-small";
+  system.autoUpgrade.channel = "https://nixos.org/channels/nixos-25.11";
 
   networking.firewall = {
     enable = false;
-    allowedTCPPorts = [ 22 ];
+    allowedTCPPorts = [ 8080 ];
     allowedUDPPorts = [];
   };
 
@@ -299,7 +299,7 @@ in {
   # SSH
   services.openssh = {
     enable = true;
-    ports = [ 22 ];
+    ports = [ 8080 ];
     openFirewall = true;
     allowSFTP = false;
     settings = {
