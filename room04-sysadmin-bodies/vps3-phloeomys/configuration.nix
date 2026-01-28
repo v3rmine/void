@@ -205,8 +205,8 @@ in {
     settings = {
       "/var/log/logs/traefik/access.log" = {
         frequency = "daily";
-        maxsize = "5M"; # Rotate when size reach 1MB
-        rotate = 3; # Keep the last 5 version for ipset
+        maxsize = "50M"; # Rotate when size reach 50MB
+        rotate = 5; # Keep the last 5 version for ipset
         missingok = true; # Ignore if file is missing
         postrotate = ''
           ${pkgs.systemd}/bin/systemctl start traefik-logrotate
@@ -354,7 +354,7 @@ in {
 
   # System
   services.cron.systemCronJobs = [
-    "0 5 * * * root journalctl --vacuum-size=128M"
+    "0 * * * * root journalctl --vacuum-size=512M"
     "*/5 * * * * root ${run-autorestic}/bin/run-autorestic.sh"
     "*/15 * * * * root ${fill-blocklists}/bin/fill-blocklists.sh"
     "0 0 * * MON root ${flush-blocklists}/bin/flush-blocklists.sh"
