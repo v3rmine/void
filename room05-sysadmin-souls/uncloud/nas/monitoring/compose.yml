@@ -1,7 +1,7 @@
 services:
   loki:
     image: grafana/loki:latest
-    pull_policy: always
+    pull_policy: missing
     container_name: loki
     restart: unless-stopped
     command: -config.file=/etc/loki/local-config.yaml
@@ -12,9 +12,19 @@ services:
     x-machines:
       - nas
 
+  grafana-image-renderer:
+    image: grafana/grafana-image-renderer:latest
+    pull_policy: missing
+    container_name: grafana-image-renderer
+    restart: unless-stopped
+    environment:
+      - GOMEMLIMIT=1GiB
+    x-machines:
+      - nas
+
   grafana:
     image: grafana/grafana:latest
-    pull_policy: always
+    pull_policy: missing
     container_name: grafana
     restart: unless-stopped
     environment:
@@ -22,6 +32,9 @@ services:
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
       - GF_FEATURE_TOGGLES_NEWLOGSPANEL=false
+      - GF_SERVER_ROOT_URL=https://grafana.serv4.reta.re
+      - GF_RENDERING_SERVER_URL=http://grafana-image-renderer:8081/render
+      - GF_RENDERING_CALLBACK_URL=http://grafana:3000/
     entrypoint:
       - sh
       - -euc
