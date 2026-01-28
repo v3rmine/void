@@ -7,9 +7,59 @@ let
     # Merge location and backend autorestic confs
     autorestic_conf="$(${pkgs.yq-go}/bin/yq eval-all '. as $item ireduce ({}; . * $item)' /etc/autorestic.yml /etc/autorestic-backends.yml)"
     echo "$autorestic_conf" > /tmp/.autorestic.yml
+
     # Run the cron task of autorestic
     ${pkgs.autorestic}/bin/autorestic -c /tmp/.autorestic.yml --ci cron > /var/log/autorestic.log 2>&1
     rm -f /tmp/.autorestic.yml
+  '';
+
+  fill-blocklists = pkgs.writeShellScriptBin "fill-blocklists.sh" ''
+    # Ensure lists exists
+    ${pkgs.ipset}/bin/ipset list scanners-ipv4 >/dev/null 2>&1 \
+      || ${pkgs.ipset}/bin/ipset create scanners-ipv4 hash:ip hashsize 4096 counters family inet
+    ${pkgs.ipset}/bin/ipset list scanners-ipv6 >/dev/null 2>&1 \
+      || ${pkgs.ipset}/bin/ipset create scanners-ipv6 hash:ip hashsize 4096 counters family inet6
+
+    # IPs that make >100 http request get banned:
+    http_requester_ips=$(for file in /var/log/logs/traefik/*; do
+      grep 'RequestScheme":"http"' $file \
+        | awk 'match($0, /"ClientHost"[[:space:]]*:[[:space:]]*"([^"]+)"/, a) { print a[1] }';
+    done \
+      | sort \
+      | uniq -c \
+      | awk '{if ($1 >= 100) print $2}')
+
+    echo "$http_requester_ips" | grep -F '.' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv4 -exist
+    echo "$http_requester_ips" | grep -F ':' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv6 -exist
+
+    # IPs that have been rejected more than 10k times by iocaine
+    iocaine_rejected_ips=$(journalctl CONTAINER_NAME=pangolin_iocaine_1 -o json -r \
+      | yq -p=json '.MESSAGE | from_json| select(."verdict.type" == "accept") | .request.header.x-forwarded-for' \
+      | grep -v "\---" \
+      | sort \
+      | uniq -c \
+      | awk '{if ($1 >= 10000) print $2}')
+
+    echo "$iocaine_rejected_ips" | grep -F '.' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv4 -exist
+    echo "$iocaine_rejected_ips" | grep -F ':' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv6 -exist
+
+    # Make banned IP list persistent
+    ${pkgs.ipset}/bin/ipset save > /etc/iptables/ipsets
+  '';
+
+  flush-blocklists = pkgs.writeShellScriptBin "flush-blocklists.sh" ''
+      # Ensure lists exists
+      ${pkgs.ipset}/bin/ipset list scanners-ipv4 >/dev/null 2>&1 \
+        || ${pkgs.ipset}/bin/ipset create scanners-ipv4 hash:ip hashsize 4096 counters family inet
+      ${pkgs.ipset}/bin/ipset list scanners-ipv6 >/dev/null 2>&1 \
+        || ${pkgs.ipset}/bin/ipset create scanners-ipv6 hash:ip hashsize 4096 counters family inet6
+
+      # Flush lists from previous values
+      ${pkgs.ipset}/bin/ipset flush scanners-ipv4
+      ${pkgs.ipset}/bin/ipset flush scanners-ipv6
+
+      # Make banned IP list persistent
+      ${pkgs.ipset}/bin/ipset save > /etc/iptables/ipsets
   '';
 
   uncloud = pkgs.stdenv.mkDerivation rec {
@@ -43,8 +93,8 @@ let
 
   custom-newt = pkgs.stdenv.mkDerivation rec {
     pname = "newt";
-    version = "1.8.1";
-    src = builtins.fetchurl "https://github.com/fosrl/newt/releases/download/1.8.1/newt_linux_amd64";
+    version = "1.9.0";
+    src = builtins.fetchurl "https://github.com/fosrl/newt/releases/download/1.9.0/newt_linux_amd64";
     dontUnpack = true;
 
     installPhase = ''
@@ -66,21 +116,27 @@ in {
     enable = true;
     interfaces = {
       "eth0" = {
-        allowedTCPPorts = [ 22 8080 5000 51000 ];
-        allowedUDPPorts = [ 51001 51820 ];
+        allowedTCPPorts = [ 22 80 443 8080 22000 5000 51000 ];
+        allowedUDPPorts = [ 53 443 21027 21820 22000 51001 51820 51830 ];
       };
     };
   };
 
   environment.systemPackages = with pkgs; [
     docker-compose
+    git
     vim
+    htop
     restic
     autorestic
-    yq-go
     run-autorestic
+    yq-go
     uncloud
     custom-newt
+    fill-blocklists
+    flush-blocklists
+    iptables
+    ipset
   ];
 
   environment.etc."autorestic.yml" = {
@@ -92,9 +148,10 @@ in {
           keep-daily: 7
           keep-weekly: 52
           keep-yearly: 10
-        backblaze-standard: &backblaze-standard
+        standard: &standard
           to:
             - backblaze
+            - hetzner
           options:
             backup:
               compression: max
@@ -105,10 +162,112 @@ in {
 
       locations:
         systemd-services:
-          <<: *backblaze-standard
+          <<: *standard
           from: /persist/var/lib/systemd/system
           cron: '0 * * * *'
+        pangolin:
+          <<: *standard
+          from: /root/pangolin
+          cron: '0 * * * *'
+        filestash:
+          <<: *standard
+          from:
+            - /persist/var/lib/docker/volumes/filestash-config
+            - /persist/var/lib/docker/volumes/filestash-localdata
+          cron: '0 * * * *'
+        goatcounter:
+          <<: *standard
+          from:
+            - /persist/var/lib/docker/volumes/goatcounter-data
+          cron: '0 * * * *'
+        miniflux:
+          <<: *standard
+          from:
+            - /persist/var/lib/docker/volumes/miniflux-data
+          cron: '0 * * * *'
+        shaarli:
+          <<: *standard
+          from:
+            - /persist/var/lib/docker/volumes/shaarli-data
+          cron: '0 * * * *'
     '';
+  };
+
+  networking.firewall.extraCommands = ''
+    iptables -A INPUT -m set --match-set scanners-ipv4 src -j DROP
+    iptables -A FORWARD -m set --match-set scanners-ipv4 src -j DROP
+    ip6tables -A INPUT -m set --match-set scanners-ipv6 src -j DROP
+    ip6tables -A FORWARD -m set --match-set scanners-ipv6 src -j DROP
+  '';
+
+  services.logrotate = {
+    enable = true;
+    settings = {
+      "/var/log/logs/traefik/access.log" = {
+        frequency = "daily";
+        maxsize = "5M"; # Rotate when size reach 1MB
+        rotate = 3; # Keep the last 5 version for ipset
+        missingok = true; # Ignore if file is missing
+        postrotate = ''
+          ${pkgs.systemd}/bin/systemctl start traefik-logrotate
+        '';
+        nocompress = true; # Do not compress for postprocess by ipset
+        notifempty = true; # Do not rotate if empty
+      };
+    };
+  };
+
+  services.vector = {
+    enable = true;
+    journaldAccess = true;
+    settings = {
+      api.enabled = true;
+
+      sources = {
+        journald.type = "journald";
+        traefik = {
+          type = "file";
+          include = [ "/var/log/logs/traefik/access.log" ];
+          fingerprint.strategy = "device_and_inode";
+          rotate_wait_secs = 30;
+        };
+      };
+
+      sinks = {
+        loki_journald = {
+          type = "loki";
+          inputs = [ "journald" ];
+          endpoint = "http://nas-uncloud:3100";
+          encoding = { codec = "json"; };
+
+          labels.source = "phloeomys_journald";
+        };
+        loki_traefik = {
+          type = "loki";
+          inputs = [ "traefik" ];
+          endpoint = "http://nas-uncloud:3100";
+          encoding = { codec = "json"; };
+
+          labels.source = "phloeomys_traefik";
+        };
+      };
+    };
+  };
+  systemd.services."vector".serviceConfig = {
+    AmbientCapabilities =
+      lib.mkForce "CAP_NET_BIND_SERVICE CAP_DAC_READ_SEARCH";
+    CapabilityBoundingSet = "CAP_DAC_READ_SEARCH";
+  };
+  systemd.services."logrotate".serviceConfig = {
+    PrivateNetwork = lib.mkForce false;
+    RestrictAddressFamilies = lib.mkForce "AF_UNIX";
+    BindPaths = "/run/systemd/private /run/dbus/system_bus_socket";
+  };
+  systemd.services."traefik-logrotate" = {
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.docker}/bin/docker kill -s USR1 traefik";
+    };
   };
 
   users.users = {
@@ -197,6 +356,8 @@ in {
   services.cron.systemCronJobs = [
     "0 5 * * * root journalctl --vacuum-size=128M"
     "*/5 * * * * root ${run-autorestic}/bin/run-autorestic.sh"
+    "*/15 * * * * root ${fill-blocklists}/bin/fill-blocklists.sh"
+    "0 0 * * MON root ${flush-blocklists}/bin/flush-blocklists.sh"
   ];
 
   virtualisation = {
@@ -229,6 +390,7 @@ in {
       "/etc/ssh/ssh_host_rsa_key"
       "/etc/ssh/ssh_host_rsa_key.pub"
       "/etc/autorestic-backends.yml"
+      "/etc/iptables/ipsets"
     ];
     directories = [
       "/boot"
@@ -241,6 +403,8 @@ in {
       "/var/lib/containerd"
       "/var/lib/uncloud"
       "/var/lib/systemd/system"
+      "/root/pangolin"
+      "/root/.ssh"
       "/var/log"
     ];
   };
@@ -250,7 +414,7 @@ in {
     enable = true;
     ports = [ 8080 ];
     openFirewall = true;
-    allowSFTP = true;
+    allowSFTP = false;
     settings = {
       PermitRootLogin = "without-password";
       PasswordAuthentication = false;
