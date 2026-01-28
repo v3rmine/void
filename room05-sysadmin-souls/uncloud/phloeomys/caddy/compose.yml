@@ -1,0 +1,13 @@
+services:
+  caddy-custom:
+    image: caddy:2.10.2
+    command: caddy run -c /config/caddy.json --watch
+    restart: unless-stopped
+    volumes:
+      - /var/lib/uncloud/caddy:/config
+      - /var/lib/uncloud/caddy:/data
+      - /run/uncloud/caddy:/run/caddy
+    x-ports:
+      - 8000:80@host
+    x-machines:
+      - phloeomys
