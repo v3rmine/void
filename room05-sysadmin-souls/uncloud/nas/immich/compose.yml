@@ -26,7 +26,7 @@ services:
         limits:
           memory: 1G
     x-ports:
-      - photos.planchon.dev:2283/http
+      - photos.reta.re:2283/http
     x-machines:
       - nas
 
