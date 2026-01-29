@@ -17,10 +17,15 @@ services:
       - MEILI_HOST=http://librechat-meilisearch:7700
       - RAG_PORT=8000
       - RAG_API_URL=http://librechat-rag-api:8000
+    env_file:
+      - .env
     configs:
       - source: librechat-env
         mode: 0600
         target: /app/.env
+      - source: librechat-config
+        mode: 0600
+        target: /app/librechat.yaml
     volumes:
       - librechat-images:/app/client/public/images
       - librechat-uploads:/app/uploads
@@ -85,6 +90,8 @@ services:
 configs:
   librechat-env:
     file: .env
+  librechat-config:
+    file: librechat.yaml
 
 volumes:
   librechat-images:
