@@ -1,12 +1,13 @@
 ---
 title: "Warframe 11th anniversary easter egg"
-guid: c24b38b0-8878-453f-a2f2-48737ae7892d
 date: 2024-03-22
 taxonomies:
   tags:
     - warframe
     - rust
     - bruteforce
+extra:
+  guid: c24b38b0-8878-453f-a2f2-48737ae7892d
 ---
 
 # Sometimes I'm bored

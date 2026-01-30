@@ -1,0 +1,65 @@
+@font-face {
+	font-style: normal;
+	font-weight: 400;
+	src: url("fonts/Atkinson-Hyperlegible-Regular-102a-patched.woff2") format("woff2");
+	font-family: "Atkinson Hyperlegible";
+	font-display: swap;
+}
+
+@font-face {
+	font-style: normal;
+	font-weight: 800;
+	src: url("fonts/Atkinson-Hyperlegible-Bold-102a-patched.woff2") format("woff2");
+	font-family: "Atkinson Hyperlegible";
+	font-display: swap;
+}
+
+@font-face {
+	font-style: normal;
+	font-weight: 100 900;
+	src: url("fonts/quando-regular-patched.woff2") format("woff2");
+	font-family: "Quando";
+	font-display: swap;
+}
+
+@font-face {
+	font-style: normal;
+	font-weight: 100 900;
+	src: url("fonts/iosevka-regular.woff2") format("woff2");
+	font-family: "Iosevka";
+	font-display: swap;
+}
+
+body {
+	font-family: "Atkinson Hyperlegible", var(--font-system-ui), var(--font-emoji);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-weight: bold;
+	font-family: "Quando", var(--font-system-ui), var(--font-emoji);
+}
+
+h1 {
+	font-weight: 900;
+}
+
+pre,
+code,
+kbd,
+samp {
+	font-family: "Iosevka", var(--font-monospace-code);
+}
+
+.crt {
+  pre,
+  code,
+  kbd,
+  samp {
+  	font-family: var(--font-monospace-code);
+  }
+}

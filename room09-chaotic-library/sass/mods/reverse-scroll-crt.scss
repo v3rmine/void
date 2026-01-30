@@ -1,0 +1,6 @@
+@media only screen and (max-width: 600px) {
+  .crt.reverse-scroll > pre {
+    display: flex;
+    flex-direction: row-reverse;
+  }
+}

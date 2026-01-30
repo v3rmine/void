@@ -1,20 +1,29 @@
 ---
 title: Blog's roadmap
-guid: 65426584-4048-4fb8-b9dd-a0c2c31aa4bf
 date: 2026-01-14
-# updated: 2026-01-14
+updated: 2026-01-30 12:27:09+01:00
 taxonomies:
   tags:
     - blog
 extra:
+  guid: 65426584-4048-4fb8-b9dd-a0c2c31aa4bf
   toc: true
 ---
 
 # Todolist
-- <input type="checkbox" disabled> show the default lang if the article doesn't exist
-- <input type="checkbox" disabled> add style to RSS feeds <https://www.feed.style/>
-- <input type="checkbox" disabled> add a direct link to edit the page
-- <input type="checkbox" disabled> add a link on every page to the source of the page
+- [ ] add some slashpages <https://slashpages.net/>
+  - [ ] /log
+  - [ ] /death
+  - [ ] /ideas
+  - [ ] /now
+  - [ ] /uses
+  - [ ] /ai (spoil: only sometimes to order my thoughts in a phrase that everyone will understand, using openrouter + a cheap model but I should dig for local models)
+- [ ] add 88x31 buttons
+- [ ] differenciates series and posts in tag lists
+- [ ] add a direct link to edit the page
+- [ ] add a link on every page to the source of the page
+- [x] add style to RSS feeds <https://www.feed.style/>
+- [ ] ~~show the default lang if the article doesn't exist~~
 
 # Ideas
 

@@ -1,27 +1,62 @@
-#article-list {
-	gap: 2rem;
+#simple-article-list {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	margin-block-start: 2rem;
 
 	article {
+		--bg-overlay: var(--accent-color-alpha);
 		position: relative;
-		transition: none;
-		box-shadow: none;
-		border-radius: 0;
-		border-block-end: max(1px, 0.0625rem) solid var(--fg-muted-2);
-		background: none;
-		padding: 0;
-		padding-block-end: 1rem;
-		overflow: visible;
+		transition: var(--transition);
+		border-radius: var(--rounded-corner);
+		background-image: linear-gradient(var(--bg-overlay), var(--bg-overlay)),
+			linear-gradient(var(--glass-bg), var(--glass-bg)), var(--blurnail);
+		background-position: center;
+		background-size: cover;
+		padding: 0.5rem 1rem;
+		overflow: hidden;
+		display: flex;
+		justify-content: space-between;
+		align-content: center;
 
-		&:last-of-type {
-			border-block-end: none;
+		& > small:last-child {
+      text-align: right;
 		}
 
-		&:active {
-			transform: none;
+		&:hover, &:has(> a:hover) {
+  		background-color: var(--bg-overlay);
 		}
 
 		& > a {
-			border-radius: 0;
+			position: absolute;
+			inset: 0;
+			border-radius: var(--rounded-corner);
+			border-start-end-radius: 2.125rem;
+			border-end-end-radius: 1.8125rem;
+		}
+
+		.article-title {
+			margin: 0;
+			color: var(--accent-color);
+			font-weight: bold;
+			line-height: 1;
+			font-family: var(--font-system-ui);
+
+			&::after {
+				-webkit-mask-image: var(--icon-right);
+				display: inline-block;
+				position: relative;
+				transform: translateX(-0.25rem);
+				opacity: 0;
+				mask-image: var(--icon-right);
+				transition: var(--transition);
+				margin-inline-start: 0.25rem;
+				background-color: currentColor;
+				width: 1rem;
+				height: 1rem;
+				pointer-events: none;
+				content: "";
+			}
 		}
 
 		&.draft,
@@ -29,17 +64,206 @@
 		&.featured,
 		&.hot,
 		&.poor {
-			background-color: transparent;
-
 			&::before {
-				display: none;
+				position: absolute;
+				transform: translateY(-50%);
+				opacity: var(--disabled-opacity);
+				mask-size: cover;
+				-webkit-mask-size: cover;
+				transition: var(--transition-longer);
+				inset-block-start: 50%;
+				inset-inline-end: -3rem;
+				width: 12rem;
+				height: 12rem;
+				content: "";
+			}
+
+			&:hover::before {
+				transform: translateY(-50%) rotate(-10deg) scale(1.5);
 			}
 		}
 
-		.details {
-			margin-block-start: 0;
-			border-block-start: none;
-			padding-block-start: 0;
+		&.draft {
+			--bg-overlay: var(--fg-muted-1);
+
+			&::before {
+				-webkit-mask-image: var(--icon-pencil);
+				mask-image: var(--icon-pencil);
+				background-color: var(--fg-muted-1);
+			}
+
+			.article-title {
+				color: var(--fg-muted-4);
+			}
 		}
+
+		&.archive {
+			--bg-overlay: var(--purple-bg);
+
+			&::before {
+				-webkit-mask-image: var(--icon-archive);
+				mask-image: var(--icon-archive);
+				background-color: var(--purple-bg);
+			}
+
+			.article-title {
+				color: var(--purple-fg);
+			}
+		}
+
+		&.featured {
+			--bg-overlay: var(--yellow-bg);
+
+			&::before {
+				-webkit-mask-image: var(--icon-star);
+				mask-image: var(--icon-star);
+				background-color: var(--yellow-bg);
+			}
+
+			&:hover {
+				&::before {
+					transform: translateY(-50%) rotate(62deg) scale(1.5);
+				}
+			}
+
+			.article-title {
+				color: var(--yellow-fg);
+			}
+		}
+
+		&.hot {
+			--bg-overlay: var(--red-bg);
+
+			&::before {
+				-webkit-mask-image: var(--icon-fire);
+				mask-image: var(--icon-fire);
+				background-color: var(--red-bg);
+			}
+
+			.article-title {
+				color: var(--red-fg);
+			}
+		}
+
+		&.poor {
+			--bg-overlay: var(--brown-bg);
+
+			&::before {
+				-webkit-mask-image: var(--icon-poop);
+				mask-image: var(--icon-poop);
+				background-color: var(--brown-bg);
+			}
+
+			.article-title {
+				color: var(--brown-fg);
+			}
+		}
+	}
+}
+
+#paginator {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	gap: 0.25rem;
+	margin-block-start: 4rem;
+
+	#paginator-first,
+	#paginator-previous,
+	#paginator-next,
+	#paginator-last {
+		display: inline-block;
+		transition: var(--transition);
+		box-shadow: var(--edge-highlight);
+		border-radius: 1rem;
+		background-color: var(--fg-muted-1);
+		padding: 0.5rem;
+		color: var(--fg-muted-4);
+		line-height: 0;
+
+		.icon {
+			transition: var(--transition);
+
+			:root[dir*="rtl"] & {
+				transform: scaleX(-1);
+			}
+		}
+	}
+
+	a#paginator-first,
+	a#paginator-previous,
+	a#paginator-next,
+	a#paginator-last {
+		&:hover {
+			background-color: var(--fg-muted-2);
+			color: var(--fg-muted-5);
+		}
+
+		&:active {
+			transform: var(--active);
+			border-radius: 1rem;
+		}
+	}
+
+	span#paginator-first,
+	span#paginator-previous,
+	span#paginator-next,
+	span#paginator-last {
+		opacity: var(--disabled-opacity);
+		cursor: not-allowed;
+	}
+
+	#paginator-previous {
+		border-start-end-radius: var(--rounded-corner-small);
+		border-end-end-radius: var(--rounded-corner-small);
+	}
+
+	#paginator-next {
+		border-start-start-radius: var(--rounded-corner-small);
+		border-end-start-radius: var(--rounded-corner-small);
+	}
+
+	#paginator-first .icon {
+		-webkit-mask-image: var(--icon-first);
+		mask-image: var(--icon-first);
+	}
+
+	#paginator-previous .icon {
+		-webkit-mask-image: var(--icon-previous);
+		mask-image: var(--icon-previous);
+	}
+
+	#paginator-next .icon {
+		-webkit-mask-image: var(--icon-next);
+		mask-image: var(--icon-next);
+	}
+
+	#paginator-last .icon {
+		-webkit-mask-image: var(--icon-last);
+		mask-image: var(--icon-last);
+	}
+
+	#paginator-counter {
+		display: inline-block;
+		transition: var(--transition);
+		box-shadow: var(--edge-highlight);
+		border-radius: var(--rounded-corner-small);
+		background-color: var(--accent-color-alpha);
+		padding: 0.5rem 0.625rem;
+		color: var(--accent-color);
+		font-weight: bold;
+		line-height: 1;
+		font-variant-numeric: tabular-nums;
+	}
+
+	&:has(a#paginator-previous:active) #paginator-counter {
+		border-start-start-radius: 1rem;
+		border-end-start-radius: 1rem;
+	}
+
+	&:has(a#paginator-next:active) #paginator-counter {
+		border-start-end-radius: 1rem;
+		border-end-end-radius: 1rem;
 	}
 }

@@ -1,0 +1,9 @@
+span.spoiler.solid {
+  & > * {
+    transition: var(--transition);
+  }
+
+  &:not(:hover) > * {
+    color: rgba(0, 0, 0, 0) !important;
+  }
+}

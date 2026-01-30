@@ -1,0 +1,19 @@
+{
+  "name":"v3rmine personal website",
+  "short_name":"v3rmine",
+  "icons":[
+    {
+      "src":"/android-chrome-192x192.png",
+      "sizes":"192x192",
+      "type":"image/png"
+    },
+    {
+      "src":"/android-chrome-512x512.png",
+      "sizes":"512x512",
+      "type":"image/png"
+    }
+  ],
+  "theme_color":"#9333FF",
+  "background_color":"#E9D6FF",
+  "display":"standalone"
+}

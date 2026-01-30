@@ -1,9 +1,12 @@
-+++
-insert_anchor_links = "left"
-title = "Home"
-+++
+---
+title: "Astrid"
+template: "article_list.html"
+insert_anchor_links: "none"
+extra:
+  list_for_section: garden
+---
 
-{% crt() %}
+{% crt(extra_classes="reverse-scroll") %}
 ```
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠀⠀⠀⠀⠀⢄⣆⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣏⣉⣶⠴⠖⣤⠤⠽⠶⠦⣄
@@ -20,5 +23,3 @@ title = "Home"
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⠶⠾⠿⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠒⠋⠀⠀
 ```
 {% end %}
-
-# Astrid

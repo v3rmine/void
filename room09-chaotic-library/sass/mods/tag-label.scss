@@ -1,0 +1,16 @@
+.tag.label {
+  background-color: initial;
+
+  &:hover {
+    background-color: initial;
+  }
+}
+
+#article-list .tag.label {
+  background-color: initial;
+
+  &:hover {
+    color: var(--accent-color);
+    background-color: var(--accent-color-alpha);
+  }
+}

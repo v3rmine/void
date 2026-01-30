@@ -1,0 +1,36 @@
+#serie-parts-container {
+  p {
+    color: var(--fg-muted-5);
+    margin-bottom: 0.25rem;
+  }
+}
+
+#serie-part-list {
+  display: flex;
+  gap: 0.25rem;
+  justify-content: center;
+  align-items: center;
+
+  a {
+    display: inline-block;
+    color: var(--fg-muted-4);
+    background-color: var(--fg-muted-1);
+    border-radius: var(--rounded-corner-small);
+    box-shadow: var(--edge-highlight);
+    padding: .4rem 0;
+    width: 1.75rem;
+    text-align: center;
+    line-height: 1;
+    font-weight: bold;
+    text-decoration: none;
+
+    &.active {
+      background-color: var(--accent-color-alpha);
+      color: var(--accent-color);
+    }
+
+    &:hover {
+      background-color: var(--fg-muted-2);
+    }
+  }
+}

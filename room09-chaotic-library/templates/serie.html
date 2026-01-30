@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+{%- set date_format = macros_translate::translate(key="date_format", default="%B %d, %Y", language_strings=language_strings) -%}
+{%- set date_locale = macros_translate::translate(key="date_locale", default="en_US", language_strings=language_strings) -%}
+{%- set garden = get_section(path="garden/_index.md", lang=lang) -%}
+{%- set serie_pages = garden.pages | filter(attribute="extra.serie", value=page.extra.serie | default(value="")) | sort(attribute="extra.serie_index") -%}
+
+{%- if serie_pages -%}
+	{%- set number_of_posts = serie_pages | length -%}
+{%- else -%}
+	{%- set number_of_posts = 0 -%}
+{%- endif -%}
+
+<h1>{{ page.title }}</h1>
+
+{{ page.content | safe }}
+
+{# <div class="sparkline">
+	{%- if serie_pages -%}
+		{%- set pages = serie_pages -%}
+	{%- else -%}
+		{%- set pages = term.pages -%}
+	{%- endif -%}
+
+	{%- for month, pages in pages | group_by(attribute="month") -%}
+		{%- set posts_per_bar = pages | length -%}
+		{%- set bar_height = pages | length * 10 -%}
+		<div style="--bar-height: {{ bar_height ~ '%' }}" title="{{ macros_translate::translate(key='posts', number=posts_per_bar, default='$NUMBER posts in total', language_strings=language_strings) }}"></div>
+	{%- endfor -%}
+</div> #}
+
+<p>
+	<small>
+		{%- if config.taxonomies | length > 0 -%}
+		    {%- for taxon in config.taxonomies -%}
+			    {%- set taxon_name = taxon.name -%}
+			    <a href="{{- get_url(path='$TAXON', lang=lang) | replace(from="$TAXON", to=taxon.name) | lower -}}">
+					{{ macros_translate::translate(key='filter_by_taxon', default='Filter by $TAXON', language_strings=language_strings) | replace(from="$TAXON", to=taxon.name) }}
+			    </a>
+			    <br />
+			{%- endfor %}
+		{%- endif %}
+		{{ macros_translate::translate(key='posts', number=number_of_posts, default='$NUMBER posts in total', language_strings=language_strings) }}
+	</small>
+</p>
+
+{% include "partials/serie_articles.html" %}
+{% endblock content %}
