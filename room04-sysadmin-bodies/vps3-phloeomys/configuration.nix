@@ -43,6 +43,17 @@ let
     echo "$iocaine_rejected_ips" | grep -F '.' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv4 -exist
     echo "$iocaine_rejected_ips" | grep -F ':' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv6 -exist
 
+    # I don't host any wordpress so ban ip that scans for it
+    wp_scanners_ips=$(for file in /var/log/logs/traefik/*; do
+      grep -E 'RequestPath":"/(wp-admin\.php|wp-content/[^"]+)"' $file \
+      | awk 'match($0, /"ClientHost"[[:space:]]*:[[:space:]]*"([^"]+)"/, a) { print a[1] }';
+    done \
+      | sort \
+      | uniq)
+    
+    echo "$wp_scanners_ips" | grep -F '.' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv4 -exist
+    echo "$wp_scanners_ips" | grep -F ':' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv6 -exist
+
     # Make banned IP list persistent
     ${pkgs.ipset}/bin/ipset save > /etc/iptables/ipsets
   '';
