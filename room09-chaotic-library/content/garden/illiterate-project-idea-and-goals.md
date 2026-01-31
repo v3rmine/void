@@ -1,6 +1,8 @@
 ---
 title: Illiterate project idea and goals
 date: 2026-01-30 12:27:09+01:00
+description: >
+  The ideas and goals for "Illiterate", a literate programming tool in markdown which needs to be as flexible and accessible as possible
 taxonomies:
   tags:
     - project

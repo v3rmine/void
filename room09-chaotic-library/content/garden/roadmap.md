@@ -11,6 +11,7 @@ extra:
 ---
 
 # Todolist
+- [ ] self host <https://github.com/niccokunzmann/open-web-calendar/>
 - [ ] add some slashpages <https://slashpages.net/>
   - [ ] /log
   - [ ] /death

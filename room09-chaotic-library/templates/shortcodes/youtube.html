@@ -1,0 +1,14 @@
+{%- if autoplay -%}{%- set autoplay = "autoplay=1" -%}{%- endif -%}
+{%- if start -%}{%- set start = "start=" ~ start -%}{%- endif -%}
+{%- if list -%}{%- set list = "list" ~ list -%}{%- endif -%}
+{%- set params = [
+    autoplay | default(value="autoplay=0"),
+    start | default(value=""),
+    list | default(value="")
+] | filter(attribute="") | join(sep="&") -%}
+<iframe
+	class="youtube-embed"
+	src="https://{{ host | default(value='www.youtube-nocookie.com') }}/embed/{{ id }}?{{ params }}"
+	allow="{%- if autoplay %}autoplay ; {% endif %} encrypted-media"
+	referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+</iframe>

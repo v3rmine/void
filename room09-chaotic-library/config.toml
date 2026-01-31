@@ -146,7 +146,7 @@ csp = [
 	{ directive = "media-src", domains = ["'self'", "https:"] },
 	{ directive = "script-src", domains = ["'self'", "'sha256-N9chTn5S0hU62Hotw4Ml5LKoceaZ+S+9kh1qlOAjuQM='"] },
 	{ directive = "style-src", domains = ["'self'", "'unsafe-inline'"] },
-	{ directive = "frame-src", domains = ["https://eldritch.cafe", "https://open-web-calendar.hosted.quelltext.eu"] },
+	{ directive = "frame-src", domains = ["https://eldritch.cafe", "https://open-web-calendar.hosted.quelltext.eu", "https://invidious.nerdvpn.de"] },
 	# { directive = "frame-src", domains = ["https://player.vimeo.com", "https://www.youtube-nocookie.com", "https://eldritch.cafe"] },
 	{ directive = "connect-src", domains = ["https://eldritch.cafe"] },
 	{ directive = "base-uri", domains = ["'none'"] },

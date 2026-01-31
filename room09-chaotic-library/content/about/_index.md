@@ -1,5 +1,6 @@
 ---
 title: "About me"
+insert_anchor_links: "left"
 ---
 
 Hey! I'm Astrid welcome to my garden 🌳

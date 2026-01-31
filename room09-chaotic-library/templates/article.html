@@ -158,7 +158,9 @@
 		{%- include "partials/toc.html" -%}
 	{%- endif -%}
 
-	{{ page.content | safe }}
+	<div class="content">
+	    {{ page.content | safe }}
+	</div>
 </article>
 
 {%- if page.extra.comments.id -%}
