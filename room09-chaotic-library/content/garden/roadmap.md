@@ -11,6 +11,7 @@ extra:
 ---
 
 # Todolist
+- [ ] ajouter un widget load on click pour l'embed youtube
 - [ ] self host <https://github.com/niccokunzmann/open-web-calendar/>
 - [ ] add some slashpages <https://slashpages.net/>
   - [ ] /log
