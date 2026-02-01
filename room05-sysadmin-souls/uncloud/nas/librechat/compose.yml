@@ -3,7 +3,7 @@ services:
     container_name: LibreChat
     depends_on:
       - librechat-mongodb
-      - librechat-rag-api
+      # - librechat-rag-api
     image: ghcr.io/danny-avila/librechat-dev:latest
     pull_policy: always
     restart: always
@@ -15,8 +15,8 @@ services:
       - PORT=8080
       - MONGO_URI=mongodb://librechat-mongodb:27017/LibreChat
       - MEILI_HOST=http://librechat-meilisearch:7700
-      - RAG_PORT=8000
-      - RAG_API_URL=http://librechat-rag-api:8000
+      # - RAG_PORT=8000
+      # - RAG_API_URL=http://librechat-rag-api:8000
     env_file:
       - .env
     configs:
@@ -72,20 +72,20 @@ services:
     x-machines:
       - nas
 
-  librechat-rag-api:
-    container_name: rag-api
-    image: ghcr.io/danny-avila/librechat-rag-api-dev-lite:latest
-    pull_policy: always
-    environment:
-      - DB_HOST=librechat-vectordb
-      - RAG_PORT=8000
-    restart: always
-    depends_on:
-      - librechat-vectordb
-    env_file:
-      - .env
-    x-machines:
-      - nas
+  # librechat-rag-api:
+  #   container_name: rag-api
+  #   image: ghcr.io/danny-avila/librechat-rag-api-dev-lite:latest
+  #   pull_policy: always
+  #   environment:
+  #     - DB_HOST=librechat-vectordb
+  #     - RAG_PORT=8000
+  #   restart: always
+  #   depends_on:
+  #     - librechat-vectordb
+  #   env_file:
+  #     - .env
+  #   x-machines:
+  #     - nas
 
 configs:
   librechat-env:
