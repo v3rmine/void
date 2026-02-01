@@ -86,6 +86,8 @@
                   url: https://yacy.serv4.reta.re
                 - title: Immich
                   url: https://photos.planchon.dev
+                - title: Forgejo
+                  url: https://git.v3rm.in
             - title: phloeomys
               links:
                 - title: Old blog
@@ -100,8 +102,10 @@
                   url: https://remote.reta.re
                 - title: Goatcounter
                   url: https://stats.v3rn.in
-            - title: laonastes
-              links:
+                - title: FluffyChat
+                  url: https://fluffychat.im
+                - title: PairDrop
+                  url: https://drop.reta.re
                 - title: iocaine demo
                   url: https://iocaine-demo.serv4.reta.re
             - title: seed
@@ -110,7 +114,6 @@
                   url: https://glisglis.pistis.usbx.me/filebrowser
                 - title: qBittorrent
                   url: https://glisglis.pistis.usbx.me/qbittorrent
-
 
         # - type: releases
         #   cache: 1d
