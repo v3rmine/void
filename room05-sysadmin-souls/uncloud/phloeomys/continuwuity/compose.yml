@@ -1,0 +1,36 @@
+services:
+    continuwuity:
+        ### If you already built the Continuwuity image with 'docker build' or want to use a registry image,
+        ### then you are ready to go.
+        image: forgejo.ellis.link/continuwuation/continuwuity:latest
+        pull_policy: always
+        restart: unless-stopped
+        volumes:
+          - continuwuity-data:/var/lib/continuwuity
+          #- ./continuwuity.toml:/etc/continuwuity.toml
+        environment:
+          CONTINUWUITY_SERVER_NAME: m.v3rm.in
+          CONTINUWUITY_DATABASE_PATH: /var/lib/continuwuity
+          CONTINUWUITY_PORT: 6167
+          CONTINUWUITY_MAX_REQUEST_SIZE: 20000000 # in bytes, ~20 MB
+          CONTINUWUITY_ALLOW_REGISTRATION: 'true'
+          # CONTINUWUITY_REGISTRATION_TOKEN: 'YOUR_TOKEN' # A registration token is required when registration is allowed.
+          # CONTINUWUITY_YES_I_AM_VERY_VERY_SURE_I_WANT_AN_OPEN_REGISTRATION_SERVER_PRONE_TO_ABUSE: 'true'
+          CONTINUWUITY_ALLOW_FEDERATION: 'true'
+          CONTINUWUITY_ALLOW_CHECK_FOR_UPDATES: 'true'
+          CONTINUWUITY_TRUSTED_SERVERS: '["matrix.org"]'
+          #CONTINUWUITY_LOG: warn,state_res=warn
+          CONTINUWUITY_ADDRESS: 0.0.0.0
+          #CONTINUWUITY_CONFIG: '/etc/continuwuity.toml' # Uncomment if you mapped config toml above
+          CONTINUWUITY_WELL_KNOWN: |
+            {
+              client=https://m.v3rm.in,
+              server=m.v3rm.in:443
+            }
+        x-ports:
+          - m.v3rm.in:6167/http
+        x-machines:
+          - phloeomys
+
+volumes:
+  continuwuity-data:
