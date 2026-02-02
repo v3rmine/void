@@ -8,9 +8,9 @@ Hey! I'm Astrid welcome to my garden 🌳
 This website is my **space** so it shouldn't be considered as a fully professional website. It's mostly to share what I'm doing or working on.
 
 # To get in touch
-- For private and instant conversations on [simplex](https://smp17.simplex.im/a#11lVFGeZZ79cnHYtECsMga4nOPAsI1pFni9RkqFYPh0), and if I know you even from afar, ask me for my Signal (I just won't drop it publicly because it's linked to my phone number)
-- For long term asynchronous or professional contact I prefer by [mail](mailto:v3rmine@astriiid.fr)
-- For informal questions/contact on mastodon
+- For private and instant conversations on [Simplex](https://smp17.simplex.im/a#11lVFGeZZ79cnHYtECsMga4nOPAsI1pFni9RkqFYPh0) or on [Matrix (@astrid:m.v3rm.in)](https://matrix.to/#/@astrid:m.v3rm.in), and if I know you even from afar, you can ask me for my Signal if you prefer (I just won't drop it publicly because it's linked to my phone number).
+- For long term asynchronous or professional contact I prefer by [mail (v3rmine\[at\]astriiid.fr)](mailto:v3rmine@astriiid.fr)
+- For informal questions/contact on [mastodon](https://eldritch.cafe/@v3rmine)
 - For a fast response contact me on Discord `v3rm.ine`
 
 # I don't respond? That's why
