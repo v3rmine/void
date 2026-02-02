@@ -33,8 +33,8 @@ let
     echo "$http_requester_ips" | grep -F ':' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv6 -exist
 
     # IPs that have been rejected more than 10k times by iocaine
-    iocaine_rejected_ips=$(journalctl CONTAINER_NAME=pangolin_iocaine_1 -o json -r \
-      | yq -p=json '.MESSAGE | from_json| select(."verdict.type" == "accept") | .request.header.x-forwarded-for' \
+    iocaine_rejected_ips=$(journalctl CONTAINER_NAME=pangolin-iocaine-1 -o json -r \
+      | yq -p=json '.MESSAGE | from_json | select(."verdict.type" == "accept") | .request.header.x-forwarded-for' \
       | grep -v "\---" \
       | sort \
       | uniq -c \
