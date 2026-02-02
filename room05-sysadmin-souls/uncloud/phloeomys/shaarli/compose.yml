@@ -13,7 +13,7 @@ services:
       timeout: 5s
       retries: 5
     x-ports:
-      - links.astriiid.fr:80/http
+      - bookmark.reta.re:80/http
     x-machines:
       - phloeomys
 

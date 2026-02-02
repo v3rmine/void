@@ -1,0 +1,16 @@
+services:
+  linkding:
+    image: ghcr.io/sissbruecker/linkding:latest-alpine
+    pull_policy: always
+    restart: unless-stopped
+    environment:
+      LD_CSRF_TRUSTED_ORIGINS: "https://links.astriiid.fr"
+    volumes:
+      - linkding-data:/etc/linkding/data
+    x-ports:
+      - links.astriiid.fr:9090/http
+    x-machines:
+      - phloeomys
+
+volumes:
+  linkding-data:
