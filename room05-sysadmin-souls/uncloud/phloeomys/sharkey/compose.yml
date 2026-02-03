@@ -1,0 +1,81 @@
+services:
+  sharkey:
+    image: registry.activitypub.software/transfem-org/sharkey:2025.4.5
+    restart: always
+    links:
+      - sharkey-db
+      - sharkey-redis
+#     - mcaptcha
+      - sharkey-meilisearch
+    depends_on:
+      sharkey-db:
+        condition: service_healthy
+      sharkey-redis:
+        condition: service_healthy
+    env_file:
+      - .config/docker.env
+    environment:
+      - NODE_OPTIONS="--max-old-space-size=4096"
+    configs:
+      - source: sharkey-config
+        mode: 0600
+        target: /sharkey/.config/default.yml
+    volumes:
+      - sharkey-files:/sharkey/files
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+    x-ports:
+      - tracto.pl:3000/http
+    x-machines:
+      - phloeomys
+
+  sharkey-redis:
+    restart: always
+    image: redis:7-alpine
+    volumes:
+      - sharkey-redis:/data
+    healthcheck:
+      test: "redis-cli ping"
+      interval: 5s
+      retries: 20
+    x-machines:
+      - phloeomys
+
+  sharkey-db:
+    restart: always
+    image: groonga/pgroonga:4.0.1-alpine-17
+    env_file:
+      - .config/docker.env
+    volumes:
+      - sharkey-db:/var/lib/postgresql/data
+    healthcheck:
+      test: "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"
+      interval: 5s
+      retries: 20
+    x-machines:
+      - phloeomys
+
+  sharkey-meilisearch:
+    restart: always
+    image: getmeili/meilisearch:v1.13.0
+    env_file:
+      - .config/docker.env
+    environment:
+      - MEILI_NO_ANALYTICS=true
+      - MEILI_ENV=production
+    volumes:
+      - sharkey-meilisearch:/meili_data
+    x-machines:
+      - phloeomys
+
+configs:
+  sharkey-config:
+    file: .config/default.yml
+
+volumes:
+  sharkey-files:
+  sharkey-redis:
+  sharkey-db:
+  sharkey-meilisearch:
