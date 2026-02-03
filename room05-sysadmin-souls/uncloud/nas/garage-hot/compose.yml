@@ -10,8 +10,21 @@ services:
     volumes:
       - garage-hot-meta:/var/lib/garage/meta
       - garage-hot-data:/var/lib/garage/data
-    x-ports:
-      - garage-hot.serv4.reta.re:3900/http
+    x-caddy: |
+      http://garage-hot.serv4.reta.re {
+        reverse_proxy {{upstreams 3900}}
+        log
+        @cdn {
+          method GET
+          path_regexp cdn_path ^/cdn/(?P<bucket>[^/]+)/.*$
+        }
+        handle @cdn {
+          uri strip_prefix /cdn/{re.bucket}
+          reverse_proxy {{upstreams 3902}} {
+            header_up Host {re.bucket}.web.garage.localhost
+          }
+        }
+      }
     x-machines:
       - nas
 
