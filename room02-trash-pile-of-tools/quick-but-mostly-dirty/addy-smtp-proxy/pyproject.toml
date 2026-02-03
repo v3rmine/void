@@ -1,0 +1,21 @@
+[project]
+name = "addy-smtp-proxy"
+version = "0.1.0"
+description = "Addy proxy"
+authors = [
+    {name = "v3rmine",email = "v3rmine@astriiid.fr"}
+]
+license = {text = "MIT"}
+requires-python = ">=3.14"
+dependencies = [
+    "asyncio (>=4.0.0,<5.0.0)",
+    "aiosmtpd (>=1.4.6,<2.0.0)",
+    "python-dotenv (>=1.2.1,<2.0.0)"
+]
+
+[tool.poetry]
+package-mode = false
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
