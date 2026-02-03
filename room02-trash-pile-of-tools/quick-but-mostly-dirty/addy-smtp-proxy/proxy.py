@@ -17,7 +17,7 @@ from typing import Literal
 EMAIL_REGEX = r"^(?:(?P<display_name>[^<]+)\s+<)?(?P<email_address>[^<@]+@[^>]+)>?$"
 
 class AddyProxyHandler:
-    def __init__(self, upstream_smtp_host, upstream_smtp_port, upstream_from):
+    def __init__(self, upstream_smtp_host: str, upstream_smtp_port: int, upstream_from: str):
         self.upstream_smtp_host = upstream_smtp_host
         self.upstream_smtp_port = upstream_smtp_port
         self.upstream_smtp_user: str | Literal[False] = os.getenv("SMTP_USER", False)
@@ -25,7 +25,7 @@ class AddyProxyHandler:
         self.upstream_from = upstream_from
         self.upstream_ssl = os.getenv("UPSTREAM_SSL", "ssl")
         self.debug_upstream = bool(os.getenv("UPSTREAM_DEBUG", False))
-        self.proxy_allowed_senders = set(os.getenv("PROXY_ALLOWED_SENDER", "").split(","))
+        self.proxy_allowed_senders = set(os.getenv("PROXY_ALLOWED_SENDERS", "").split(","))
 
     async def handle_DATA(self, _server: asyncio.Server, session: Session, envelope: Envelope):
         """
@@ -105,7 +105,7 @@ class AddyProxyHandler:
             logging.warning(f"Error forwarding message: {e}")
             return '550 Message could not be forwarded: Failed to send'
 
-    def _forward_email(self, mail_from, rcpt_tos, content_bytes):
+    def _forward_email(self, mail_from: str, rcpt_tos: list[str], content_bytes: bytes):
         """
         Designed to be run in a separate thread.
         """
@@ -123,7 +123,7 @@ class AddyProxyHandler:
                 server.login(self.upstream_smtp_user, self.upstream_smtp_password)
 
             server.set_debuglevel(self.debug_upstream)
-            server.sendmail(mail_from, rcpt_tos, content_bytes)
+            server.sendmail(mail_from, rcpt_tos, content_bytes.decode())
         except Exception as e:
             logging.error("Failed to send email via upstream SMTP: {e}")
             raise RuntimeError(f"Failed to send email via upstream SMTP: {e}") from e

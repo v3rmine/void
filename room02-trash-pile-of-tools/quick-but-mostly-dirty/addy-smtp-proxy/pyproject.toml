@@ -3,9 +3,9 @@ name = "addy-smtp-proxy"
 version = "0.1.0"
 description = "Addy proxy"
 authors = [
-    {name = "v3rmine",email = "v3rmine@astriiid.fr"}
+    { name = "v3rmine", email = "v3rmine@astriiid.fr" }
 ]
-license = {text = "MIT"}
+license = { text = "MIT" }
 requires-python = ">=3.14"
 dependencies = [
     "asyncio (>=4.0.0,<5.0.0)",
