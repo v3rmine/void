@@ -6,7 +6,7 @@ services:
     env_file: ".env"
     volumes:
       - filestash-config:/app/data/state
-      - filestash-localdata:/data
+      # - filestash-localdata:/data
     healthcheck:
       test: curl --silent --fail 127.0.0.1:8334 || exit 1
       interval: 10s
@@ -19,4 +19,4 @@ services:
 
 volumes:
   filestash-config:
-  filestash-localdata:
+  # filestash-localdata:

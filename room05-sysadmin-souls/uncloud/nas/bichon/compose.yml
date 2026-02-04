@@ -1,0 +1,26 @@
+services:
+  bichon:
+    image: rustmailer/bichon:latest
+    pull_policy: always
+    container_name: bichon
+    user: "1000:1000"
+    configs:
+      - source: bichon-encrypt-password
+        target: /config/key.txt
+    volumes:
+      - bichon-data:/data
+    environment:
+      BICHON_ROOT_DIR: /data
+      BICHON_LOG_LEVEL: info
+      BICHON_ENCRYPT_PASSWORD_FILE: /config/key.txt
+    x-ports:
+      - mail-archive.reta.re:15630/http
+    x-machines:
+      - nas
+
+configs:
+  bichon-encrypt-password:
+    file: key.txt
+
+volumes:
+  bichon-data:

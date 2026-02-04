@@ -88,6 +88,10 @@
                   url: https://photos.planchon.dev
                 - title: Forgejo
                   url: https://git.v3rm.in
+                - title: PairDrop
+                  url: https://drop.reta.re
+                - title: Bichon
+                  url: https://mail-archive.reta.re
             - title: phloeomys
               links:
                 - title: Old blog
@@ -96,18 +100,20 @@
                   url: https://astriiid.fr
                 - title: Miniflux
                   url: https://rss.reta.re
+                - title: Linkding
+                  url: https://links.astriiid.fr
                 - title: Shaarli
-                  url: https://links.planchon.dev
+                  url: https://bookmark.reta.re
                 - title: Filestash
                   url: https://remote.reta.re
                 - title: Goatcounter
                   url: https://stats.v3rn.in
                 - title: FluffyChat
                   url: https://fluffychat.im
-                - title: PairDrop
-                  url: https://drop.reta.re
                 - title: iocaine demo
                   url: https://iocaine-demo.serv4.reta.re
+                - title: Sharkey
+                  url: https://tracto.pl
             - title: seed
               links:
                 - title: Filebrowser
