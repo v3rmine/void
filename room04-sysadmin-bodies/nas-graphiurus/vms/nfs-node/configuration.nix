@@ -11,7 +11,7 @@ let
   '';
 in {
   system.stateVersion = "25.11";
-  system.autoUpgrade.channel = "https://nixos.org/channels/nixos-25.11-small";
+  system.autoUpgrade.channel = "https://nixos.org/channels/nixos-25.11";
 
   networking.firewall.enable = false;
   networking.firewall.allowedTCPPorts = [
@@ -136,9 +136,10 @@ in {
           keep-daily: 7
           keep-weekly: 52
           keep-yearly: 10
-        backblaze-standard: &backblaze-standard
+        standard: &standard
           to:
             - backblaze
+            - hetzner
           options:
             backup:
               compression: max
@@ -148,9 +149,13 @@ in {
 
       locations:
         immich:
-          <<: *backblaze-standard
+          <<: *standard
           from: /media/merged/uncloud/immich
           cron: '0 2 * * *'
+        snapraid-system-content:
+          <<: *standard
+          from: /persist/var/snapraid/content
+          cron: '0 * * * *'
     '';
   };
 

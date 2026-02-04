@@ -50,9 +50,21 @@ let
     done \
       | sort \
       | uniq)
-    
+
     echo "$wp_scanners_ips" | grep -F '.' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv4 -exist
     echo "$wp_scanners_ips" | grep -F ':' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv6 -exist
+
+    # Auto ban sshd scanners
+    sshd_ips=$(journalctl -u sshd -o json -r \
+      | grep -E "(invalid format)" \
+      | yq -p=json '.MESSAGE' \
+      | grep -oE "([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+|[0-9]+(:[0-9]+)+)" \
+      | sort \
+      | uniq -c \
+      | awk '{if ($1 >= 10) print $2}')
+
+    echo "$sshd_ips" | grep -F '.' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv4 -exist
+    echo "$sshd_ips" | grep -F ':' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv6 -exist
 
     # Make banned IP list persistent
     ${pkgs.ipset}/bin/ipset save > /etc/iptables/ipsets
@@ -148,6 +160,7 @@ in {
     flush-blocklists
     iptables
     ipset
+    cifs-utils
   ];
 
   environment.etc."autorestic.yml" = {
@@ -169,7 +182,15 @@ in {
               skip-if-unchanged: true
             forget:
               <<: *backup-policy
-
+        backblaze: &backblaze
+          to:
+            - backblaze
+          options:
+            backup:
+              compression: max
+              skip-if-unchanged: true
+            forget:
+              <<: *backup-policy
 
       locations:
         systemd-services:
@@ -184,7 +205,6 @@ in {
           <<: *standard
           from:
             - /persist/var/lib/docker/volumes/filestash-config
-            - /persist/var/lib/docker/volumes/filestash-localdata
           cron: '0 * * * *'
         goatcounter:
           <<: *standard
@@ -201,6 +221,36 @@ in {
           from:
             - /persist/var/lib/docker/volumes/shaarli-data
           cron: '0 * * * *'
+        linkding:
+          <<: *standard
+          from:
+            - /persist/var/lib/docker/volumes/linkding-data
+          cron: '0 * * * *'
+        otterwiki:
+          <<: *standard
+          from:
+            - /persist/var/lib/docker/volumes/otterwiki-data
+          cron: '0 * * * *'
+        continuwuity:
+          <<: *standard
+          from:
+            - /persist/var/lib/docker/volumes/continuwuity-data
+          cron: '0 * * * *'
+        sharkey:
+          <<: *standard
+          from:
+            - /persist/var/lib/docker/volumes/sharkey-files
+            - /persist/var/lib/docker/volumes/sharkey-db
+            - /persist/var/lib/docker/volumes/sharkey-meilisearch
+          cron: '0 * * * *'
+        drive:
+          <<: *backblaze
+          from:
+            - /persist/mnt/drive
+          cron: '0 2 * * *'
+          options:
+            backup:
+              exclude-file: /persist/mnt/drive/.backup-ignore
     '';
   };
 
@@ -294,9 +344,25 @@ in {
     uncloud = {};
   };
 
+  systemd.services."ipset-persistent" = {
+    enable = true;
+    before = [ "network.target" "firewall.service" "uncloud.service" ];
+    unitConfig = {
+      ConditionFileNotEmpty = "/etc/iptables/ipsets";
+    };
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.ipset}/bin/ipset restore -exist -file /etc/iptables/ipsets";
+      # ExecStop = "${pkgs.ipset}/bin/ipset flush";
+      # ExecStopPost = "${pkgs.ipset}/bin/ipset destroy";
+    };
+    wantedBy = [ "multi-user.target" ];
+    requiredBy = [ "firewall.service" "uncloud.service" ];
+  };
+
   systemd.services."uncloud" = {
     enable = true;
-    after = [ "network-online.target" ];
+    after = [ "network-online.target" "ipset-persistent.service" "firewall.service" ];
     wants = [ "network-online.target" ];
     path = [ pkgs.iptables ];
     serviceConfig = {
@@ -488,6 +554,15 @@ in {
       device = "/dev/sda1";
       fsType = "ext4";
       neededForBoot = true;
+    };
+    "/persist/mnt/drive" = {
+      device = "//u264248-sub2.your-storagebox.de/u264248-sub2";
+      fsType = "cifs";
+      options = let
+        # this line prevents hanging on network split
+        automount_opts = "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
+      in ["ro,${automount_opts},credentials=/persist/etc/cifs-drive-credentials"];
+      neededForBoot = false;
     };
   };
 

@@ -86,9 +86,10 @@ in {
           keep-daily: 7
           keep-weekly: 52
           keep-yearly: 10
-        backblaze-standard: &backblaze-standard
+        standard: &standard
           to:
             - backblaze
+            - hetzner
           options:
             backup:
               compression: max
@@ -98,51 +99,59 @@ in {
 
       locations:
         systemd-services:
-          <<: *backblaze-standard
+          <<: *standard
           from: /persist/var/lib/systemd/system
           cron: '0 * * * *'
         syncthing:
-          <<: *backblaze-standard
+          <<: *standard
           from:
             - /persist/var/lib/docker/volumes/syncthing-config
             - /persist/var/lib/docker/volumes/syncthing-data
           cron: '0 * * * *'
         palmr:
-          <<: *backblaze-standard
+          <<: *standard
           from:
             - /persist/var/lib/docker/volumes/palmr_data
           cron: '0 * * * *'
         garage-hot:
-          <<: *backblaze-standard
+          <<: *standard
           from:
             - /persist/var/lib/docker/volumes/garage-hot-meta
             - /persist/var/lib/docker/volumes/garage-hot-data
           cron: '0 * * * *'
         garage-cold:
-          <<: *backblaze-standard
+          <<: *standard
           from:
             - /persist/var/lib/docker/volumes/garage-cold-meta
           cron: '0 * * * *'
         grafana:
-          <<: *backblaze-standard
+          <<: *standard
           from:
             - /persist/var/lib/docker/volumes/grafana-data
           cron: '0 * * * *'
         loki:
-          <<: *backblaze-standard
+          <<: *standard
           from:
             - /persist/var/lib/docker/volumes/loki-data
           cron: '0 * * * *'
         suwayomi:
-          <<: *backblaze-standard
+          <<: *standard
           from:
             - /persist/var/lib/docker/volumes/suwayomi-data
           cron: '0 * * * *'
         yacy:
-          <<: *backblaze-standard
+          <<: *standard
           from:
             - /persist/var/lib/docker/volumes/yacy-data
           cron: '0 * * * *'
+        forgejo:
+          <<: *standard
+          from:
+            - /persist/var/lib/docker/volumes/forgejo-data
+        immich:
+          <<: *standard
+          from:
+            - /persist/var/lib/docker/volumes/immich-postgres
     '';
   };
 
