@@ -13,39 +13,16 @@ let
     rm -f /tmp/.autorestic.yml
   '';
 
-  fill-blocklists = pkgs.writeShellScriptBin "fill-blocklists.sh" ''
+  fill-blocklists-fast = pkgs.writeShellScriptBin "fill-blocklists-fast.sh" ''
     # Ensure lists exists
     ${pkgs.ipset}/bin/ipset list scanners-ipv4 >/dev/null 2>&1 \
-      || ${pkgs.ipset}/bin/ipset create scanners-ipv4 hash:ip hashsize 4096 counters family inet
+    || ${pkgs.ipset}/bin/ipset create scanners-ipv4 hash:ip hashsize 4096 counters family inet
     ${pkgs.ipset}/bin/ipset list scanners-ipv6 >/dev/null 2>&1 \
-      || ${pkgs.ipset}/bin/ipset create scanners-ipv6 hash:ip hashsize 4096 counters family inet6
-
-    # IPs that make >100 http request get banned:
-    http_requester_ips=$(for file in /var/log/logs/traefik/*; do
-      grep 'RequestScheme":"http"' $file \
-        | awk 'match($0, /"ClientHost"[[:space:]]*:[[:space:]]*"([^"]+)"/, a) { print a[1] }';
-    done \
-      | sort \
-      | uniq -c \
-      | awk '{if ($1 >= 100) print $2}')
-
-    echo "$http_requester_ips" | grep -F '.' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv4 -exist
-    echo "$http_requester_ips" | grep -F ':' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv6 -exist
-
-    # IPs that have been rejected more than 10k times by iocaine
-    iocaine_rejected_ips=$(journalctl CONTAINER_NAME=pangolin-iocaine-1 -o json -r \
-      | yq -p=json '.MESSAGE | from_json | select(."verdict.type" == "accept") | .request.header.x-forwarded-for' \
-      | grep -v "\---" \
-      | sort \
-      | uniq -c \
-      | awk '{if ($1 >= 10000) print $2}')
-
-    echo "$iocaine_rejected_ips" | grep -F '.' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv4 -exist
-    echo "$iocaine_rejected_ips" | grep -F ':' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv6 -exist
+    || ${pkgs.ipset}/bin/ipset create scanners-ipv6 hash:ip hashsize 4096 counters family inet6
 
     # I don't host any wordpress so ban ip that scans for it
     wp_scanners_ips=$(for file in /var/log/logs/traefik/*; do
-      grep -E 'RequestPath":"/(wp-admin\.php|wp-content/[^"]+)"' $file \
+      grep -E 'RequestPath":"/(wp-admin|wp-content|wp-includes)[^"]+"' $file \
       | awk 'match($0, /"ClientHost"[[:space:]]*:[[:space:]]*"([^"]+)"/, a) { print a[1] }';
     done \
       | sort \
@@ -54,17 +31,51 @@ let
     echo "$wp_scanners_ips" | grep -F '.' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv4 -exist
     echo "$wp_scanners_ips" | grep -F ':' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv6 -exist
 
+    # IPs that make >100 http request get banned:
+    http_requester_ips=$(for file in /var/log/logs/traefik/*; do
+      grep 'RequestScheme":"http"' $file \
+      | awk 'match($0, /"ClientHost"[[:space:]]*:[[:space:]]*"([^"]+)"/, a) { print a[1] }';
+    done \
+      | sort \
+      | uniq -c \
+      | awk '{if ($1 >= 100) print $2}')
+
+    echo "$http_requester_ips" | grep -F '.' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv4 -exist
+    echo "$http_requester_ips" | grep -F ':' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv6 -exist
+
     # Auto ban sshd scanners
     sshd_ips=$(journalctl -u sshd -o json -r \
-      | grep -E "(invalid format)" \
+      | grep -E "(invalid format|invalid user|Closed.*preauth)" \
       | yq -p=json '.MESSAGE' \
       | grep -oE "([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+|[0-9]+(:[0-9]+)+)" \
       | sort \
-      | uniq -c \
-      | awk '{if ($1 >= 10) print $2}')
+      | uniq)
 
     echo "$sshd_ips" | grep -F '.' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv4 -exist
     echo "$sshd_ips" | grep -F ':' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv6 -exist
+
+    # Make banned IP list persistent
+    ${pkgs.ipset}/bin/ipset save > /etc/iptables/ipsets
+  '';
+
+  fill-blocklists-slow = pkgs.writeShellScriptBin "fill-blocklists-slow.sh" ''
+    # Ensure lists exists
+    ${pkgs.ipset}/bin/ipset list scanners-ipv4 >/dev/null 2>&1 \
+      || ${pkgs.ipset}/bin/ipset create scanners-ipv4 hash:ip hashsize 4096 counters family inet
+    ${pkgs.ipset}/bin/ipset list scanners-ipv6 >/dev/null 2>&1 \
+      || ${pkgs.ipset}/bin/ipset create scanners-ipv6 hash:ip hashsize 4096 counters family inet6
+
+    # IPs that have been rejected more than 10k times by iocaine
+    iocaine_rejected_ips=$(journalctl CONTAINER_NAME=pangolin-iocaine-1 -o json -r \
+      | grep '\\"verdict.type\\":\\"accept\\"' \
+      | yq -p=json '.MESSAGE | from_json | select(."verdict.type" == "accept") | .request.header.x-forwarded-for' \
+      | grep -v "\---" \
+      | sort \
+      | uniq -c \
+      | awk '{if ($1 >= 10000) print $2}')
+
+    echo "$iocaine_rejected_ips" | grep -F '.' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv4 -exist
+    echo "$iocaine_rejected_ips" | grep -F ':' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv6 -exist
 
     # Make banned IP list persistent
     ${pkgs.ipset}/bin/ipset save > /etc/iptables/ipsets
@@ -156,7 +167,8 @@ in {
     yq-go
     uncloud
     custom-newt
-    fill-blocklists
+    fill-blocklists-fast
+    fill-blocklists-slow
     flush-blocklists
     iptables
     ipset
@@ -332,6 +344,9 @@ in {
   };
 
   users.users = {
+    root = {
+      hashedPasswordFile = "/persist/etc/shadowRoot";
+    };
     uncloud = {
       isSystemUser = true;
       createHome = false;
@@ -433,7 +448,8 @@ in {
   services.cron.systemCronJobs = [
     "0 * * * * root journalctl --vacuum-size=512M"
     "*/5 * * * * root ${run-autorestic}/bin/run-autorestic.sh"
-    "*/15 * * * * root ${fill-blocklists}/bin/fill-blocklists.sh"
+    "*/5 * * * * root ${fill-blocklists-fast}/bin/fill-blocklists-fast.sh"
+    "3-59/15 * * * * root ${fill-blocklists-slow}/bin/fill-blocklists-slow.sh"
     "0 0 * * MON root ${flush-blocklists}/bin/flush-blocklists.sh"
   ];
 
