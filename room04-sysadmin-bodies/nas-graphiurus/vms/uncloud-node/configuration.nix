@@ -152,6 +152,10 @@ in {
           <<: *standard
           from:
             - /persist/var/lib/docker/volumes/immich-postgres
+        memos:
+          <<: *standard
+          from:
+            - /persist/var/lib/docker/volumes/memos-data
     '';
   };
 
