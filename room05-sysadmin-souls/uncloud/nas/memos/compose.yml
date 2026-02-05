@@ -1,0 +1,14 @@
+services:
+  memos:
+    image: neosmemo/memos:stable
+    pull_policy: always
+    container_name: memos
+    volumes:
+      - memos-data:/var/opt/memos
+    x-ports:
+      - memo.reta.re:5230/http
+    x-machines:
+      - nas
+
+volumes:
+  memos-data:
