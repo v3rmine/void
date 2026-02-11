@@ -1,0 +1,20 @@
+services:
+  vaultwarden:
+    image: vaultwarden/server:latest
+    pull_policy: always
+    container_name: vaultwarden
+    restart: unless-stopped
+    user: 1000:1000
+    environment:
+      DOMAIN: "https://vault.reta.re/"
+      SIGNUPS_ALLOWED: false
+      SHOW_PASSWORD_HINT: false
+    volumes:
+      - vaultwarden-data:/data/
+    x-ports:
+      - vault.reta.re:80/http
+    x-machines:
+      - phloeomys
+
+volumes:
+  vaultwarden-data:
