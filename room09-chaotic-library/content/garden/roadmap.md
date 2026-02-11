@@ -19,7 +19,6 @@ extra:
   - [ ] /ideas
   - [ ] /now
   - [ ] /uses
-  - [ ] /ai (spoil: only sometimes to order my thoughts in a phrase that everyone will understand, using openrouter + a cheap model but I should dig for local models)
 - [ ] add 88x31 buttons
 - [ ] differenciates series and posts in tag lists
 - [ ] add a direct link to edit the page

@@ -222,7 +222,7 @@ copyright = "© Copyright 2026 Astrid Planchon.<br>Any and all opinions listed h
 # the needed rel="me" link is set in the head based on these.
 [extra.comments]
 # Your Mastodon API host; instance that you have an account on.
-host = "eldritch.cafe"
+host = "tracto.pl"
 # Your Mastodon username; used to determine who the original poster is.
 user = "v3rmine"
 # Whether to show the QR code to Mastodon post
