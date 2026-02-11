@@ -21,6 +21,7 @@ services:
     depends_on:
       miniflux-db:
         condition: service_healthy
+    user: 1004:1004
     env_file: ".env"
     environment:
       RUN_MIGRATIONS: 1

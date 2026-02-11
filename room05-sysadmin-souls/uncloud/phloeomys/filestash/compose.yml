@@ -4,6 +4,7 @@ services:
     pull_policy: always
     container_name: filestash
     env_file: ".env"
+    user: 1000:1000
     volumes:
       - filestash-config:/app/data/state
       # - filestash-localdata:/data

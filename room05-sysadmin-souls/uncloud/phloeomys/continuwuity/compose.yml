@@ -5,6 +5,7 @@ services:
         image: forgejo.ellis.link/continuwuation/continuwuity:latest
         pull_policy: always
         restart: unless-stopped
+        user: 1003:1003
         volumes:
           - continuwuity-data:/var/lib/continuwuity
           #- ./continuwuity.toml:/etc/continuwuity.toml

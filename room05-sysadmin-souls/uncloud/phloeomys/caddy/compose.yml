@@ -3,6 +3,8 @@ services:
     image: caddy:2.10.2
     command: caddy run -c /config/caddy.json --watch
     restart: unless-stopped
+    environment:
+      CADDY_ADMIN: unix//run/caddy/admin.sock
     volumes:
       - /var/lib/uncloud/caddy:/config
       - /var/lib/uncloud/caddy:/data

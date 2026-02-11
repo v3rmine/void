@@ -5,6 +5,7 @@ services:
       args:
         VERSION: v0.16.1
     container_name: shaarli
+    user: 100:101
     volumes:
       - shaarli-data:/var/www/shaarli/data
     healthcheck:

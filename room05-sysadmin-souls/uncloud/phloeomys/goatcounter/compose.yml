@@ -4,6 +4,7 @@ services:
     image: arp242/goatcounter:latest
     pull_policy: always
     restart: unless-stopped
+    user: 1000:1000
     volumes:
       - goatcounter-data:/home/goatcounter/goatcounter-data
     x-ports:

@@ -428,7 +428,7 @@ attachLdSignatureForRelays: true
 #filePermissionBits: '644'
 
 # Log settings
-# logging:
+logging:
 #   sql:
 #     # Outputs query parameters during SQL execution to the log.
 #     # default: false
@@ -437,8 +437,8 @@ attachLdSignatureForRelays: true
 #     # default: false
 #     disableQueryTruncation: false
 #   # Shows debug log messages after instance startup. To capture earlier debug logs, set the MK_VERBOSE environment variable.
-#   # default: false in production, true otherwise.
-#   #verbose: false
+  default: true # false in production, true otherwise.
+  verbose: true
 
 # Settings for the activity logger, which records inbound activities to the database.
 # Disabled by default due to the large volume of data it saves.

@@ -3,6 +3,7 @@ services:
     image: ghcr.io/sissbruecker/linkding:latest-alpine
     pull_policy: always
     restart: unless-stopped
+    user: 82:82
     environment:
       LD_CSRF_TRUSTED_ORIGINS: "https://links.astriiid.fr"
     volumes:
