@@ -1,0 +1,21 @@
+services:
+  tandoor:
+    image: vabene1111/recipes:latest
+    pull_policy: always
+    restart: always
+    env_file: .env
+    volumes:
+      - tandoor-data:/opt/recipes
+    x-caddy: |
+      http://recipes.reta.re {
+        reverse_proxy {{upstreams 80}} {
+          header_up X-Forwarded-Proto https
+          header_up X-Forwarded-Port 443
+        }
+        log
+      }
+    x-machines:
+      - nas
+
+volumes:
+  tandoor-data:
