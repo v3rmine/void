@@ -20,10 +20,6 @@ content:
       - name: title
         label: Title
         type: string
-      - name: guid
-        label: GUID
-        type: uuid
-        required: true
       - name: taxonomies
         label: Taxonomies
         type: object
@@ -32,6 +28,24 @@ content:
             label: Tags
             type: string
             list: true
+      - name: extra
+        label: Extra
+        type: object
+        fields:
+          - name: guid
+            label: GUID
+            type: uuid
+            required: true
+          - name: comments
+            label: Comments
+            type: object
+            fields:
+              - name: host
+                label: Host
+                type: string
+              - name: id
+                label: Post id
+                type: string
       - name: body
         label: Body
         type: rich-text
@@ -55,10 +69,6 @@ content:
       - name: title
         label: Title
         type: string
-      - name: guid
-        label: GUID
-        type: uuid
-        required: true
       - name: taxonomies
         label: Taxonomies
         type: object
@@ -67,6 +77,24 @@ content:
             label: Tags
             type: string
             list: true
+      - name: extra
+        label: Extra
+        type: object
+        fields:
+          - name: guid
+            label: GUID
+            type: uuid
+            required: true
+          - name: comments
+            label: Comments
+            type: object
+            fields:
+              - name: host
+                label: Host
+                type: string
+              - name: id
+                label: Post id
+                type: string
       - name: body
         label: Body
         type: rich-text
