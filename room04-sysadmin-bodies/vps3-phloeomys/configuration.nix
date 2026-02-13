@@ -96,6 +96,17 @@ let
       ${pkgs.ipset}/bin/ipset save > /etc/iptables/ipsets
   '';
 
+  record-rss-readers = pkgs.writeShellScriptBin "record-rss-readers.sh" ''
+      for file in /var/log/logs/traefik/* /var/log/logs/astriiid-fr-rss-readers.log; do
+          grep '"RequestHost":"astriiid.fr"' $file \
+          | grep -E '"RequestPath":"[^"]+(rss|atom)\.xml"';
+      done \
+      | yq -p=json '[.request_User-Agent, .ClientHost, .time]' -o=csv --csv-separator='|' \
+      | sort \
+      | uniq \
+      > /var/log/logs/astriiid-fr-rss-readers.log
+  '';
+
   uncloud = pkgs.stdenv.mkDerivation rec {
     pname = "uncloud";
     version = "0.16.0";
@@ -150,7 +161,7 @@ in {
     enable = true;
     interfaces = {
       "eth0" = {
-        allowedTCPPorts = [ 22 80 443 8080 22000 5000 51000 ];
+        allowedTCPPorts = [ 22 80 443 5000 6667 6697 8080 22000 51000 ];
         allowedUDPPorts = [ 53 443 21027 21820 22000 51001 51820 51830 ];
       };
     };
@@ -173,6 +184,7 @@ in {
     iptables
     ipset
     cifs-utils
+    record-rss-readers
   ];
 
   environment.etc."autorestic.yml" = {
@@ -451,6 +463,7 @@ in {
     "*/5 * * * * root ${fill-blocklists-fast}/bin/fill-blocklists-fast.sh"
     "3-59/15 * * * * root ${fill-blocklists-slow}/bin/fill-blocklists-slow.sh"
     "0 0 * * MON root ${flush-blocklists}/bin/flush-blocklists.sh"
+    "*/15 * * * * root ${record-rss-readers}/bin/record-rss-readers.sh"
   ];
 
   virtualisation = {
