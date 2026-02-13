@@ -97,11 +97,13 @@ let
   '';
 
   record-rss-readers = pkgs.writeShellScriptBin "record-rss-readers.sh" ''
-      for file in /var/log/logs/traefik/* /var/log/logs/astriiid-fr-rss-readers.log; do
+      new_readers=$(for file in /var/log/logs/traefik/*; do
           grep '"RequestHost":"astriiid.fr"' $file \
           | grep -E '"RequestPath":"[^"]+(rss|atom)\.xml"';
       done \
-      | yq -p=json '[.request_User-Agent, .ClientHost, .time]' -o=csv --csv-separator='|' \
+      | yq -p=json '[.request_User-Agent, .ClientHost, .RequestPath, .time]' -o=csv --csv-separator='|') 
+      printf -- '%s\n%s' "$(cat /var/log/logs/astriiid-fr-rss-readers.log)" "$new_readers" \
+      | grep -Ev "^$" \
       | sort \
       | uniq \
       > /var/log/logs/astriiid-fr-rss-readers.log
