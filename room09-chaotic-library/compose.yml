@@ -1,7 +1,12 @@
 services:
   personal-website:
     build: .
-    x-ports:
-      - astriiid.fr:80/http
+    x-caddy: |
+      http://astriiid.fr {
+        reverse_proxy {{upstreams 80}}
+      }
+      http://v3rm.in {
+        redir https://astriiid.fr{uri} permanent
+      }
     x-machines:
       - phloeomys
