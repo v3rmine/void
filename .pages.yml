@@ -107,6 +107,48 @@ content:
       - name: body
         label: Body
         type: rich-text
+  - name: series
+    label: Series
+    type: collection
+    path: 'room09-chaotic-library/content/series'
+    view:
+      fields: [ title, date, updated ]
+    fields:
+      - name: date
+        label: Date
+        type: date
+      - name: updated
+        label: Updated
+        type: date
+      - name: title
+        label: Title
+        type: string
+      - name: description
+        label: Description
+        type: string
+      - name: taxonomies
+        label: Taxonomies
+        type: object
+        fields:
+          - name: tags
+            label: Tags
+            type: string
+            list: true
+      - name: extra
+        label: Extra
+        type: object
+        fields:
+          - name: guid
+            label: GUID
+            type: uuid
+            required: true
+          - name: serie
+            label: Serie
+            type: string
+            required: true
+      - name: body
+        label: Body
+        type: rich-text
   - name: config
     label: Zola config
     path: 'room09-chaotic-library/config.toml'
