@@ -1,6 +1,6 @@
 ---
 title: "Project Illiterate"
-date: "2026-01-30 11:54:32+01:00"
+date: 2026-01-30
 taxonomies:
   tags: [ project ]
 extra:

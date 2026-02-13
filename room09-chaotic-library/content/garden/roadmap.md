@@ -1,7 +1,7 @@
 ---
 title: Blog's roadmap
 date: 2026-01-14
-updated: 2026-01-30 12:27:09+01:00
+updated: 2026-01-30
 taxonomies:
   tags:
     - blog
