@@ -20,6 +20,9 @@ content:
       - name: title
         label: Title
         type: string
+      - name: description
+        label: Description
+        type: string
       - name: taxonomies
         label: Taxonomies
         type: object
@@ -32,6 +35,9 @@ content:
         label: Extra
         type: object
         fields:
+          - name: serie
+            label: Serie
+            type: string
           - name: guid
             label: GUID
             type: uuid
@@ -68,6 +74,9 @@ content:
         type: date
       - name: title
         label: Title
+        type: string
+      - name: description
+        label: Description
         type: string
       - name: taxonomies
         label: Taxonomies
