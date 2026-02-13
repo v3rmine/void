@@ -1,0 +1,28 @@
+services:
+  ergo:
+    image: ghcr.io/ergochat/ergo:stable
+    pull_policy: always
+    init: true
+    volumes:
+      - ergo-data:/ircd
+    x-ports:
+    #  - 6667:6667/tcp@host
+      - 6697:6697/tcp@host
+      - irc.v3rm.in:8097/http
+    x-machines:
+      - phloeomys
+  ergo-mysql:
+    image: mysql:9
+    environment:
+      MYSQL_USER: ergo
+      MYSQL_PASSWORD: FUVgqk2absKtKfbhLFBPwsMr
+      MYSQL_DATABASE: ergo_history
+      MYSQL_RANDOM_ROOT_PASSWORD: true
+    volumes:
+      - ergo-history:/var/lib/mysql
+    x-machines:
+      - phloeomys
+
+volumes:
+  ergo-data:
+  ergo-history:
