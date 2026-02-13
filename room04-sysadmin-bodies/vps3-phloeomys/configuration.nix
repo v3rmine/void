@@ -161,7 +161,7 @@ in {
     enable = true;
     interfaces = {
       "eth0" = {
-        allowedTCPPorts = [ 22 80 443 5000 6667 6697 8080 22000 51000 ];
+        allowedTCPPorts = [ 22 80 443 5000 6697 8080 22000 51000 ];
         allowedUDPPorts = [ 53 443 21027 21820 22000 51001 51820 51830 ];
       };
     };
