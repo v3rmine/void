@@ -2,7 +2,7 @@ services:
     continuwuity:
         ### If you already built the Continuwuity image with 'docker build' or want to use a registry image,
         ### then you are ready to go.
-        image: forgejo.ellis.link/continuwuation/continuwuity:latest
+        image: forgejo.ellis.link/continuwuation/continuwuity:latest-maxperf
         pull_policy: always
         restart: unless-stopped
         user: 1003:1003
@@ -14,10 +14,18 @@ services:
           CONTINUWUITY_DATABASE_PATH: /var/lib/continuwuity
           CONTINUWUITY_PORT: 6167
           CONTINUWUITY_MAX_REQUEST_SIZE: 20000000 # in bytes, ~20 MB
+          # Bypass docker DNS
+          # CONTINUWUITY_QUERY_OVER_TCP_ONLY: 'true'
+          # CONTINUWUITY_IP_LOOKUP_STRATEGY: 5
           CONTINUWUITY_ALLOW_REGISTRATION: 'true'
           # CONTINUWUITY_REGISTRATION_TOKEN: 'YOUR_TOKEN' # A registration token is required when registration is allowed.
           # CONTINUWUITY_YES_I_AM_VERY_VERY_SURE_I_WANT_AN_OPEN_REGISTRATION_SERVER_PRONE_TO_ABUSE: 'true'
           CONTINUWUITY_ALLOW_FEDERATION: 'true'
+          CONTINUWUITY_ALLOW_PUBLIC_ROOM_DIRECTORY_OVER_FEDERATION: true
+          CONTINUWUITY_ALLOW_INBOUND_PROFILE_LOOKUP_FEDERATION_REQUESTS: true
+          CONTINUWUITY_ALLOW_LOCAL_PRESENCE: true
+          CONTINUWUITY_ALLOW_INCOMING_PRESENCE: true
+          CONTINUWUITY_ALLOW_OUTGOING_PRESENCE: true
           CONTINUWUITY_ALLOW_CHECK_FOR_UPDATES: 'true'
           CONTINUWUITY_TRUSTED_SERVERS: '["matrix.org"]'
           #CONTINUWUITY_LOG: warn,state_res=warn
