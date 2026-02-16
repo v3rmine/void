@@ -97,16 +97,39 @@ let
   '';
 
   record-rss-readers = pkgs.writeShellScriptBin "record-rss-readers.sh" ''
-      new_readers=$(for file in /var/log/logs/traefik/*; do
-          grep '"RequestHost":"astriiid.fr"' $file \
-          | grep -E '"RequestPath":"[^"]+(rss|atom)\.xml"';
-      done \
-      | yq -p=json '[.request_User-Agent, .ClientHost, .RequestPath, .time]' -o=csv --csv-separator='|') 
-      printf -- '%s\n%s' "$(cat /var/log/logs/astriiid-fr-rss-readers.log)" "$new_readers" \
-      | grep -Ev "^$" \
-      | sort \
-      | uniq \
-      > /var/log/logs/astriiid-fr-rss-readers.log
+    previous_readers=$(cat /var/log/logs/astriiid-fr-rss-readers.log 2>/dev/null || printf "")
+    new_readers=$(for file in /var/log/logs/traefik/*; do
+      grep '"RequestHost":"astriiid.fr"' $file | \
+        grep -E '"RequestPath":"[^"]+(rss|atom)\.xml"';
+    done |
+      yq -p=json '[.request_User-Agent, .ClientHost, .RequestPath, .time]' -o=csv --csv-separator='|' | \
+      grep -v 'null|null' | \
+      awk 'BEGIN { FS="|"; OFS=FS } {cmd="echo "$2" | sha256sum"; cmd|getline sha; close(cmd); sub(/ .*/,"",sha); $2=sha; print}')
+
+    printf '%s\n%s' "$previous_readers" "$new_readers" | \
+      grep -Ev "^$" | \
+      sort -t'|' -k3 | \
+      uniq > /var/log/logs/astriiid-fr-rss-readers.log
+  '';
+
+  firewall-block-scrapers-rules = pkgs.writeShellScriptBin "add-firewall-block-scrapers-rules.sh" ''
+    tmpdir=$(mktemp)
+    trap exiting exit
+    function exiting() { rm -r "$tmpdir"; exit; }
+    # Clean iptables of previous rules
+    iptables-save | \
+      sed -E 's/^.*scanners-ipv4.*//m' | \
+      grep -vE '^$' > "$tmpdir/iptables"
+    iptables-restore "$tmpdir/iptables"
+    ip6tables-save | \
+      sed -E 's/^.*scanners-ipv6.*//m' | \
+      grep -vE '^$' > "$tmpdir/ip6tables"
+    ip6tables-restore "$tmpdir/ip6tables"
+    # Insert new rules
+    iptables -I INPUT 1 -m set --match-set scanners-ipv4 src -j DROP
+    iptables -I FORWARD 1 -m set --match-set scanners-ipv4 src -j DROP
+    ip6tables -I INPUT 1 -m set --match-set scanners-ipv6 src -j DROP
+    ip6tables -I FORWARD 1 -m set --match-set scanners-ipv6 src -j DROP
   '';
 
   uncloud = pkgs.stdenv.mkDerivation rec {
@@ -281,10 +304,7 @@ in {
   };
 
   networking.firewall.extraCommands = ''
-    iptables -A INPUT -m set --match-set scanners-ipv4 src -j DROP
-    iptables -A FORWARD -m set --match-set scanners-ipv4 src -j DROP
-    ip6tables -A INPUT -m set --match-set scanners-ipv6 src -j DROP
-    ip6tables -A FORWARD -m set --match-set scanners-ipv6 src -j DROP
+    ${firewall-block-scrapers-rules}/bin/add-firewall-block-scrapers-rules.sh
   '';
 
   services.logrotate = {
