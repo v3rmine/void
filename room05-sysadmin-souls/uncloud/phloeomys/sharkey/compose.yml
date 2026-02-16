@@ -1,6 +1,6 @@
 services:
   sharkey:
-    image: registry.activitypub.software/transfem-org/sharkey:2025.4.5
+    image: registry.activitypub.software/transfem-org/sharkey:2025.4.4
     restart: always
     user: 991:991
     links:
