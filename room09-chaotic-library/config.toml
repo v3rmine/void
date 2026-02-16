@@ -32,6 +32,7 @@ github_alerts = true
 external_links_target_blank = true
 external_links_no_follow = true
 external_links_no_referrer = true
+lazy_async_image = true
 
 [markdown.highlighting]
 error_on_missing_language = true
