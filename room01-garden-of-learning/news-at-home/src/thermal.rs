@@ -1,19 +1,27 @@
-use std::io::{Bytes, Read, Write};
-
-use esp_idf_svc::hal::delay::FreeRtos;
+use esp_idf_svc::{
+    hal::{
+        delay::FreeRtos,
+        gpio::{self, Pin, PinDriver},
+    },
+    io::{Read, Write},
+};
 
 use crate::{
     constants::{
-        ASCII_DC2, ASCII_ESC, ASCII_FF, ASCII_GS, ASCII_TAB, BOLD_MASK, DOUBLE_HEIGHT_MASK,
-        DOUBLE_WIDTH_MASK, FONT_MASK, INVERSE_MASK, PRINTER_MAX_COLUMNS, STRIKE_MASK, UPDOWN_MASK,
+        ASCII_DC2, ASCII_ESC, ASCII_FF, ASCII_GS, ASCII_TAB, BOLD_MASK, BYTE_TIME,
+        DOUBLE_HEIGHT_MASK, DOUBLE_WIDTH_MASK, FONT_MASK, INVERSE_MASK, PRINTER_MAX_COLUMNS,
+        STRIKE_MASK, UPDOWN_MASK,
     },
     helpers::get_next_byte,
 };
 
 /// SOURCE:
 /// <https://github.com/adafruit/Adafruit-Thermal-Printer-Library/blob/54786351af1d84580c4ae555d439756679b0dc44/Adafruit_Thermal.h#L339>
-#[derive(Debug, Default)]
-pub struct ThermalInterface<S: Write + Read> {
+pub struct ThermalInterface<
+    'a,
+    S: Write + Read,
+    D: Pin + gpio::InputPin + gpio::OutputPin = gpio::AnyIOPin,
+> {
     stream: S,
     print_mode: u8,
     /// Last character issued to printer
@@ -31,6 +39,8 @@ pub struct ThermalInterface<S: Write + Read> {
     max_chunk_height: u8,
     /// Firmware version
     firmware: u16,
+
+    dtr_pin: Option<PinDriver<'a, D, gpio::Input>>,
     /// True if DTR pin set & printer initialized
     dtr_enabled: bool,
     /// Wait until micros() exceeds this before sending byte
@@ -39,7 +49,6 @@ pub struct ThermalInterface<S: Write + Read> {
     dot_print_time: u32,
     /// Time to feed a single dot line, in microseconds
     dot_feed_time: u32,
-    baudrate: u32,
 }
 
 /// SOURCE: <https://github.com/adafruit/Adafruit-Thermal-Printer-Library/blob/54786351af1d84580c4ae555d439756679b0dc44/Adafruit_Thermal.h#L78>
@@ -89,19 +98,31 @@ fn micros() -> i64 {
     unsafe { esp_idf_svc::hal::sys::esp_timer_get_time() }
 }
 
-impl<S: Default + Write + Read> ThermalInterface<S> {
+impl<'a, S: Write + Read> ThermalInterface<'a, S, gpio::AnyIOPin> {
     pub fn new(stream: S) -> Self {
+        ThermalInterface::new_with_dtr(stream, None)
+    }
+}
+
+impl<'a, S: Write + Read, D: Pin + gpio::InputPin + gpio::OutputPin> ThermalInterface<'a, S, D> {
+    pub fn new_with_dtr(stream: S, dtr_pin: Option<PinDriver<'a, D, gpio::Input>>) -> Self {
         Self {
             stream,
-            baudrate: 19200,
+            dtr_pin,
             dtr_enabled: false,
-            ..Default::default()
+            print_mode: 0,
+            prev_byte: 0,
+            column: 0,
+            max_column: 0,
+            char_height: 0,
+            line_spacing: 0,
+            barcode_height: 0,
+            max_chunk_height: 0,
+            firmware: 0,
+            resume_time: 0,
+            dot_print_time: 0,
+            dot_feed_time: 0,
         }
-    }
-
-    /// SOURCE: <https://github.com/adafruit/Adafruit-Thermal-Printer-Library/blob/54786351af1d84580c4ae555d439756679b0dc44/Adafruit_Thermal.cpp#L67C19-L67C67>
-    pub fn byte_time(&self) -> u32 {
-        ((11 * 1000000) + (self.baudrate / 2)) / self.baudrate
     }
 
     /// SOURCE: <https://github.com/adafruit/Adafruit-Thermal-Printer-Library/blob/54786351af1d84580c4ae555d439756679b0dc44/Adafruit_Thermal.cpp#L76C24-L76C34>
@@ -113,8 +134,11 @@ impl<S: Default + Write + Read> ThermalInterface<S> {
 
     /// SOURCE: <https://github.com/adafruit/Adafruit-Thermal-Printer-Library/blob/54786351af1d84580c4ae555d439756679b0dc44/Adafruit_Thermal.cpp#L82>
     pub fn timeout_wait(&self) {
-        if self.dtr_enabled {
-            FreeRtos::delay_ms(1);
+        if self.dtr_enabled && self.dtr_pin.is_some() {
+            let dtr_pin = self.dtr_pin.as_ref().unwrap();
+            while dtr_pin.is_high() {
+                FreeRtos::delay_ms(100);
+            }
         } else {
             FreeRtos::delay_ms((micros() - self.resume_time) as u32);
         }
@@ -144,7 +168,7 @@ impl<S: Default + Write + Read> ThermalInterface<S> {
         self.stream
             .write_all(&bytes)
             .expect("failed to write bytes to output stream");
-        self.timeout_set(bytes.len() as i64 * self.byte_time() as i64);
+        self.timeout_set(bytes.len() as i64 * BYTE_TIME);
     }
 
     /// The underlying method for all high-level printing (e.g. println()).
@@ -154,7 +178,7 @@ impl<S: Default + Write + Read> ThermalInterface<S> {
         self.stream
             .write(&[char_to_write])
             .expect("failed to write char to output stream");
-        let mut d = self.byte_time();
+        let mut d = BYTE_TIME as u32;
         if char_to_write == b'\n' || self.column >= self.max_column {
             // If newline or wrap;
             d += if self.prev_byte == b'\n' {
@@ -177,13 +201,32 @@ impl<S: Default + Write + Read> ThermalInterface<S> {
     }
 
     /// SOURCE: <https://github.com/adafruit/Adafruit-Thermal-Printer-Library/blob/54786351af1d84580c4ae555d439756679b0dc44/Adafruit_Thermal.cpp#L168>
-    pub fn begin(&mut self, version: u16) {
-        self.firmware = version;
+    pub fn begin(&mut self, version: Option<u16>) {
+        self.firmware = version.unwrap_or(268);
 
         // The printer can't start receiving data immediately upon power up --
         // it needs a moment to cold boot and initialize.  Allow at least 1/2
         // sec of uptime before printer can receive data.
         self.timeout_set(500000);
+
+        self.wake();
+        self.reset();
+
+        // SOURCE: <https://github.com/adafruit/Adafruit-Thermal-Printer-Library/blob/54786351af1d84580c4ae555d439756679b0dc44/Adafruit_Thermal.h#L266>
+        self.set_heat_config(11, 120, 40);
+
+        // Enable DTR pin if requested
+        if let Some(dtr_pin) = self.dtr_pin.as_mut() {
+            dtr_pin
+                .set_pull(esp_idf_svc::hal::gpio::Pull::Up)
+                .expect("failed to set dtr pull-up");
+            self.write_bytes(&[ASCII_GS, b'a', (1 << 5)]);
+            self.dtr_enabled = true;
+        }
+
+        self.dot_print_time = 30000;
+        self.dot_feed_time = 2100;
+        self.max_chunk_height = 255;
     }
 
     /// SOURCE:
@@ -515,9 +558,7 @@ impl<S: Default + Write + Read> ThermalInterface<S> {
 
     /// SOURCE: <https://github.com/adafruit/Adafruit-Thermal-Printer-Library/blob/54786351af1d84580c4ae555d439756679b0dc44/Adafruit_Thermal.cpp#L495>
     pub fn print_bitmap_from_slice(&mut self, width: u16, height: u16, bitmap: &[u8]) {
-        // Create a cursor over the slice to treat it as a Read stream
-        let bitmap_stream = std::io::Cursor::new(bitmap);
-        self.print_bitmap(width, height, bitmap_stream);
+        self.print_bitmap(width, height, bitmap);
     }
 
     /// SOURCE: <https://github.com/adafruit/Adafruit-Thermal-Printer-Library/blob/54786351af1d84580c4ae555d439756679b0dc44/Adafruit_Thermal.cpp#L534C24-L534C35>

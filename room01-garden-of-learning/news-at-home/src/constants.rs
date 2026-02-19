@@ -1,3 +1,5 @@
+#![allow(unused)]
+
 // Internal character sets used with ESC R n
 
 /// American character set
@@ -164,3 +166,6 @@ pub const ASCII_GS: u8 = 29;
 // Printer constants
 pub const PRINTER_MAX_COLUMNS: u32 = 384;
 pub const BAUDRATE: u32 = 19200;
+
+/// SOURCE: <https://github.com/adafruit/Adafruit-Thermal-Printer-Library/blob/54786351af1d84580c4ae555d439756679b0dc44/Adafruit_Thermal.cpp#L67C19-L67C67>
+pub const BYTE_TIME: i64 = (((11 * 1000000) + (BAUDRATE / 2)) / BAUDRATE) as i64;
