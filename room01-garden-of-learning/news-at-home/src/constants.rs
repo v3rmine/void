@@ -126,8 +126,41 @@ pub const CODEPAGE_CP856: u8 = 46;
 /// Thai character code page
 pub const CODEPAGE_CP874: u8 = 47;
 
-// ASCII character set
-pub const ASCII_ESC: u8 = 0x1B;
-pub const ASCII_DC2: u8 = 0x12;
-pub const ASCII_GS: u8 = 0x1D;
-pub const ASCII_TAB: u8 = 0x09;
+// Character masks
+/// Select character font A or B
+pub const FONT_MASK: u8 = 1 << 0;
+// Turn on/off white/black reverse printing mode. Not in 2.6.8
+// firmware (see inverseOn())
+pub const INVERSE_MASK: u8 = 1 << 1;
+// Turn on/off upside-down printing mode
+pub const UPDOWN_MASK: u8 = 1 << 2;
+// Turn on/off bold printing mode
+pub const BOLD_MASK: u8 = 1 << 3;
+// Turn on/off double-height printing mode
+pub const DOUBLE_HEIGHT_MASK: u8 = 1 << 4;
+// Turn on/off double-width printing mode
+pub const DOUBLE_WIDTH_MASK: u8 = 1 << 5;
+// Turn on/off deleteline mode
+pub const STRIKE_MASK: u8 = 1 << 6;
+
+// ASCII codes used by some of the printer config commands
+// Horizontal tab
+pub const ASCII_TAB: u8 = b'\t';
+/// Line feed
+pub const ASCII_LF: u8 = b'\n';
+/// Form feed
+pub const ASCII_FF: u8 = 0x0C;
+/// Carriage return
+pub const ASCII_CR: u8 = b'\r';
+/// Device control 2
+pub const ASCII_DC2: u8 = 18;
+/// Escape
+pub const ASCII_ESC: u8 = 27;
+/// Field separator
+pub const ASCII_FS: u8 = 28;
+/// Group separator
+pub const ASCII_GS: u8 = 29;
+
+// Printer constants
+pub const PRINTER_MAX_COLUMNS: u32 = 384;
+pub const BAUDRATE: u32 = 19200;
