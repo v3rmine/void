@@ -129,11 +129,6 @@ in {
           from:
             - /persist/var/lib/docker/volumes/grafana-data
           cron: '0 * * * *'
-        loki:
-          <<: *standard
-          from:
-            - /persist/var/lib/docker/volumes/loki-data
-          cron: '0 * * * *'
         suwayomi:
           <<: *standard
           from:
@@ -156,6 +151,10 @@ in {
           <<: *standard
           from:
             - /persist/var/lib/docker/volumes/memos-data
+        bichon:
+          <<: *standard
+          from:
+            - /persist/var/lib/docker/volumes/bichon-data
     '';
   };
 
