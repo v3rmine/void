@@ -292,6 +292,11 @@ in {
             - /persist/var/lib/docker/volumes/sharkey-db
             - /persist/var/lib/docker/volumes/sharkey-meilisearch
           cron: '0 * * * *'
+        vaultwarden:
+          <<: *standard
+          from:
+            - /persist/var/lib/docker/volumes/vaultwarden-data
+          cron: '0 * * * *'
         drive:
           <<: *backblaze
           from:
@@ -340,22 +345,65 @@ in {
         };
       };
 
-      sinks = {
-        loki_journald = {
-          type = "loki";
-          inputs = [ "journald" ];
-          endpoint = "http://nas-uncloud:3100";
-          encoding = { codec = "json"; };
-
-          labels.source = "phloeomys_journald";
-        };
-        loki_traefik = {
-          type = "loki";
+      transforms = {
+        traefik_json = {
+          type = "remap";
           inputs = [ "traefik" ];
-          endpoint = "http://nas-uncloud:3100";
-          encoding = { codec = "json"; };
+          source = ''
+            .source = "phloeomys_traefik"
+            result, err = parse_json(string!(.message))
+            if err == null {
+              .data = result
+              request_method = string!(result.RequestMethod)
+              request_host, err = to_string(result.RequestHost)
+              downstream_status = to_string(int!(result.DownstreamStatus))
+              request_path = string!(result.RequestPath)
+              .message = "{{ request_method }} {{ request_host }} - {{ downstream_status }} {{ request_path }}"
+            } else {
+              .vector_err = err
+            }
+          '';
+        };
+        journald_json = {
+          type = "remap";
+          inputs = [ "journald" ];
+          source = ''
+            .source = "phloeomys_journald"
+            result, err = parse_json(string!(.message))
+            if err == null {
+              .data = result
+              .message = result._msg
+            } else {
+              .vector_err = err
+            }
+          '';
+        };
+      };
 
-          labels.source = "phloeomys_traefik";
+      sinks = {
+        victorialogs_journald = {
+          type = "http";
+          inputs = [ "journald_json" ];
+          uri = "http://nas-uncloud:9428/insert/jsonline?_stream_fields=host,source_type,CONTAINER_NAME,source&_msg_field=message&_time_field=timestamp";
+          request.headers = {
+            VL-Extra-Fields = "source=phloeomys_journald";
+          };
+          encoding = { codec = "json"; };
+          compression = "gzip";
+          framing = { method = "newline_delimited"; };
+          healthcheck = { enabled = false; };
+        };
+        victorialogs_traefik = {
+          type = "http";
+          inputs = [ "traefik_json" ];
+          uri = "http://nas-uncloud:9428/insert/jsonline?_stream_fields=host,source_type,source&_msg_field=message&_time_field=timestamp";
+          request.headers = {
+            VL-Extra-Fields = "source=phloeomys_traefik";
+          };
+          encoding = { codec = "json"; };
+          compression = "gzip";
+          framing = { method = "newline_delimited"; };
+          healthcheck = { enabled = false; };
         };
       };
     };
