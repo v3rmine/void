@@ -140,7 +140,9 @@ impl<'a, S: Write + Read, D: Pin + gpio::InputPin + gpio::OutputPin> ThermalInte
                 FreeRtos::delay_ms(100);
             }
         } else {
-            FreeRtos::delay_ms((micros() - self.resume_time) as u32);
+            let sleep_amount = std::cmp::max((self.resume_time - micros()) / 1000, 0);
+            log::debug!("waiting for {sleep_amount}ms");
+            FreeRtos::delay_ms(sleep_amount as u32);
         }
     }
 
@@ -207,7 +209,9 @@ impl<'a, S: Write + Read, D: Pin + gpio::InputPin + gpio::OutputPin> ThermalInte
         // The printer can't start receiving data immediately upon power up --
         // it needs a moment to cold boot and initialize.  Allow at least 1/2
         // sec of uptime before printer can receive data.
+        log::debug!("waiting for the printer to start");
         self.timeout_set(500000);
+        self.timeout_wait();
 
         self.wake();
         self.reset();
@@ -227,11 +231,15 @@ impl<'a, S: Write + Read, D: Pin + gpio::InputPin + gpio::OutputPin> ThermalInte
         self.dot_print_time = 30000;
         self.dot_feed_time = 2100;
         self.max_chunk_height = 255;
+
+        log::debug!("printer has been initialized");
     }
 
     /// SOURCE:
     /// <https://github.com/adafruit/Adafruit-Thermal-Printer-Library/blob/54786351af1d84580c4ae555d439756679b0dc44/Adafruit_Thermal.cpp#L195>
     pub fn reset(&mut self) {
+        log::debug!("reseting the printer");
+
         // Init command
         self.write_bytes(&[ASCII_ESC, b'@']);
         self.prev_byte = b'\n';
@@ -250,6 +258,8 @@ impl<'a, S: Write + Read, D: Pin + gpio::InputPin + gpio::OutputPin> ThermalInte
             // 0 marks end-of-line
             self.write_bytes(&[20, 24, 28, 0]);
         }
+
+        log::debug!("printer has been reset");
     }
 
     /// SOURCE: <https://github.com/adafruit/Adafruit-Thermal-Printer-Library/blob/54786351af1d84580c4ae555d439756679b0dc44/Adafruit_Thermal.cpp#L232>
@@ -453,6 +463,7 @@ impl<'a, S: Write + Read, D: Pin + gpio::InputPin + gpio::OutputPin> ThermalInte
     /// Feeds by the specified number of lines
     /// SOURCE: <https://github.com/adafruit/Adafruit-Thermal-Printer-Library/blob/54786351af1d84580c4ae555d439756679b0dc44/Adafruit_Thermal.cpp#L396>
     pub fn feed(&mut self, mut lines_count: u8) {
+        log::debug!("feeding lines");
         if self.firmware >= 264 {
             self.write_bytes(&[ASCII_ESC, b'd', lines_count]);
             self.timeout_set((self.dot_feed_time * self.char_height as u32) as i64);
@@ -668,8 +679,7 @@ impl<'a, S: Write + Read, D: Pin + gpio::InputPin + gpio::OutputPin> ThermalInte
     /// Wake the printer from a low-energy state.
     /// SOURCE: <https://github.com/adafruit/Adafruit-Thermal-Printer-Library/blob/54786351af1d84580c4ae555d439756679b0dc44/Adafruit_Thermal.cpp#L613>
     pub fn wake(&mut self) {
-        // Reset timeout counter
-        self.timeout_set(0);
+        log::debug!("waking up the printer");
         // Wake
         self.write_bytes(&[255]);
 
@@ -685,6 +695,7 @@ impl<'a, S: Write + Read, D: Pin + gpio::InputPin + gpio::OutputPin> ThermalInte
             for _ in 0..10 {
                 self.write_bytes(&[0]);
                 self.timeout_set(10_000);
+                self.timeout_wait();
             }
         }
     }
@@ -693,6 +704,7 @@ impl<'a, S: Write + Read, D: Pin + gpio::InputPin + gpio::OutputPin> ThermalInte
     /// Might not work on all printers!
     /// SOURCE: <https://github.com/adafruit/Adafruit-Thermal-Printer-Library/blob/54786351af1d84580c4ae555d439756679b0dc44/Adafruit_Thermal.cpp#L634>
     pub fn has_paper(&mut self) -> bool {
+        log::debug!("check if paper has paper");
         if self.firmware >= 264 {
             self.write_bytes(&[ASCII_ESC, b'v', 0]);
         } else {
