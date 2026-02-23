@@ -22,7 +22,7 @@
     <id>{{ feed_url | safe }}</id>
     {%- for page in pages %}
     {%- if page.ancestors | last != "series/_index.md" %}
-    <entry xml:lang="{{ page.lang }}">
+    <entry xml:lang="{{ page.extra.lang | default(value=page.lang) }}">
         <title>{{ page.title }}</title>
         <published>{{ page.date | date(format="%+") }}</published>
         <updated>{{ page.updated | default(value=page.date) | date(format="%+") }}</updated>
