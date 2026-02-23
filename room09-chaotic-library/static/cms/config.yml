@@ -106,8 +106,16 @@ collections:
       - { label: Body, name: body, widget: richtext }
   - name: configs
     label: Configs
+    editor:
+      preview: false
     files:
       - label: Zola config
         name: zola-config
         file: room09-chaotic-library/config.toml
-        fields: [{ label: Body, name: body, widget: code }]
+        format: raw
+        fields:
+          - label: Body
+            name: body
+            widget: code
+            output_code_only: true
+            allow_language_selection: false

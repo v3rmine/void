@@ -3,6 +3,11 @@ services:
     build: .
     x-caddy: |
       http://astriiid.fr {
+        header Strict-Transport-Security "max-age=300; includeSubDomains"
+        header X-Content-Type-Options "nosniff"
+        header X-Frame-Options "DENY"
+        header Via "Rodents"
+
         header Content-Security-Policy "
           default-src 'self';
           font-src 'self' https://fonts.gstatic.com;
@@ -11,7 +16,8 @@ services:
           script-src 'self' 'sha256-N9chTn5S0hU62Hotw4Ml5LKoceaZ+S+9kh1qlOAjuQM=';
           style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
           frame-src https://eldritch.cafe https://open-web-calendar.hosted.quelltext.eu https://invidious.nerdvpn.de https://www.youtube-nocookie.com;
-          connect-src 'self' https://eldritch.cafe https://tracto.pl https://git.v3rm.in;
+          connect-src 'self' https://eldritch.cafe https://tracto.pl https://git.v3rm.in https://stats.astriiid.fr;
+          frame-ancestors 'none';
           base-uri 'none';
           form-action 'none'"
 
