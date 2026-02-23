@@ -1,0 +1,113 @@
+# yaml-language-server: $schema=https://unpkg.com/@sveltia/cms/schema/sveltia-cms.json
+
+backend:
+  name: gitea
+  repo: v3rmine/void
+  base_url: "https://git.v3rm.in"
+  api_root: "https://git.v3rm.in/api/v1"
+  app_id: "04e92ce1-2eaa-4de5-bf38-caef68d5b6ce"
+
+media_folder: /room09-chaotic-library/static/media
+public_folder: /media
+
+collections:
+  - name: garden
+    label: Garden
+    folder: /room09-chaotic-library/content/garden
+    format: yaml-frontmatter
+    sortable_fields: [title, date, updated]
+    fields:
+      - { label: Draft, name: draft, widget: boolean, required: false }
+      - { label: Date, name: date, widget: datetime, time_format: false }
+      - { label: Updated, name: updated, widget: datetime, time_format: false, required: false }
+      - { label: Title, name: title, widget: string }
+      - { label: Description, name: description, widget: string, required: false }
+      - label: Taxonomies
+        name: taxonomies
+        widget: object
+        fields:
+          - label: Tags
+            name: tags
+            widget: list
+            required: false
+            field: { label: Tag, name: tag, widget: string }
+      - label: Extra
+        name: extra
+        widget: object
+        fields:
+          - { label: Serie, name: serie, widget: string, required: false }
+          - { label: GUID, name: guid, widget: uuid, required: true }
+          - { label: Lang, name: lang, widget: string, required: true }
+          - label: Comments
+            name: comments
+            widget: object
+            fields:
+              - { name: host, label: Host, widget: string, default: "eldritch.cafe", required: true }
+              - { name: id, label: "Post ID", widget: string, required: false }
+      - { label: Body, name: body, widget: richtext }
+  - name: notes
+    label: Notes
+    folder: /room09-chaotic-library/content/notes
+    format: yaml-frontmatter
+    sortable_fields: [title, date, updated]
+    fields:
+      - { label: Draft, name: draft, widget: boolean, required: false }
+      - { label: Date, name: date, widget: datetime, time_format: false }
+      - { label: Updated, name: updated, widget: datetime, time_format: false, required: false }
+      - { label: Title, name: title, widget: string }
+      - { label: Description, name: description, widget: string, required: false }
+      - label: Taxonomies
+        name: taxonomies
+        widget: object
+        fields:
+          - label: Tags
+            name: tags
+            widget: list
+            required: false
+            field: { label: Tag, name: tag, widget: string }
+      - label: Extra
+        name: extra
+        widget: object
+        fields:
+          - { label: Serie, name: serie, widget: string, required: false }
+          - { label: GUID, name: guid, widget: uuid, required: true }
+          - { label: Lang, name: lang, widget: string, required: true }
+          - label: Comments
+            name: comments
+            widget: object
+            fields:
+              - { name: host, label: Host, widget: string, default: "eldritch.cafe", required: true }
+              - { name: id, label: "Post ID", widget: string, required: false }
+      - { label: Body, name: body, widget: richtext }
+  - name: series
+    label: Series
+    folder: /room09-chaotic-library/content/series
+    format: yaml-frontmatter
+    sortable_fields: [title, date, updated]
+    fields:
+      - { label: Date, name: date, widget: datetime, time_format: false }
+      - { label: Updated, name: updated, widget: datetime, time_format: false, required: false }
+      - { label: Title, name: title, widget: string }
+      - { label: Description, name: description, widget: string }
+      - label: Taxonomies
+        name: taxonomies
+        widget: object
+        fields:
+          - label: Tags
+            name: tags
+            widget: list
+            required: false
+            field: { label: Tag, name: tag, widget: string }
+      - label: Extra
+        name: extra
+        widget: object
+        fields:
+          - { label: Serie, name: serie, widget: string }
+      - { label: Body, name: body, widget: richtext }
+  - name: configs
+    label: Configs
+    files:
+      - label: Zola config
+        name: zola-config
+        file: room09-chaotic-library/config.toml
+        fields: [{ label: Body, name: body, widget: code }]

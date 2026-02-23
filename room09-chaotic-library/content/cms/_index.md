@@ -1,0 +1,3 @@
+---
+template: "cms.html"
+---

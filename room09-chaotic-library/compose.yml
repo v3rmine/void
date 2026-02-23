@@ -6,7 +6,7 @@ services:
         header Content-Security-Policy "
           default-src 'self';
           font-src 'self' https://fonts.gstatic.com;
-          img-src 'self' https: data:;
+          img-src 'self' https: data: blob:;
           media-src 'self' https:;
           script-src 'self' 'sha256-N9chTn5S0hU62Hotw4Ml5LKoceaZ+S+9kh1qlOAjuQM=';
           style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
