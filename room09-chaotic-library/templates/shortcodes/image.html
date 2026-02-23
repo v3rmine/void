@@ -29,8 +29,8 @@
 
 {%- set image_classes = image_classes | join(sep=" ") -%}
 {%- if width or height -%}
-    {%- set format = format | default(value="webp") -%}
-    {%- set quality = quality | default(value=100) -%}
+    {%- set format = format | default(value="avif") -%}
+    {%- set quality = quality | default(value=80) -%}
 
     {%- if width and height -%}
         {%- set image = resize_image(path=url, op="fit", width=width, height=height, format=format, quality=quality) -%}

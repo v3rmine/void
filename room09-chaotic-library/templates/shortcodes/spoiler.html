@@ -1,3 +1,4 @@
 <span class="spoiler {%-if solid %} solid{%- endif -%}">
+    {%- set content = content | default(value="") -%}
     {{- body | default(value=content) | markdown(inline=true) | safe -}}
 </span>

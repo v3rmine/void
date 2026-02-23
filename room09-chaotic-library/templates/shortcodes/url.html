@@ -1,0 +1,2 @@
+{%- set stripped_url = link | trim_start_matches(pat="https://") | trim_start_matches(pat="http://") | trim_end_matches(pat="/") -%}
+{{ "[" ~ stripped_url ~ "]" ~ "(" ~ link ~ ")" | markdown(inline=true) | safe }}
