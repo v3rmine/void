@@ -1,6 +1,6 @@
 services:
   caddy-custom:
-    image: caddy:2.10.2
+    build: .
     command: caddy run -c /config/caddy.json --watch
     restart: unless-stopped
     environment:
