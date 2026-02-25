@@ -23,6 +23,19 @@ services:
 
         reverse_proxy {{upstreams 80}}
       }
+      http://qr.astriiid.fr {
+        header Cache-Control max-age=604800
+        @mine expression {http.request.uri.query.data}.startsWith("https://eldritch.cafe/@v3rmine/")
+        handle @mine {
+          reverse_proxy https://api.qrserver.com {
+            header_up Host "api.qrserver.com"
+            header_up -X-Forwarded-*
+          }
+        }
+        respond "Access denied" 403 {
+          close
+        }
+      }
       http://v3rm.in {
         redir https://astriiid.fr{uri} permanent
       }

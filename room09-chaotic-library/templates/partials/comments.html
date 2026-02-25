@@ -45,7 +45,7 @@
 			class="pixels no-hover"
 			title="{{ macros_translate::translate(key='comments_qr', default='QR code to a Mastodon post', language_strings=language_strings) }}"
 			{%- if config.markdown.lazy_async_image -%}decoding="async" loading="lazy"{%- endif -%}
-			src="https://api.qrserver.com/v1/create-qr-code/?data=https://{{ host }}/@{{ user }}/{{ id }}"
+			src="https://qr.astriiid.fr/v1/create-qr-code/?data=https://{{ host }}/@{{ user }}/{{ id }}"
 		/>
 	{%- endif -%}
 	<h2>{{ macros_translate::translate(key="comments", default="Comments", language_strings=language_strings) }}</h2>
