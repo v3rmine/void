@@ -24,9 +24,16 @@ services:
         reverse_proxy {{upstreams 80}}
       }
       http://qr.astriiid.fr {
-        header Cache-Control max-age=604800
         @mine expression {http.request.uri.query.data}.startsWith("https://eldritch.cafe/@v3rmine/")
         handle @mine {
+          cache {
+            key {
+              hide
+              template QR-{http.request.uri.query.data}
+            }
+            stale 7d
+            ttl 1d
+          }
           reverse_proxy https://api.qrserver.com {
             header_up Host "api.qrserver.com"
             header_up -X-Forwarded-*
