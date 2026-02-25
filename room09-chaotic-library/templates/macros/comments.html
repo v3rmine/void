@@ -1,0 +1,29 @@
+{%- macro emoji(emoji) -%}
+    <picture
+        {% if config.markdown.lazy_async_image -%}
+        decoding="async"
+        loading="lazy"
+        {%- endif %}
+    >
+        <source
+            srcset="{{ emoji.url }}"
+            media="(prefers-reduced-motion: no-preference)"
+        />
+        <img
+            class="emoji"
+            src="{{ emoji.static_url }}"
+            alt=":{{ emoji.shortcode }}:"
+            title=":{{ emoji.shortcode }}:"
+        />
+    </picture>
+{%- endmacro emoji -%}
+
+{%- macro emojify(content, emojis) -%}
+    {%- set emojified_content = content -%}
+    {%- for emoji in emojis -%}
+        {%- set from_shortcode = ":" ~ emoji.shortcode ~ ":" -%}
+        {%- set to_emoji = macros_comments::emoji(emoji=emoji) -%}
+        {%- set_global emojified_content = emojified_content | replace(from=from_shortcode, to=to_emoji) -%}
+    {%- endfor -%}
+    {{ emojified_content }}
+{%- endmacro emojify -%}

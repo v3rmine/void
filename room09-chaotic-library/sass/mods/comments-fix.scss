@@ -1,0 +1,7 @@
+#comments #comments-wrapper .comment {
+  .card {
+    &:hover:not(:active) img.no-hover {
+      transform: unset;
+    }
+  }
+}

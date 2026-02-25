@@ -10,6 +10,9 @@ backend:
 media_folder: /room09-chaotic-library/static/media
 public_folder: /media
 
+output:
+  omit_empty_optional_fields: true
+
 collections:
   - name: garden
     label: Garden

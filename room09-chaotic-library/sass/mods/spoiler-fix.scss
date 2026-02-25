@@ -7,3 +7,23 @@ span.spoiler.solid {
     color: rgba(0, 0, 0, 0) !important;
   }
 }
+
+img,
+video {
+  &.spoiler,
+	&[src*="#spoiler"] {
+		opacity: var(--dim-opacity);
+		clip-path: inset(0 0 0 0 round var(--rounded-corner));
+		filter: blur(3rem);
+
+		&:hover,
+		&:active {
+			opacity: 1;
+			clip-path: inset(
+				-0.75rem -0.75rem -0.75rem -0.75rem round
+					var(--rounded-corner-small)
+			);
+			filter: none;
+		}
+	}
+}

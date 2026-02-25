@@ -3,7 +3,8 @@ base_url = "https://astriiid.fr"
 description = "v3rmine personal website"
 
 compile_sass = true
-minify_html = true
+# Only makes debugging harder, every html is precompressed
+minify_html = false
 generate_feeds = true
 # Only the first file will be used in the navbar feed button,
 # other feeds will still be available in page's head.
@@ -228,6 +229,8 @@ host = "tracto.pl"
 user = "v3rmine"
 # Whether to show the QR code to Mastodon post
 show_qr = true
+# Last cached time
+last_cached_time = "2026-02-25T16:02:53+01:00"
 
 [extra.goatcounter]
 host = "stats.astriiid.fr"
