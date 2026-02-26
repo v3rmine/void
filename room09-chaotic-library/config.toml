@@ -232,6 +232,12 @@ show_qr = true
 # Last cached time
 last_cached_time = "2026-02-25T16:02:53+01:00"
 
+[extra.webmentions]
+# Fixed url for webmentions
+base_url = "https://astriiid.fr"
+# Mail to use for authent
+mail = "v3rmine@astriiid.fr"
+
 [extra.goatcounter]
 host = "stats.astriiid.fr"
 

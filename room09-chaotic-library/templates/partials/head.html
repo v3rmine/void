@@ -17,12 +17,10 @@
         <meta name="fediverse:creator" content="@{{ config.extra.comments.user }}@{{ config.extra.comments.host }}" />
 	{%- endif %}
 
-	<link rel="me" href="mailto:v3rmine@astriiid.fr" />
-	<link rel="webmention" href="https://webmention.io/{{ config.base_url | replace(from='https://', to='') }}/webmention">
-	<link
-	    rel="webmention"
-		href="https://webmention.io/{{ config.base_url | replace(from='https://', to='') }}/webmention"
-	>
+	{%- if config.extra.webmentions %}
+    	<link rel="me" href="mailto:{{ config.extra.webmentions.mail }}" />
+    	<link rel="webmention" href="https://webmention.io/{{ config.extra.webmentions.base_url | replace(from='https://', to='') }}/webmention">
+	{%- endif %}
 
 	{%- include "partials/favicon.html" %}
 

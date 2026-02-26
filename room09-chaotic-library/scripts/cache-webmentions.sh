@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-curl -s "https://webmention.io/api/mentions.json?token=${WEBMENTION_TOKEN}" -o content/webmentions.json
+curl -s "https://webmention.io/api/mentions.json?target=https://astriiid.fr" -o content/webmentions.json

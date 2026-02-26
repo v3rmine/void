@@ -1,0 +1,10 @@
+{%- macro prettify_url(link) -%}
+    {%- set stripped_url = link | trim_start_matches(pat="https://") | trim_start_matches(pat="http://") | trim_end_matches(pat="/") -%}
+    {{- stripped_url -}}
+{%- endmacro prettify_url -%}
+
+{%- macro rainbow(content) -%}
+    <span class="rainbow-text">
+        {{- body | default(value=content) | markdown(inline=true) | safe -}}
+    </span>
+{%- endmacro rainbow -%}

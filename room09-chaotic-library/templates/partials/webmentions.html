@@ -1,0 +1,29 @@
+{%- set webmentions = load_data(path='/webmentions.json') -%}
+{%- set page_mentions = [] -%}
+{%- for mention in webmentions.links -%}
+    {%- if mention.target | trim_start_matches(pat=config.extra.webmentions.base_url) == page.path -%}
+        {%- set_global page_mentions = page_mentions | concat(with=[mention]) -%}
+    {%- endif -%}
+{%- endfor -%}
+
+{%- if page_mentions | length > 0 -%}
+    <details>
+        <summary>
+            {{- macros_translate::translate(key="webmentions_mentions_count", default="by $SOMEONE", language_strings=language_strings) | replace(from="$COUNT", to=page_mentions | length | as_str) | replace(from="Internet", to=macros_partials::rainbow(content="Internet")) | safe -}}
+        </summary>
+        <ul>
+        {%- for mention in page_mentions %}
+            {%- set pretty_url = macros_partials::prettify_url(link=mention.source) -%}
+            <li>
+                {%- if mention.activity.type == "link" %}
+                🔗
+                {% endif -%}
+                <a href="{{ mention.source }}" rel="{{ rel_attributes }}">{{ pretty_url | safe }}</a>
+                {%- if mention.data.name %}
+                <span>{{ macros_translate::translate(key="webmentions_mention_by", default="by $SOMEONE", language_strings=language_strings) | replace(from="$SOMEONE", to=mention.data.name) }}</span>
+                {% endif -%}
+            </li>
+        {%- endfor %}
+        </ul>
+    </details>
+{%- endif -%}
