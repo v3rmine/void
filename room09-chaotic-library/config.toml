@@ -212,7 +212,7 @@ show_powered_by = true
 show_source = true
 # Custom copyright text
 #
-copyright = "© Copyright 2026 Astrid Planchon.<br>Any and all opinions listed here are my own<br>and not representative of any of my employers,<br>past, future, and/or present."
+copyright = '© Copyright 2026 <span class="h-card"><img class="u-logo" src="/favicon.png" style="display:none" /><a class="u-url" href="/" style="display:none"></a><span class="p-name">Astrid Planchon</span></span>.<br>Any and all opinions listed here are my own<br>and not representative of any of my employers,<br>past, future, and/or present.'
 
 # Based on https://carlschwan.eu/2020/12/29/adding-comments-to-your-static-blog-with-mastodon/
 #
