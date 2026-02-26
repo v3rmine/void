@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="h-entry">
+    <h1 class="p-name">{{ page.title }}</h1>
+    {%- include "partials/statements.html" -%}
+    {%- if page.extra.toc and not page.extra.toc_sidebar -%}
+    {%- include "partials/toc.html" -%}
+    {%- endif -%}
+    <div class="e-content">
+        {{ page.content | safe }}
+    </div>
+</div>
+{% endblock content %}

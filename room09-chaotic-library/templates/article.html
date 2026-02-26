@@ -11,7 +11,7 @@
 	{%- set list_element = "ul" -%}
 {%- endif -%}
 
-<article>
+<article class="h-entry">
 	{%- if page.extra.banner -%}
 		<div id="banner-container">
 			<img id="banner" class="full-bleed{% if page.extra.banner_pixels %} pixels{% endif %}" src="{{ current_url ~ page.extra.banner }}" {% if config.markdown.lazy_async_image %}decoding="async" loading="lazy"{% endif %} />
@@ -22,13 +22,13 @@
 		{%- if page.date -%}
 			<p>
 				<small>
-					<time datetime="{{ page.date | date(format=' %+') }}">
+					<time class="dt-published" datetime="{{ page.date | date(format=' %+') }}">
 						{{- macros_translate::translate(key="published", default="Published on", language_strings=language_strings) }}
 						{{ page.date | date(format=date_format, locale=date_locale) -}}
 					</time>
 					{%- if page.updated -%}
 						<span> {{ config.extra.separator | default(value="•") }} </span>
-						<time datetime="{{ page.updated | date(format=' %+') }}">
+						<time class="dt-updated" datetime="{{ page.updated | date(format=' %+') }}">
 							{{- macros_translate::translate(key="updated", default="Updated on", language_strings=language_strings) }}
 							{{ page.updated | date(format=date_format, locale=date_locale) -}}
 						</time>
@@ -37,7 +37,9 @@
 			</p>
 		{%- endif -%}
 
-		<h1>{{ page.title }}</h1>
+		<h1 class="p-name">{{ page.title }}</h1>
+		<p class="p-summary" style="display: none;">{{ page.description | default(value="") }}</p>
+		<p class="u-uid" style="display: none;">{{ page.extra.guid }}</p>
 
 		{%- if page.extra.serie -%}
     	{%- set serie_page = get_page(path="series/" ~ page.extra.serie ~ ".md", lang=lang) -%}
@@ -66,7 +68,7 @@
     		{%- if page.authors or config.extra.show_reading_time -%}
     			<p>
     				<small>
-    					{%- if page.authors -%}
+    					{%- if page.authors or config.author -%}
     						<span>{% include "partials/authors.html" -%}</span>
     						{%- if config.extra.show_reading_time -%}
     							<span> {{ config.extra.separator | default(value="•") }} </span>
@@ -86,9 +88,9 @@
     		{%- if page.taxonomies -%}
     			{%- for name, taxon in page.taxonomies %}
     				<ul class="tags">
-    					<a class="tag label" href="{{- get_url(path=name, lang=lang) | lower -}}">{{ macros_translate::translate(key=name, default=name, language_strings=language_strings) }}:</a>
+    					<li><a class="tag label" href="{{- get_url(path=name, lang=lang) | lower -}}">{{ macros_translate::translate(key=name, default=name, language_strings=language_strings) }}:</a></li>
     					{%- for item in taxon -%}
-    					    <li><a class="tag" href="{{ get_taxonomy_url(kind=name, name=item, lang=lang) }}">{{ item }}</a></li>
+    					    <li><a class="p-category tag" href="{{ get_taxonomy_url(kind=name, name=item, lang=lang) }}">{{ item }}</a></li>
     					{%- endfor %}
     				</ul>
     				<br />
@@ -158,7 +160,7 @@
 		{%- include "partials/toc.html" -%}
 	{%- endif -%}
 
-	<div class="content">
+	<div class="e-content content">
 	    {{ page.content | safe }}
 	</div>
 </article>

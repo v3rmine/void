@@ -1,5 +1,4 @@
 <head>
-	<!-- {{ now() | date(format='%F %a %R') }} -->
 	<meta charset="UTF-8" />
 	<meta name="description" content="{{ config.description }}" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -7,9 +6,9 @@
 	{%- if config.extra.accent_color_dark %}
 		<meta name="theme-color" content="{{ config.extra.accent_color_dark | safe }}" media="(prefers-color-scheme:dark)" />
 	{%- endif %}
-	<!--{%- if config.extra.csp %}
+	{# <!-- {%- if config.extra.csp %}
 		{%- include "partials/csp.html" %}
-	{%- endif %}-->
+	{%- endif %} --> #}
 	<title>{% include "partials/title.html" %}</title>
 	<link rel="canonical" href="{{ current_url | default(value='/') | safe }}" />
 
@@ -17,6 +16,13 @@
 		<link rel="me" href="https://{{ config.extra.comments.host }}/@{{ config.extra.comments.user }}" />
         <meta name="fediverse:creator" content="@{{ config.extra.comments.user }}@{{ config.extra.comments.host }}" />
 	{%- endif %}
+
+	<link rel="me" href="mailto:v3rmine@astriiid.fr" />
+	<link rel="webmention" href="https://webmention.io/{{ config.base_url | replace(from='https://', to='') }}/webmention">
+	<link
+	    rel="webmention"
+		href="https://webmention.io/{{ config.base_url | replace(from='https://', to='') }}/webmention"
+	>
 
 	{%- include "partials/favicon.html" %}
 
