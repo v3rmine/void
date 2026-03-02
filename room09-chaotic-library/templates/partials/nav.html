@@ -111,6 +111,8 @@
 									<a href="{{ get_url(path=feed, lang=lang) }}" rel="{{ rel_attributes }}">
 										{%- if feed == "atom.xml" -%}
 											Atom
+										{%- elif feed == "feed.json" -%}
+										    JSON
 										{%- else -%}
 											RSS
 										{%- endif -%}

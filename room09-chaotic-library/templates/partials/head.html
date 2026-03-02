@@ -30,6 +30,8 @@
 				<link rel="alternate" type="application/atom+xml" title="{{ config.title }} - Atom Feed" href="{{ get_url(path=feed) | safe }}">
 			{% elif feed == "rss.xml" %}
 				<link rel="alternate" type="application/rss+xml" title="{{ config.title }} - RSS Feed" href="{{ get_url(path=feed) | safe }}">
+			{% elif feed is ending_with(".json") %}
+                <link rel="alternate" type="application/json" title="{{ config.title }} - JSON Feed" href="{{ get_url(path=feed) | safe }}" />
 			{% else %}
 				<link rel="alternate" href="{{ get_url(path=feed) | safe }}">
 			{% endif %}

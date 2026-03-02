@@ -1,4 +1,11 @@
+{%- if tw -%}
+    {%- set solid = true -%}
+{%- endif -%}
+
 <span class="spoiler {%-if solid %} solid{%- endif -%}">
+    {%- if tw -%}
+    <span class="tw"><strong>TW:</strong> {{ tw }}</span>
+    {%- endif -%}
     {%- set content = content | default(value="") -%}
     {{- body | default(value=content) | markdown(inline=true) | safe -}}
 </span>

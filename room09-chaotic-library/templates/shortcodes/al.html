@@ -1,0 +1,18 @@
+{%- set autolink_db = load_data(path="/autolink.toml") -%}
+{%- set key_to_search = k | lower -%}
+{%- set result_url = "" -%}
+
+{%- for url, keys in autolink_db -%}
+    {%- for key in keys -%}
+        {%- set key = key | lower %}
+        {%- if key == key_to_search -%}
+            {%- set_global result_url = url -%}
+        {%- endif -%}
+    {%- endfor -%}
+{%- endfor -%}
+
+{%- if result_url == "" -%}
+    {{ throw(message="Key " ~ k ~ " not found in autolink.toml") }}
+{%- endif -%}
+
+{{- "[" ~ k ~ "](" ~ result_url ~ ")" | markdown(inline=true) | safe -}}

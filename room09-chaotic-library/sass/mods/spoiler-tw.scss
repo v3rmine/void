@@ -1,0 +1,45 @@
+.spoiler.solid {
+  position: relative;
+
+  &:hover {
+    .tw {
+      display: none;
+    }
+  }
+
+  &:has(.tw) {
+    background-color: unset;
+
+    &::after {
+      z-index: 10;
+      pointer-events: none;
+
+      content: "";
+
+      transition: var(--transition-longer);
+      border-radius: var(--rounded-corner-small);
+      background-color: var(--fg-muted-4);
+
+      position: absolute;
+      top: -0.125rem;
+      left: -0.25rem;
+      bottom: -0.125rem;
+      right: -0.25rem;
+    }
+
+    &:hover::after {
+      background-color: rgba(0,0,0,0);
+    }
+  }
+
+  .tw {
+    z-index: 20;
+
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0.5rem;
+
+    color: white !important;
+  }
+}

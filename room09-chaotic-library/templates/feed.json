@@ -1,0 +1,49 @@
+{%- set title = config.title -%}
+{%- if term -%}
+  {%- set title = title ~ " - " ~ term.name -%}
+{%- elif section.title -%}
+  {%- set title = title ~ " - " ~ section.title -%}
+{%- endif -%}
+{%- set title = title | json_encode() -%}
+{
+  "version": "https://jsonfeed.org/version/1.1",
+  "user_comment": "This is a JSON feed. Subscribe by copying the URL from the address bar into your newsreader.",
+  "title": {{ title }},
+  "description": {{ config.description | json_encode() }},
+  "home_page_url": "{%- if section -%}{{ section.permalink | safe }}{%- else -%}{{ config.base_url | safe }}{%- endif -%}",
+  "feed_url": "{{ feed_url | safe }}",
+  "icon": "/android-chrome-512x512.png",
+  "favicon": "/favicon.ico",
+  "language": "{{ lang }}",
+  "items": [
+    {%- for page in pages %}
+    {
+      "id": "{{ page.extra.guid | default(value=page.path) | safe }}",
+      "title": {{ page.title | json_encode() }},
+      "date_published": "{{ page.date | date(format='%+') }}",
+      {%- if page.updated %}
+      "date_modified": "{{ page.updated | date(format='%+') }}",
+      {%- endif %}
+      "url": "{{ page.permalink | safe }}",
+      "content_html": {{ page.content | json_encode() }},
+      {%- if page.summary %}
+      "summary": {{ page.summary | json_encode() }},
+      {%- endif %}
+      "authors": [
+        {%- if page.authors %}
+          {%- for author in page.authors %}
+            { "name": {{ author | json_encode() }} }{%- if not loop.last -%},{%- endif %}
+          {%- endfor %}
+        {%- elif config.author %}
+          { "name": {{ config.author | json_encode() }} }
+        {%- endif %}
+      ],
+      "tags": [
+        {%- for tag in page.taxonomies.tags %}
+        {{ tag | json_encode() }}{%- if not loop.last -%},{%- endif %}
+        {%- endfor %}
+      ]
+    }{%- if not loop.last -%},{%- endif %}
+    {%- endfor %}
+  ]
+}
