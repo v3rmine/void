@@ -3,7 +3,7 @@
 {%- elif section.extra.card -%}
 	{{ get_url(path=section.extra.card) }}
 {%- elif page.extra.banner -%}
-	{%- set card = resize_image(path=page.extra.banner, width=1200, height=628, op="fill", format="avif") -%}
+	{%- set card = resize_image(path=page.extra.banner, width=1200, height=628, op="fill", format="jpg") -%}
 	{{ card.url }}
 {%- else -%}
 	{{ get_url(path="card.jpg") }}
