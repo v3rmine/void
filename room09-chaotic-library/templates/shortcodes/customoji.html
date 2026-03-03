@@ -1,0 +1,17 @@
+{%- set png_path = "/media/emojis/" ~ name ~ ".png" -%}
+{%- set png = get_image_metadata(path=png_path, allow_missing=true) -%}
+{%- set gif_path = "/media/emojis/" ~ name ~ ".gif" -%}
+{%- set gif = get_image_metadata(path=gif_path, allow_missing=true) -%}
+
+{%- set size = size | default(value=48) -%}
+{%- set quality = quality | default(value=90) -%}
+
+{%- if png -%}
+    {%- set image = resize_image(path=png_path, op="fit_height", height=size, quality=quality, format="avif") -%}
+{%- elif gif -%}
+    {%- set image = resize_image(path=gif_path, op="fit_height", height=size, quality=quality, format="avif") -%}
+{%- else -%}
+    {{ throw(message="Emoji " ~ name ~ " not found") }}
+{%- endif -%}
+
+<img class="inline no-hover" alt=":{{ name }}:" src="{{ image.url }}" {%- if config.markdown.lazy_async_image -%}decoding="async" loading="lazy"{%- endif -%} />

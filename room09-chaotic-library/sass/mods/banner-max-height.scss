@@ -1,0 +1,14 @@
+#banner-container {
+  max-height: 20rem;
+
+  #banner {
+    position: unset;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+  }
+}
+
+#banner-container + #heading {
+  margin-block-start: calc(min(50vw, 20rem) - 7rem);
+}

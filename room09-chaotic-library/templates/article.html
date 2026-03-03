@@ -13,8 +13,9 @@
 
 <article class="h-entry">
 	{%- if page.extra.banner -%}
+	    {%- set banner = resize_image(path=page.extra.banner, width=1200, height=628, op="fill", format="avif") -%}
 		<div id="banner-container">
-			<img id="banner" class="full-bleed{% if page.extra.banner_pixels %} pixels{% endif %}" src="{{ current_url ~ page.extra.banner }}" {% if config.markdown.lazy_async_image %}decoding="async" loading="lazy"{% endif %} />
+			<img id="banner" class="full-bleed{% if page.extra.banner_pixels %} pixels{% endif %}" src="{{ banner.url }}" {% if config.markdown.lazy_async_image %}decoding="async" loading="lazy"{% endif %} />
 		</div>
 	{%- endif -%}
 

@@ -1,5 +1,4 @@
 // Source: https://www.rss.style/
-
 console.log(`INFO: processing RSS feed from ${window.location.href}`);
 
 document.onreadystatechange = async function () {
@@ -12,22 +11,21 @@ document.onreadystatechange = async function () {
       console.log("WARNING: Self link not found, defaulting to current URL");
       selfLink = window.location.href;
     }
-    var title = document.querySelector("feed > title");
-    var description = document.querySelector("feed > subtitle");
-    var homeLink = document
-      .querySelector("feed > link:not([rel])")
-      ?.getAttribute("href");
+    var title = document.querySelector("channel > title");
+    var description = document.querySelector("channel > description");
+    var homeLink = document.querySelector(
+      "channel > link:not([rel])",
+    )?.textContent;
     var iconUrl =
-      document.querySelector("feed > icon")?.textContent ||
-      document.querySelector("feed > logo")?.textContent ||
-      "/rss-tile.svg";
-    var items = document.querySelectorAll("feed > entry");
+      document.querySelector("channel > image > url")?.textContent ||
+      "/rss/rss-tile.svg";
+    var items = document.querySelectorAll("channel > item");
     const NS = "http://www.w3.org/1999/xhtml";
     const htmlRoot = document.createElementNS(NS, "html");
     const head = document.createElementNS(NS, "head");
     const link = document.createElementNS(NS, "link");
     link.setAttribute("rel", "stylesheet");
-    link.setAttribute("href", "/feed.rss-style.css");
+    link.setAttribute("href", "/rss/feed.rss-style.css");
     head.appendChild(link);
     const viewport = document.createElementNS(NS, "meta");
     viewport.setAttribute("name", "viewport");
@@ -46,13 +44,11 @@ document.onreadystatechange = async function () {
     h1.appendChild(rssIcon);
     h1.appendChild(document.createTextNode(title.textContent));
     body.appendChild(h1);
-    if (description) {
-      const pdesc = document.createElementNS(NS, "p");
-      pdesc.textContent = description.textContent;
-      body.appendChild(pdesc);
-    }
+    const pdesc = document.createElementNS(NS, "p");
+    pdesc.textContent = description.textContent;
+    body.appendChild(pdesc);
     const pRss = document.createElementNS(NS, "p");
-    pRss.appendChild(document.createTextNode("This is the Atom "));
+    pRss.appendChild(document.createTextNode("This is the RSS "));
     const rssLink = document.createElementNS(NS, "a");
     rssLink.setAttribute("href", "https://www.rss.style/what-is-a-feed.html");
     rssLink.textContent = "news feed";
@@ -119,11 +115,8 @@ document.onreadystatechange = async function () {
       const itemTitle =
         item.querySelector("title")?.textContent || "(untitled)";
       const itemLink = item.querySelector("link").textContent;
-      const itemPubDate =
-        item.querySelector("published")?.textContent ||
-        item.querySelector("updated")?.textContent ||
-        "(undated)";
-      const itemDesc = item.querySelector("content")?.textContent;
+      const itemPubDate = item.querySelector("pubDate").textContent;
+      const itemDesc = item.querySelector("description")?.textContent;
       const details = document.createElementNS(NS, "details");
       const summary = document.createElementNS(NS, "summary");
       const titleLink = document.createElementNS(NS, "a");
@@ -173,7 +166,7 @@ document.onreadystatechange = async function () {
     rssStyleLink.setAttribute("href", "https://www.rss.style/");
     var rssStyleIcon = document.createElementNS(NS, "img");
     rssStyleIcon.setAttribute("alt", "RSS.style logo");
-    rssStyleIcon.setAttribute("src", "/rss-tile.svg");
+    rssStyleIcon.setAttribute("src", "/rss/rss-tile.svg");
     rssStyleIcon.setAttribute(
       "style",
       "height:1em;vertical-align:middle;padding-right:0.25em;",

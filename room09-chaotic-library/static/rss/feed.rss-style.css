@@ -979,7 +979,7 @@ kbd {
   }
 }
 
-img,video {
+img:not(.inline),video:not(.inline) {
   display: block;
   max-width: 100%;
   height: auto;

@@ -62,7 +62,7 @@
 
 	{%- if not config.extra.debug.no_styles %}
 		{%- for style in styles %}
-			<link type="text/css" rel="stylesheet" href="{{ get_url(path=style) | safe }}" />
+			<link type="text/css" rel="stylesheet" href="{{ get_url(path=style, cachebust=true) | safe }}" />
 		{%- endfor %}
 
 		{%- if config.markdown.highlighting and config.markdown.highlighting.style == "class" %}
@@ -78,7 +78,7 @@
 	{%- set scripts = ["closable.js"] %}
 
 	{%- if config.extra.show_copy_button %}
-		{%- set scripts = scripts | concat(with=["copy-button.js"]) %}
+		{%- set scripts = scripts | concat(with=["scripts/copy-button.js"]) %}
 	{%- endif %}
 
 	{%- if config.extra.goatcounter %}
@@ -102,7 +102,7 @@
 	{%- endif %}
 
 	{%- if page.extra.comments.id %}
-		{%- set scripts = scripts | concat(with=["comments.js"]) %}
+		{%- set scripts = scripts | concat(with=["scripts/comments.js"]) %}
 	{%- endif %}
 
 	{%- if config.extra.scripts %}

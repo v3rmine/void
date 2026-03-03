@@ -26,6 +26,9 @@
 {%- if spoiler and solid -%}
 	{%- set image_classes = image_classes | concat(with="solid") -%}
 {%- endif -%}
+{%- if inline -%}
+	{%- set image_classes = image_classes | concat(with="inline") -%}
+{%- endif -%}
 
 {%- set image_classes = image_classes | join(sep=" ") -%}
 {%- if width or height -%}
@@ -51,7 +54,7 @@
 {%- if url_min and full_size -%}
 	<a href="{{ url }}">
 		<img class="{{ image_classes }}" {%- if alt -%}alt="{{ alt }}"{%- endif -%} src="{{ url_min }}" {%- if config.markdown.lazy_async_image -%}decoding="async" loading="lazy"{%- endif -%} />
-	</a>
+		</as>
 {%- else -%}
 	<img class="{{ image_classes }}" {%- if alt -%}alt="{{ alt }}"{%- endif -%} src="{{ url }}" {%- if config.markdown.lazy_async_image -%}decoding="async" loading="lazy"{%- endif -%} />
 {%- endif -%}

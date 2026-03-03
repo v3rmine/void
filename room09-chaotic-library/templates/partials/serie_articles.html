@@ -21,7 +21,7 @@
 		{%- endif -%}
 		{%- if page.extra.banner -%}
 			{%- if config.extra.blurnail is not defined or config.extra.blurnail -%}
-				{%- set blurnail = resize_image(path=page.colocated_path ~ page.extra.banner, width=4, height=2, op="fill", format="webp") -%}
+				{%- set blurnail = resize_image(path=page.extra.banner, width=4, height=2, op="fill", format="avif") -%}
 			{%- endif -%}
 		{%- endif -%}
 		<article {% if article_type %}class="{{ article_type }}"{% endif %} {% if blurnail %}style="--blurnail: url('{{ blurnail.url }}')"{% endif %}>

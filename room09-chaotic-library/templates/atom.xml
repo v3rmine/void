@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="{{ lang }}">
-    <script src="/atom-style.rss-style.js" xmlns="http://www.w3.org/1999/xhtml"></script>
+    <script src="/rss/atom-style.rss-style.js" xmlns="http://www.w3.org/1999/xhtml"></script>
     <title>{{ config.title }}
     {%- if term %} - {{ term.name }}
     {%- elif section.title %} - {{ section.title }}
