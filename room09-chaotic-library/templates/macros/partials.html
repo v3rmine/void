@@ -5,6 +5,20 @@
 
 {%- macro rainbow(content) -%}
     <span class="rainbow-text">
-        {{- body | default(value=content) | markdown(inline=true) | safe -}}
+        {{- content | markdown(inline=true) | safe -}}
     </span>
 {%- endmacro rainbow -%}
+
+{%- macro wavy(content) -%}
+    <span class="wavy-text">
+        {%- for char in content -%}
+            <span style="--nth: {{ loop.index }};">
+                {%- if char == " " -%}
+                &nbsp;
+                {%- else -%}
+                    {{ char }}
+                {%- endif -%}
+            </span>
+        {%- endfor -%}
+    </span>
+{%- endmacro wavy -%}

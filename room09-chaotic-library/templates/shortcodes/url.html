@@ -1,2 +1,3 @@
-{%- set stripped_url = link | trim_start_matches(pat="https://") | trim_start_matches(pat="http://") | trim_end_matches(pat="/") -%}
+{%- import "macros/partials.html" as macros_partials -%}
+{%- set stripped_url = macros_partials::prettify_url(link=link) -%}
 {{ "[" ~ stripped_url ~ "]" ~ "(" ~ link ~ ")" | markdown(inline=true) | safe }}

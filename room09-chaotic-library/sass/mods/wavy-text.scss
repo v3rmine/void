@@ -1,0 +1,17 @@
+.wavy-text span {
+  display: inline-block;
+  animation: wave 2s infinite;
+  animation-delay: calc(var(--nth) * 0.1s);
+}
+
+@keyframes wave {
+  0%, 50%, 100% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY(-0.2em);
+  }
+  75% {
+    transform: translateY(0.2em);
+  }
+}
