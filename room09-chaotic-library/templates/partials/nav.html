@@ -95,6 +95,13 @@
 									<i class="icon"></i>
 								</button>
 							</li>
+							{# <li>
+    							<button class="toggle-wild" title="{{ macros_translate::translate(key='enter_wild_mode', default='Enter Wild Mode (personal mode)', language_strings=language_strings) }}">
+                                    {%- set button_content = macros_translate::translate(key='go_wild', default='GO WILD', language_strings=language_strings) -%}
+    							    {%- set button_content = macros_partials::wavy(content=button_content) -%}
+    								{{ macros_partials::rainbow(content="**" ~ button_content ~ "**") }}
+    							</button>
+							</li> #}
 						</ul>
 					</details>
 				</li>

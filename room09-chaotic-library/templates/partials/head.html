@@ -75,7 +75,7 @@
 		{%- endif %}
 	{%- endif %}
 
-	{%- set scripts = ["closable.js"] %}
+	{%- set scripts = ["closable.js", "scripts/wild-mode.js"] %}
 
 	{%- if config.extra.show_copy_button %}
 		{%- set scripts = scripts | concat(with=["scripts/copy-button.js"]) %}

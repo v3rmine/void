@@ -91,3 +91,6 @@ more_posts = "Older posts..."
 
 webmentions_mentions_count = "This post has been mentioned $COUNT times on the Internet"
 webmentions_mention_by = "by $SOMEONE"
+
+go_wild = "GO WILD"
+enter_wild_mode = "Enter Wild Mode (personal)"

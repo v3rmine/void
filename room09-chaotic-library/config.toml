@@ -177,7 +177,7 @@ links = [
         { url = "@/series/_index.md", name = "Series" },
     ] },
    	{ url = "@/blogroll.md", name = "Blogroll"},
-   	{ url = "@/about/_index.md", name = "About"},
+   	{ url = "@/about.md", name = "About"},
 	# { url = "https://ko-fi.com/v3rmine", name = "Coffee" }
 ]
 
@@ -189,7 +189,7 @@ links = [
    	{ url = "@/notes/_index.md", name = "Notes"},
     { url = "@/series/_index.md", name = "Series" },
    	{ url = "@/blogroll.md", name = "Blogroll"},
-   	{ url = "@/about/_index.md", name = "About"},
+   	{ url = "@/about.md", name = "About"},
 	{ url = "https://ko-fi.com/v3rmine", name = "Coffee" },
 ]
 # Social links in the footer.

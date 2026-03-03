@@ -1,3 +1,8 @@
+span:has(.wavy-text) {
+  display: inline-block;
+  overflow: visible;
+}
+
 .wavy-text span {
   display: inline-block;
   animation: wave 2s infinite;
@@ -9,9 +14,9 @@
     transform: translateY(0);
   }
   25% {
-    transform: translateY(-0.2em);
+    transform: translateY(-0.2rem);
   }
   75% {
-    transform: translateY(0.2em);
+    transform: translateY(0.2rem);
   }
 }

@@ -1,0 +1,18 @@
+.toggle-wild {
+  padding: .625rem .625rem;
+  line-height: 1;
+
+  &.inline {
+    appearance: none;
+    transition: var(--transition);
+    cursor: pointer;
+    border: none;
+    border-radius: 999px;
+    box-shadow: var(--edge-highlight);
+    background-color: var(--fg-muted-1);
+
+    &:hover {
+      background-color: var(--fg-muted-2);
+    }
+  }
+}

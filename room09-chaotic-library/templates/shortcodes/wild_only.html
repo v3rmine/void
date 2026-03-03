@@ -1,0 +1,21 @@
+{%- if reverse -%}
+    {%- if inline -%}
+        <span class="not-wild">
+            {{ content | default(value=body | safe) | markdown(inline=true) | safe }}
+        </span>
+    {%- else -%}
+        <div class="not-wild">
+            {{ content | default(value=body | safe) | markdown | safe }}
+        </div>
+    {%- endif -%}
+{%- else -%}
+    {%- if inline -%}
+        <span class="wild" hidden>
+            {{- content | default(value=body | safe) | markdown(inline=true) | safe | base64_encode -}}
+        </span>
+    {%- else -%}
+        <div class="wild" hidden>
+            {{- content | default(value=body | safe) | markdown | safe | base64_encode -}}
+        </div>
+    {%- endif -%}
+{%- endif -%}
