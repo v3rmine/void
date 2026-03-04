@@ -134,7 +134,7 @@ let
 
   uncloud = pkgs.stdenv.mkDerivation rec {
     pname = "uncloud";
-    version = "0.16.0";
+    version = "0.17.0";
     src = builtins.fetchTarball "https://github.com/psviderski/uncloud/releases/download/v${version}/uncloudd_linux_amd64.tar.gz";
 
     installPhase = ''
@@ -163,8 +163,8 @@ let
 
   custom-newt = pkgs.stdenv.mkDerivation rec {
     pname = "newt";
-    version = "1.9.0";
-    src = builtins.fetchurl "https://github.com/fosrl/newt/releases/download/1.9.0/newt_linux_amd64";
+    version = "1.10.1";
+    src = builtins.fetchurl "https://github.com/fosrl/newt/releases/download/${version}/newt_linux_amd64";
     dontUnpack = true;
 
     installPhase = ''
