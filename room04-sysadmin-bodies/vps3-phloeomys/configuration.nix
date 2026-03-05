@@ -77,6 +77,18 @@ let
     echo "$iocaine_rejected_ips" | grep -F '.' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv4 -exist
     echo "$iocaine_rejected_ips" | grep -F ':' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv6 -exist
 
+    # Facebook IPs (fuck them changing IPs constantly)
+    iocaine_facebook_ips=$(journalctl CONTAINER_NAME=pangolin-iocaine-1 -o json -r \
+      | grep '\\"verdict.type\\":\\"accept\\"' \
+      | grep '\\"classification\\":\\"Facebook\\"' \
+      | yq -p=json '.MESSAGE | from_json | select(."verdict.type" == "accept" and ."classification" == "Facebook") | .request.header.x-forwarded-for' \
+      | grep -v "\---" \
+      | sort \
+      | uniq)
+
+    echo "$iocaine_facebook_ips" | grep -F '.' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv4 -exist
+    echo "$iocaine_facebook_ips" | grep -F ':' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv6 -exist
+
     # Make banned IP list persistent
     ${pkgs.ipset}/bin/ipset save > /etc/iptables/ipsets
   '';
