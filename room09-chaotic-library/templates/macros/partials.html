@@ -1,5 +1,8 @@
 {%- macro prettify_url(link) -%}
     {%- set stripped_url = link | trim_start_matches(pat="https://") | trim_start_matches(pat="http://") | trim_end_matches(pat="/") -%}
+    {%- if stripped_url is matching("^github.com/[^/]+/[^/]+/?$") -%}
+        {%- set stripped_url = stripped_url | trim_start_matches(pat="github.com/") -%}
+    {%- endif -%}
     {{- stripped_url -}}
 {%- endmacro prettify_url -%}
 

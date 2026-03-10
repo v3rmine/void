@@ -6,9 +6,20 @@
     start | default(value=""),
     list | default(value="")
 ] | filter(attribute="") | join(sep="&") -%}
-<iframe
-	class="youtube-embed"
-	src="https://{{ host | default(value='www.youtube-nocookie.com') }}/embed/{{ id }}?{{ params }}"
-	allow="{%- if autoplay %}autoplay ; {% endif %} encrypted-media"
-	referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
-</iframe>
+<link rel="stylesheet" href="/lite-youtube/lite-yt-embed.css" />
+<script defer async>
+    if (document.getElementById("lite-yt-javascript") === null) {
+        let script = document.createElement("script");
+        script.setAttribute("id", "lite-yt-javascript");
+        script.setAttribute("src", "/lite-youtube/lite-yt-embed.js");
+        document.body.appendChild(script);
+    }
+</script>
+<lite-youtube
+    videoid="{{ id }}"
+    style="background-image: url('https://i.ytimg.com/vi/{{ id }}/hqdefault.jpg');"
+>
+  <a href="https://youtube.com/watch?v={{ id }}" class="lyt-playbtn" title="Play Video">
+      <span class="lyt-visually-hidden">Play Video</span>
+  </a>
+</lite-youtube>

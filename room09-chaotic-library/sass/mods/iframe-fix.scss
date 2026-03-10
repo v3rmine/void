@@ -1,0 +1,11 @@
+lite-youtube {
+    margin: 1rem auto;
+    box-shadow: var(--edge-highlight), var(--shadow);
+    border-radius: var(--rounded-corner);
+
+    & iframe {
+        margin: 0;
+        border-radius: 0;
+        box-shadow: unset;
+    }
+}

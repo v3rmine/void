@@ -10,6 +10,7 @@
 # Projects
 "https://github.com/Producdevity/gamehub-lite" = ["GameHub", "GameHub Lite"]
 "https://iocaine.madhouse-project.org/" = ["Iocaine"]
+"https://github.com/doomemacs/doomemacs" = ["Doom", "Doom Emacs"]
 
 # Services
 "https://kagi.com/" = ["Kagi"]

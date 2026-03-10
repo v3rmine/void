@@ -4,7 +4,7 @@ set -eu
 files_with_comments=$(\
     for file in content/**/*.md; do
         sed -n '2,/^---$/ {/^---$/d; p}' "$file" |\
-            yq -f -p=yaml "[\"$file\",.extra.comments.host, .extra.comments.id]" -o=csv;
+            yq -f -p=yaml "[\"$file\", .extra.comments.host, .extra.comments.id]" -o=csv;
     done |\
         # Ignore the when the id is null
         grep -v "null$" |\

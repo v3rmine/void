@@ -18,7 +18,7 @@ Just a small post, because I recently restarted my blog with some [notes](@/note
 
 So, I have [some public analytics](https://stats.astriiid.fr/) on the blog using GoatCounter, mostly for curiosity because I never check it. But it doesn't allow me to track RSS subscribers (I could add it in the future using the API). 
 
-I also have Loki + Grafana to find which bot evaded [iocaine](https://iocaine.madhouse-project.org/), and I like to find new ways to spot scanners; it's a bit like a game. But it doesn't persist anything; it just drops everything automatically when it's becoming too big or too old. So, most of the time, I have the access logs of the last hours on the VPS and of the last week on Loki.
+I also have VictoriaLogs + Grafana to find which bot evaded {{ al(k="Iocaine") }}, and I like to find new ways to spot scanners; it's a bit like a game. But it doesn't persist anything; it just drops everything automatically when it's becoming too big or too old. So, most of the time, I have the access logs of the last hours on the VPS and of the last week on Loki.
 
 So, I made a small script that runs every 15 min, scrapes my Traefik access logs, hashes the IPs using `sha-256` (because I don't want to persist IPs on my VPS), and adds them to a log file.
 
