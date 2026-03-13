@@ -159,9 +159,21 @@ in {
     '';
   };
 
+  users.users = {
+    root = {
+      hashedPasswordFile = "/persist/etc/shadowRoot";
+    };
+  };
+
   services.cron.systemCronJobs = [
-    "0 5 * * * root journalctl --vacuum-size=128M"
+    "0 5 * * * root journalctl --vacuum-size=512M"
     "*/5 * * * * root ${run-autorestic}/bin/run-autorestic.sh"
+    # Run short SMART test once a day
+    "0 5 * * * root ${pkgs.smartmontools}/bin/smartctl -t short /dev/sdb"
+    "0 5 * * * root ${pkgs.smartmontools}/bin/smartctl -t short /dev/sda"
+    # Run long SMART test once a month
+    "0 4 1 * * root ${pkgs.smartmontools}/bin/smartctl -t long /dev/sdb"
+    "0 4 1 * * root ${pkgs.smartmontools}/bin/smartctl -t long /dev/sda"
   ];
 
   time.timeZone = "Europe/Paris";
