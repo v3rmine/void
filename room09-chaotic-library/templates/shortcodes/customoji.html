@@ -7,11 +7,12 @@
 {%- set quality = quality | default(value=90) -%}
 
 {%- if png -%}
-    {%- set image = resize_image(path=png_path, op="fit_height", height=size, quality=quality, format="avif") -%}
+    {%- set image = resize_image(path=png_path, op="fit_height", height=size, quality=quality, format="avif", speed=1) -%}
+    {%- set image = image.url -%}
 {%- elif gif -%}
-    {%- set image = resize_image(path=gif_path, op="fit_height", height=size, quality=quality, format="avif") -%}
+    {%- set image = gif_path -%}
 {%- else -%}
     {{ throw(message="Emoji " ~ name ~ " not found") }}
 {%- endif -%}
 
-<img class="inline no-hover" alt=":{{ name }}:" src="{{ image.url }}" {%- if config.markdown.lazy_async_image -%}decoding="async" loading="lazy"{%- endif -%} />
+<img class="inline no-hover" alt=":{{ name }}:" src="{{ image }}" {%- if config.markdown.lazy_async_image -%}decoding="async" loading="lazy"{%- endif -%} />

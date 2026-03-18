@@ -1,33 +1,33 @@
 {%- set image_classes = [] -%}
 {%- if full -%}
-	{%- set image_classes = image_classes | concat(with="full") -%}
+{%- set image_classes = image_classes | concat(with="full") -%}
 {%- endif -%}
 {%- if full_bleed -%}
-	{%- set image_classes = image_classes | concat(with="full-bleed") -%}
+{%- set image_classes = image_classes | concat(with="full-bleed") -%}
 {%- endif -%}
 {%- if start -%}
-	{%- set image_classes = image_classes | concat(with="start") -%}
+{%- set image_classes = image_classes | concat(with="start") -%}
 {%- endif -%}
 {%- if end -%}
-	{%- set image_classes = image_classes | concat(with="end") -%}
+{%- set image_classes = image_classes | concat(with="end") -%}
 {%- endif -%}
 {%- if pixels -%}
-	{%- set image_classes = image_classes | concat(with="pixels") -%}
+{%- set image_classes = image_classes | concat(with="pixels") -%}
 {%- endif -%}
 {%- if transparent -%}
-	{%- set image_classes = image_classes | concat(with="transparent") -%}
+{%- set image_classes = image_classes | concat(with="transparent") -%}
 {%- endif -%}
 {%- if not hover -%}
-	{%- set image_classes = image_classes | concat(with="no-hover") -%}
+{%- set image_classes = image_classes | concat(with="no-hover") -%}
 {%- endif -%}
 {%- if spoiler -%}
-	{%- set image_classes = image_classes | concat(with="spoiler") -%}
+{%- set image_classes = image_classes | concat(with="spoiler") -%}
 {%- endif -%}
 {%- if spoiler and solid -%}
-	{%- set image_classes = image_classes | concat(with="solid") -%}
+{%- set image_classes = image_classes | concat(with="solid") -%}
 {%- endif -%}
 {%- if inline -%}
-	{%- set image_classes = image_classes | concat(with="inline") -%}
+{%- set image_classes = image_classes | concat(with="inline") -%}
 {%- endif -%}
 
 {%- set image_classes = image_classes | join(sep=" ") -%}
@@ -36,11 +36,11 @@
     {%- set quality = quality | default(value=80) -%}
 
     {%- if width and height -%}
-        {%- set image = resize_image(path=url, op="fit", width=width, height=height, format=format, quality=quality) -%}
+        {%- set image = resize_image(path=url, op="fit", width=width, height=height, format=format, quality=quality, speed=1) -%}
     {%- elif width -%}
-        {%- set image = resize_image(path=url, op="fit_width", width=width, format=format, quality=quality) -%}
+        {%- set image = resize_image(path=url, op="fit_width", width=width, format=format, quality=quality, speed=1) -%}
     {%- elif height -%}
-        {%- set image = resize_image(path=url, op="fit_height", height=height, format=format, quality=quality) -%}
+        {%- set image = resize_image(path=url, op="fit_height", height=height, format=format, quality=quality, speed=1) -%}
     {%- endif -%}
     {%- set url_min = image.url -%}
 {%- endif -%}

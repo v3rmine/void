@@ -11,6 +11,8 @@
 "https://github.com/Producdevity/gamehub-lite" = ["GameHub", "GameHub Lite"]
 "https://iocaine.madhouse-project.org/" = ["Iocaine"]
 "https://github.com/doomemacs/doomemacs" = ["Doom", "Doom Emacs"]
+"https://keats.github.io/tera/docs/" = ["Tera"]
+"https://github.com/getzola/zola" = ["Zola"]
 
 # Services
 "https://kagi.com/" = ["Kagi"]
