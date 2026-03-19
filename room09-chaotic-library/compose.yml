@@ -8,19 +8,26 @@ services:
       http://astriiid.fr {
         header Strict-Transport-Security "max-age=300; includeSubDomains"
         header X-Content-Type-Options "nosniff"
-        header X-Frame-Options "DENY"
+        # header X-Frame-Options "DENY"
         header Via "Rodents"
+        header Access-Control-Allow-Origin "*"
 
+        # First script-src hash = Show javascript only elem
+        # Second script-src-hash = Wander inline script
+        # Removed `frame-ancestors 'none';` for wander
+        # Replaced `frame-src https://eldritch.cafe https://open-web-calendar.hosted.quelltext.eu https://invidious.nerdvpn.de https://www.youtube-nocookie.com;` for wander
         header Content-Security-Policy "
           default-src 'self';
           font-src 'self' https://fonts.gstatic.com;
           img-src 'self' https: data: blob:;
           media-src 'self' https:;
-          script-src 'self' 'sha256-N9chTn5S0hU62Hotw4Ml5LKoceaZ+S+9kh1qlOAjuQM=';
+          script-src
+            'self'
+            'sha256-N9chTn5S0hU62Hotw4Ml5LKoceaZ+S+9kh1qlOAjuQM='
+            'sha256-6A2XOE9fHuKmf6j0qnKJhw3yo/sIqGgRwpnCc+Y2YaA=';
           style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-          frame-src https://eldritch.cafe https://open-web-calendar.hosted.quelltext.eu https://invidious.nerdvpn.de https://www.youtube-nocookie.com;
           connect-src 'self' https://eldritch.cafe https://tracto.pl https://git.v3rm.in https://stats.astriiid.fr;
-          frame-ancestors 'none';
+          frame-src 'self' https:;
           base-uri 'none';
           form-action 'none'"
 
