@@ -14,6 +14,7 @@ extra:
 ---
 
 # 💸 Des soutiens
+# 🌲 Des sorties
 # 📚 Lu
 # 🎮 Jeux
 # 📹 Regardé

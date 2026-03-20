@@ -34,13 +34,15 @@
 {%- if width or height -%}
     {%- set format = format | default(value="avif") -%}
     {%- set quality = quality | default(value=80) -%}
+    {# Between 1 and 10, 1 is slowest and 10 is fastest #}
+    {%- set speed = speed | default(value=4) -%}
 
     {%- if width and height -%}
-        {%- set image = resize_image(path=url, op="fit", width=width, height=height, format=format, quality=quality, speed=1) -%}
+        {%- set image = resize_image(path=url, op="fit", width=width, height=height, format=format, quality=quality, speed=speed) -%}
     {%- elif width -%}
-        {%- set image = resize_image(path=url, op="fit_width", width=width, format=format, quality=quality, speed=1) -%}
+        {%- set image = resize_image(path=url, op="fit_width", width=width, format=format, quality=quality, speed=speed) -%}
     {%- elif height -%}
-        {%- set image = resize_image(path=url, op="fit_height", height=height, format=format, quality=quality, speed=1) -%}
+        {%- set image = resize_image(path=url, op="fit_height", height=height, format=format, quality=quality, speed=speed) -%}
     {%- endif -%}
     {%- set url_min = image.url -%}
 {%- endif -%}
@@ -52,9 +54,9 @@
 {%- endif -%}
 
 {%- if url_min and full_size -%}
-	<a href="{{ url }}">
-		<img class="{{ image_classes }}" {%- if alt -%}alt="{{ alt }}"{%- endif -%} src="{{ url_min }}" {%- if config.markdown.lazy_async_image -%}decoding="async" loading="lazy"{%- endif -%} />
-		</as>
+    <a href="{{ url }}">
+        <img class="{{ image_classes }}" {%- if alt -%}alt="{{ alt }}" {%- endif -%} src="{{ url_min }}" {%- if config.markdown.lazy_async_image -%}decoding="async" loading="lazy" {%- endif -%} />
+    </a>
 {%- else -%}
-	<img class="{{ image_classes }}" {%- if alt -%}alt="{{ alt }}"{%- endif -%} src="{{ url }}" {%- if config.markdown.lazy_async_image -%}decoding="async" loading="lazy"{%- endif -%} />
+    <img class="{{ image_classes }}" {%- if alt -%}alt="{{ alt }}"{%- endif -%} src="{{ url }}" {%- if config.markdown.lazy_async_image -%}decoding="async" loading="lazy"{%- endif -%} />
 {%- endif -%}
