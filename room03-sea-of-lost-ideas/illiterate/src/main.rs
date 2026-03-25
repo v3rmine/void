@@ -1,121 +1,100 @@
 use std::{
     collections::HashMap, fs::read_to_string,
-    str::FromStr,
+    path::PathBuf, str::FromStr,
 };
 
-use clap::{
-    CommandFactory, FromArgMatches, Parser, Subcommand,
-    ValueHint, parser::ValueSource,
-};
-use config::Config;
-use serde::Deserialize;
+use clap::{Parser, Subcommand, ValueHint};
+use confique::Config;
 use tracing_subscriber::{EnvFilter, fmt, prelude::*};
 use walkdir::{DirEntry, WalkDir};
 
-#[derive(Parser, Debug, Deserialize)]
+#[derive(Config, Debug)]
+#[config(layer_attr(derive(clap::Args, Debug)))]
+struct CliConfig {
+    /// Log level
+    #[config(
+        default = "info",
+        layer_attr(arg(short, long, env))
+    )]
+    //#[arg(short, long, default_value_t = default_log_level(), env)]
+    //#[serde(default = "default_log_level")]
+    log_level: String,
+
+    /// Filetype of the source files
+    #[config(default = "md", layer_attr(arg(long, env)))]
+    //#[arg(long, default_value_t = default_filetype(), env)]
+    //#[serde(default = "default_filetype")]
+    filetype: String,
+
+    /// Regex to extract code blocks
+    #[config(
+        default = r#"(?:(?<=<!--\O*-->\O*)|(?<!<!--\O*))(?<backquotes>````*)(?<meta>.*)\n(?<content>\O*?)\n?\k<backquotes>"#,
+        layer_attr(arg(long, env))
+    )]
+    //#[arg(long, default_value_t = default_regex_code_block(), env)]
+    //#[serde(default = "default_regex_code_block")]
+    regex_code_block: String,
+
+    /// Regex to extract meta from code blocks
+    #[config(
+        default = r#"{\.(?<lang>[^\s}]+) ?(?<params>[^}]*)}"#,
+        layer_attr(arg(long, env))
+    )]
+    //#[arg(long, default_value_t = default_regex_code_meta(), env)]
+    //#[serde(default = "default_regex_code_meta")]
+    regex_code_meta: String,
+
+    /// Regex to extract parms in meta
+    #[config(
+        default = r#"(?<key>[[:alnum:]]+)=(?<value>[^\s]+)"#,
+        layer_attr(arg(long, env))
+    )]
+    //#[arg(long, default_value_t = default_regex_meta_params(), env)]
+    //#[serde(default = "default_regex_meta_params")]
+    regex_meta_params: String,
+
+    /// Regex to extract refs in code
+    #[config(
+        default = r#"(?m)^(?:(?![\t ]+<<)(?<line_indent>[\t ]*+)(?:[^\n<]*+|<)+|(?<direct_indent>[\t ]*))<<(?<ref>[^>]+)>>"#,
+        layer_attr(arg(long, env))
+    )]
+    //#[arg(long, default_value_t = default_regex_code_refs(), env)]
+    //#[serde(default = "default_regex_code_refs")]
+    regex_code_refs: String,
+}
+
+#[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 struct Cli {
     /// Sets a custom config file
     #[arg(short, long, value_hint = ValueHint::FilePath, env)]
-    config: Option<String>,
-
-    /// Log level
-    #[arg(short, long, default_value_t = default_log_level(), env)]
-    #[serde(default = "default_log_level")]
-    log_level: String,
+    config: Option<PathBuf>,
 
     /// Source dir
     #[arg(short, long, value_hint = ValueHint::DirPath, env)]
     source: String,
 
-    /// Filetype of the source files
-    #[arg(long, default_value_t = default_filetype(), env)]
-    #[serde(default = "default_filetype")]
-    filetype: String,
-
-    /// Regex to extract code blocks
-    #[arg(long, default_value_t = default_regex_code_block(), env)]
-    #[serde(default = "default_regex_code_block")]
-    regex_code_block: String,
-
-    /// Regex to extract meta from code blocks
-    #[arg(long, default_value_t = default_regex_code_meta(), env)]
-    #[serde(default = "default_regex_code_meta")]
-    regex_code_meta: String,
-
-    /// Regex to extract parms in meta
-    #[arg(long, default_value_t = default_regex_meta_params(), env)]
-    #[serde(default = "default_regex_meta_params")]
-    regex_meta_params: String,
-
-    /// Regex to extract refs in code
-    #[arg(long, default_value_t = default_regex_code_refs(), env)]
-    #[serde(default = "default_regex_code_refs")]
-    regex_code_refs: String,
+    #[command(flatten)]
+    cli_config: <CliConfig as Config>::Layer,
 
     #[command(subcommand)]
     command: Option<Commands>,
 }
 
-fn default_log_level() -> String {
-    "info".to_string()
-}
-fn default_filetype() -> String {
-    "md".to_string()
-}
-fn default_regex_code_block() -> String {
-    r#"(?:(?<=<!--\O*-->\O*)|(?<!<!--\O*))(?<backquotes>````*)(?<meta>.*)\n(?<content>\O*?)\n?\k<backquotes>"#.to_string()
-}
-fn default_regex_code_meta() -> String {
-    r#"{\.(?<lang>[^\s}]+) ?(?<params>[^}]*)}"#.to_string()
-}
-fn default_regex_meta_params() -> String {
-    r#"(?<key>[[:alnum:]]+)=(?<value>[^\s]+)"#.to_string()
-}
-fn default_regex_code_refs() -> String {
-    r#"(?<indent>^[\t ]*|)<<(?<ref>[^\s]+)>>"#.to_string()
-}
-
 impl Cli {
-    pub fn new() -> anyhow::Result<Self> {
-        let command = Cli::command();
-        let matches = command.get_matches();
-        let cli = Cli::from_arg_matches(&matches)?;
-
-        if let Some(config_path) = &cli.config {
-            let settings = Config::builder()
-                .add_source(config::File::with_name(
-                    config_path,
-                ))
-                .build()?;
-            let mut config =
-                settings.try_deserialize::<Cli>()?;
-            let mut matches_without_defaults =
-                matches.clone();
-
-            for arg_id in matches.ids() {
-                let key = arg_id.as_str();
-                if matches.value_source(key).unwrap()
-                    == ValueSource::DefaultValue
-                    && key != "Cli"
-                {
-                    matches_without_defaults
-                        .try_clear_id(key)?;
-                }
-            }
-
-            config.update_from_arg_matches(
-                &matches_without_defaults,
-            )?;
-
-            Ok(config)
-        } else {
-            Ok(cli)
+    pub fn new() -> anyhow::Result<(String, CliConfig)> {
+        let cli = Cli::parse();
+        let mut config =
+            CliConfig::builder().preloaded(cli.cli_config);
+        if let Some(config_file) = cli.config {
+            config = config.file(config_file);
         }
+
+        return Ok((cli.source, config.load()?));
     }
 }
 
-#[derive(Subcommand, Debug, Deserialize)]
+#[derive(Subcommand, Debug)]
 enum Commands {
     Check,
 }
@@ -145,15 +124,9 @@ enum IlliterateBlock<'lang, 'a> {
 
 #[derive(Debug)]
 struct IlliterateCodeRef<'a> {
-    indent_count: u32,
-    indent_type: Indent,
+    base_indent_match: &'a str,
+    is_inline: bool,
     regex_match: RegexMatchWithString<'a>,
-}
-
-#[derive(Debug)]
-enum Indent {
-    Tabs(u8),
-    Spaces(u8),
 }
 
 #[derive(Debug, Copy, Clone)]
@@ -165,7 +138,7 @@ struct RegexMatchWithString<'a> {
 }
 
 fn main() -> anyhow::Result<()> {
-    let cli = Cli::new()?;
+    let (source_dir, cli) = Cli::new()?;
     tracing_subscriber::registry()
         .with(fmt::layer())
         .with(EnvFilter::from_str(&cli.log_level)?)
@@ -180,7 +153,7 @@ fn main() -> anyhow::Result<()> {
     let ref_regex =
         fancy_regex::Regex::new(&cli.regex_code_refs)?;
 
-    let walker = WalkDir::new(cli.source).into_iter();
+    let walker = WalkDir::new(source_dir).into_iter();
     for entry in walker
         .filter_entry(|e| {
             is_dir(e) || is_filetype(e, &cli.filetype)
@@ -217,7 +190,7 @@ fn main() -> anyhow::Result<()> {
 
                 Ok((
                     meta_params,
-                    refs_from_code_match(&code_content, &ref_regex, "ident", "ref"),
+                    refs_from_code_match(&code_content, &ref_regex, "direct_indent", "line_indent", "ref"),
                 ))
             })
             .filter_map(Result::ok)
@@ -279,7 +252,8 @@ fn meta_from_code_match<'a>(
 fn refs_from_code_match<'a>(
     code_match: &RegexMatchWithString<'a>,
     ref_regex: &'a fancy_regex::Regex,
-    ident_field_name: &'a str,
+    direct_indent_field_name: &'a str,
+    line_indent_field_name: &'a str,
     ref_field_name: &'a str,
 ) -> impl Iterator<Item = IlliterateCodeRef<'a>> + use<'a> {
     // We make a clone of usize (copy) so the closure can use it
@@ -289,13 +263,21 @@ fn refs_from_code_match<'a>(
 
     ref_regex
         .captures_iter(code_match.content)
-        .filter_map(Result::ok)
+        .filter_map(|e| Some(e.unwrap()))
         .map(move |cap| -> anyhow::Result<_> {
-            let _indent_match = regex_match_from_capture(
+            let direct_indent_match = regex_match_from_capture(
                 &cap,
-                ident_field_name,
+                direct_indent_field_name,
                 start_offset,
-            )?;
+            );
+            let line_indent_match = regex_match_from_capture(
+                &cap,
+                line_indent_field_name,
+                start_offset,
+            );
+            let is_inline = line_indent_match.is_ok();
+            let indent = direct_indent_match.unwrap_or_else(|_| line_indent_match.unwrap());
+
             let ref_match = regex_match_from_capture(
                 &cap,
                 ref_field_name,
@@ -303,12 +285,12 @@ fn refs_from_code_match<'a>(
             )?;
 
             Ok(IlliterateCodeRef {
-                indent_count: 0,
-                indent_type: Indent::Spaces(2),
+                base_indent_match: indent.content,
                 regex_match: ref_match,
+                is_inline,
             })
         })
-        .filter_map(Result::ok)
+        .filter_map(|e| Some(e.unwrap()))
 }
 
 fn params_from_meta_match<'a>(

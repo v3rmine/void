@@ -6,10 +6,8 @@ edition = "2024"
 [dependencies]
 anyhow = "1.0.101"
 clap = { version = "4.5.58", features = ["derive", "env"] }
-config = { version = "0.15.19", features = ["toml"] }
 confique = { version = "0.4.0", features = ["toml"] }
 fancy-regex = "0.17.0"
-serde = { version = "1.0.228", features = ["derive"] }
 tracing = "0.1.44"
 tracing-subscriber = { version = "0.3.22", features = ["env-filter"] }
 walkdir = "2.5.0"
