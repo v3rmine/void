@@ -28,7 +28,7 @@ struct CliConfig {
 
     /// Regex to extract code blocks
     #[config(
-        default = r#"(?:(?<=<!--\O*-->\O*)|(?<!<!--\O*))(?<backquotes>````*)(?<meta>.*)\n(?<content>\O*?)\n?\k<backquotes>"#,
+        default = r#"(?m)(?:(?<=<!--\O*-->\O*)|(?<!<!--\O*))(?<backquotes>^````*+)(?<meta>.*)\n(?<content>\O*?)\n?\k<backquotes>"#,
         layer_attr(arg(long, env))
     )]
     //#[arg(long, default_value_t = default_regex_code_block(), env)]
@@ -82,7 +82,7 @@ struct Cli {
 }
 
 impl Cli {
-    pub fn new() -> anyhow::Result<(String, CliConfig)> {
+    pub fn build() -> anyhow::Result<(String, CliConfig)> {
         let cli = Cli::parse();
         let mut config =
             CliConfig::builder().preloaded(cli.cli_config);
@@ -90,7 +90,7 @@ impl Cli {
             config = config.file(config_file);
         }
 
-        return Ok((cli.source, config.load()?));
+        Ok((cli.source, config.load()?))
     }
 }
 
@@ -138,7 +138,7 @@ struct RegexMatchWithString<'a> {
 }
 
 fn main() -> anyhow::Result<()> {
-    let (source_dir, cli) = Cli::new()?;
+    let (source_dir, cli) = Cli::build()?;
     tracing_subscriber::registry()
         .with(fmt::layer())
         .with(EnvFilter::from_str(&cli.log_level)?)
@@ -256,14 +256,14 @@ fn refs_from_code_match<'a>(
     line_indent_field_name: &'a str,
     ref_field_name: &'a str,
 ) -> impl Iterator<Item = IlliterateCodeRef<'a>> + use<'a> {
-    // We make a clone of usize (copy) so the closure can use it
-    // while releasing the borrow at the end of the function
+    // We make a copy outside the closure
+    // so the borrow on the match is released at the end of the function
     let start_offset =
-        code_match.content_start_offset.clone();
+        code_match.content_start_offset;
 
     ref_regex
         .captures_iter(code_match.content)
-        .filter_map(|e| Some(e.unwrap()))
+        .filter_map(Result::ok)
         .map(move |cap| -> anyhow::Result<_> {
             let direct_indent_match = regex_match_from_capture(
                 &cap,
@@ -290,7 +290,7 @@ fn refs_from_code_match<'a>(
                 is_inline,
             })
         })
-        .filter_map(|e| Some(e.unwrap()))
+        .filter_map(Result::ok)
 }
 
 fn params_from_meta_match<'a>(
@@ -300,10 +300,10 @@ fn params_from_meta_match<'a>(
     value_field_name: &'a str,
 ) -> impl Iterator<Item = (&'a str, RegexMatchWithString<'a>)>
 + use<'a> {
-    // We make a clone of usize (copy) so the closure can use it
-    // while releasing the borrow at the end of the function
+    // We make a copy outside the closure
+    // so the borrow on the match is released at the end of the function
     let start_offset =
-        meta_match.content_start_offset.clone();
+        meta_match.content_start_offset;
 
     param_regex
         .captures_iter(meta_match.content)
