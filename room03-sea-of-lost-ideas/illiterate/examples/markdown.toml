@@ -1,4 +1,4 @@
 regex_code_block = '(?m)(?:(?<=<!--\O*-->\O*)|(?<!<!--\O*))(?<backquotes>^````*+)(?<meta>.*)\n(?<content>\O*?)\n?\k<backquotes>'
 regex_code_meta = '{\.(?<lang>[^\s}]+) ?(?<params>[^}]*)}'
 regex_meta_params = '(?<key>[[:alnum:]]+)=(?<value>[^\s]+)'
-regex_code_refs = '(?m)^(?:(?![\t ]+<<)(?<line_indent>[\t ]*+)(?:[^\n<]*+|<)+|(?<direct_indent>[\t ]*))<<(?<ref>[^>]+)>>'
+regex_code_refs = '(?m)^(?:(?![\t ]+<<)(?<line_indent>[\t ]*+)(?:[^\n<]*+|<)+|(?<direct_indent>[\t ]*))(?<full_ref><<(?<ref>[^>]+)>>)'

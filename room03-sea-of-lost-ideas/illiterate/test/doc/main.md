@@ -1,11 +1,19 @@
 # main.rs
-```{.rust #helloworld}
-println!("Hello World!");
+```{.txt #helloworld/deep}
+Hello World!
+```
+
+```{.rust #helloworld/txt}
+"<<helloworld/deep>>"
+```
+
+```{.rust #helloworld/fn}
+println!(<<helloworld/txt>>);
 ```
 
 ```{.rust file=src/main.rs}
 fn main() {
-  <<helloworld>>
+  <<helloworld/fn>>
 }
 ```
 
