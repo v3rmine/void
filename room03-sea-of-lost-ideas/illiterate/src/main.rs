@@ -1,11 +1,13 @@
+#![allow(dead_code)]
+
 use std::{
-    collections::HashMap, fs::read_to_string,
-    path::PathBuf, str::FromStr,
+    collections::HashMap, fs::read_to_string, path::PathBuf, str::FromStr
 };
 
 use clap::{Parser, Subcommand, ValueHint};
 use confique::Config;
 use fancy_regex::Captures;
+use ouroboros::self_referencing;
 use tracing::{debug, info, trace, warn};
 use tracing_subscriber::{EnvFilter, fmt, prelude::*};
 use walkdir::{DirEntry, WalkDir};
@@ -116,10 +118,13 @@ fn is_dir(entry: &DirEntry) -> bool {
     entry.file_type().is_dir()
 }
 
-#[derive(Debug)]
+#[self_referencing]
 struct IlliterateSourceFile {
     file: String,
     content: String,
+    #[borrows(content)]
+    #[not_covariant]
+    code_blocks: Vec<IlliterateBlock<'this>>,
 }
 
 #[derive(Debug)]
@@ -173,7 +178,7 @@ fn main() -> anyhow::Result<()> {
     trace!(source = source_dir, config =? &cli, "started app");
 
     let code_block_regex =
-        fancy_regex::Regex::new(&cli.regex_code_block)?;
+       fancy_regex::Regex::new(&cli.regex_code_block)?;
     let meta_regex =
         fancy_regex::Regex::new(&cli.regex_code_meta)?;
     let param_regex =
@@ -182,7 +187,7 @@ fn main() -> anyhow::Result<()> {
         fancy_regex::Regex::new(&cli.regex_code_refs)?;
 
     let walker = WalkDir::new(source_dir).into_iter();
-    let all_files = walker
+    let _all_files = walker
         .filter_entry(|e| {
             is_dir(e) || is_filetype(e, &cli.filetype)
         })
@@ -192,13 +197,17 @@ fn main() -> anyhow::Result<()> {
             let file = entry.path().display().to_string();
             let content = read_to_string(&file)?;
             info!(file, "processing file");
-            let source_file = IlliterateSourceFile {
+            let source_file: IlliterateSourceFile = IlliterateSourceFileTryBuilder {
                 file,
                 content,
-            };
+                code_blocks_builder: |content| {
+                    get_code_blocks(content, &cli, &code_block_regex, &meta_regex, &param_regex, &ref_regex)
+                },
+            }.try_build()?;
 
-            let code_blocks = source_file.get_code_blocks(&cli, &code_block_regex, &meta_regex, &param_regex, &ref_regex)?;
-            debug!(file = source_file.file, "found {} code blocks", code_blocks.len());
+            source_file.with(|source_file| {
+                debug!(file = source_file.file, "found {} code blocks", source_file.code_blocks.len());
+            });
 
             Ok(source_file)
         })
@@ -257,11 +266,11 @@ fn meta_from_code_match<'a>(
 #[tracing::instrument(level = "trace")]
 fn refs_from_code_match<'a>(
     code_match: &RegexMatchWithString<'a>,
-    ref_regex: &'a fancy_regex::Regex,
+    ref_regex: &fancy_regex::Regex,
     direct_indent_field_name: &'a str,
     line_indent_field_name: &'a str,
     ref_field_name: &'a str,
-) -> impl Iterator<Item = IlliterateCodeRef<'a>> + use<'a> {
+) -> Vec<IlliterateCodeRef<'a>> {
     trace!("trying to find refs in code block's content");
     // We make a copy outside the closure
     // so the borrow on the match is released at the end of the function
@@ -298,17 +307,17 @@ fn refs_from_code_match<'a>(
             })
         })
         .filter_map(Result::ok)
+        .collect::<Vec<_>>()
 }
 
 
 #[tracing::instrument(level = "trace")]
 fn params_from_meta_match<'a>(
     meta_match: &RegexMatchWithString<'a>,
-    param_regex: &'a fancy_regex::Regex,
+    param_regex: &fancy_regex::Regex,
     key_field_name: &'a str,
     value_field_name: &'a str,
-) -> impl Iterator<Item = (&'a str, RegexMatchWithString<'a>)>
-+ use<'a> {
+) -> HashMap<&'a str, RegexMatchWithString<'a>> {
     trace!("trying to find params in code block's meta");
     // We make a copy outside the closure
     // so the borrow on the match is released at the end of the function
@@ -333,88 +342,86 @@ fn params_from_meta_match<'a>(
             Ok((key.content, value))
         })
         .filter_map(Result::ok)
+        .collect::<HashMap<_, _>>()
 }
 
-impl IlliterateSourceFile {
-    #[tracing::instrument(level = "trace", skip(self, config), fields(file = self.file))]
-    fn get_code_blocks<'a, 'b: 'a>(
-        &'a self,
-        config: &CliConfig,
-        code_block_regex: &'b fancy_regex::Regex,
-        meta_regex: &'b fancy_regex::Regex,
-        param_regex: &'b fancy_regex::Regex,
-        ref_regex: &'b fancy_regex::Regex,
-    ) -> anyhow::Result<Vec<IlliterateBlock<'a>>> {
-        trace!("finding code blocks in file");
-        let code_blocks = code_block_regex
-            .captures_iter(&self.content)
-            .filter_map(Result::ok)
-            .map(|cap| -> anyhow::Result<_> {
-                let meta = regex_match_from_capture(
-                    &cap, "meta", 0,
+#[tracing::instrument(level = "trace", skip(content, config))]
+fn get_code_blocks<'a>(
+    content: &'a str,
+    config: &CliConfig,
+    code_block_regex: &fancy_regex::Regex,
+    meta_regex: &fancy_regex::Regex,
+    param_regex: &fancy_regex::Regex,
+    ref_regex: &fancy_regex::Regex,
+) -> anyhow::Result<Vec<IlliterateBlock<'a>>> {
+    trace!("finding code blocks in file");
+    let code_blocks = code_block_regex
+        .captures_iter(content)
+        .filter_map(Result::ok)
+        .map(|cap| -> anyhow::Result<_> {
+            let meta = regex_match_from_capture(
+                &cap, "meta", 0,
+            )?;
+            let content = regex_match_from_capture(
+                &cap, "content", 0,
+            )?;
+
+            Ok((
+                cap,
+                meta,
+                content,
+            ))
+        })
+        .filter_map(Result::ok)
+        .map(|(code_block, code_meta, code_content)| -> anyhow::Result<_> {
+            let (meta_lang, meta_params) =
+                meta_from_code_match(
+                    &code_meta,
+                    &meta_regex,
+                    "lang",
+                    "params",
                 )?;
-                let content = regex_match_from_capture(
-                    &cap, "content", 0,
-                )?;
 
-                Ok((
-                    cap,
-                    meta,
-                    content,
-                ))
-            })
-            .filter_map(Result::ok)
-            .map(|(code_block, code_meta, code_content)| -> anyhow::Result<_> {
-                let (meta_lang, meta_params) =
-                    meta_from_code_match(
-                        &code_meta,
-                        &meta_regex,
-                        "lang",
-                        "params",
-                    )?;
+            Ok((
+                code_block,
+                code_content,
+                meta_lang,
+                meta_params,
+                refs_from_code_match(&code_content, ref_regex, "direct_indent", "line_indent", "ref"),
+            ))
+        })
+        .filter_map(Result::ok)
+        .map(|(code_block, code_content, lang, meta_params, refs_in_code)| {
+            let params = params_from_meta_match(&meta_params, param_regex, "key", "value");
 
-                Ok((
-                    code_block,
-                    code_content,
-                    meta_lang,
-                    meta_params,
-                    refs_from_code_match(&code_content, &ref_regex, "direct_indent", "line_indent", "ref"),
-                ))
-            })
-            .filter_map(Result::ok)
-            .map(|(code_block, code_content, lang, meta_params, refs_in_code)| {
-                let params = params_from_meta_match(&meta_params, &param_regex, "key", "value").collect::<HashMap<_, _>>();
-                let refs_in_code = refs_in_code.collect::<Vec<_>>();
-
-                if let Some(file_value) = params.get(config.params_file_key.as_str()) {
-                    return IlliterateBlock::File {
-                        path: *file_value,
-                        lang,
-                        code_content,
-                        code_block,
-                        params,
-                        refs_in_code,
-                    }
-                }
-                if let Some(ref_value) = params.get(config.params_name_key.as_str()) {
-                    return IlliterateBlock::Named {
-                        name: *ref_value,
-                        lang,
-                        code_content,
-                        code_block,
-                        params,
-                        refs_in_code,
-                    }
-                }
-                IlliterateBlock::Plain {
+            if let Some(file_value) = params.get(config.params_file_key.as_str()) {
+                return IlliterateBlock::File {
+                    path: *file_value,
                     lang,
                     code_content,
                     code_block,
                     params,
                     refs_in_code,
                 }
-            });
+            }
+            if let Some(ref_value) = params.get(config.params_name_key.as_str()) {
+                return IlliterateBlock::Named {
+                    name: *ref_value,
+                    lang,
+                    code_content,
+                    code_block,
+                    params,
+                    refs_in_code,
+                }
+            }
+            IlliterateBlock::Plain {
+                lang,
+                code_content,
+                code_block,
+                params,
+                refs_in_code,
+            }
+        });
 
-        Ok(code_blocks.collect::<Vec<_>>())
-    }
+    Ok(code_blocks.collect::<Vec<_>>())
 }
