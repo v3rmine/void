@@ -1,5 +1,5 @@
 # main.rs
-```{.rust name=helloworld}
+```{.rust #helloworld}
 println!("Hello World!");
 ```
 
