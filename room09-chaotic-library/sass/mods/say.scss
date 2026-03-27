@@ -1,0 +1,95 @@
+.someone-say-container {
+  display: flex;
+  gap: 1rem;
+  margin: 1rem auto;
+
+  &.respond {
+    flex-flow: row-reverse;
+
+    .someone-say-what {
+      border-radius: var(--rounded-corner) var(--rounded-corner) 0 var(--rounded-corner);
+    }
+  }
+}
+
+.someone-say-who {
+  align-self: end;
+  margin: initial;
+  box-shadow: initial;
+  border-radius: initial;
+  background-color: initial;
+  width: 5rem;
+
+  &.flip-image {
+    transform: rotateY(180deg);
+  }
+}
+
+.someone-say-what {
+  align-self: start;
+  box-shadow: var(--edge-highlight);
+  border-radius: var(--rounded-corner) var(--rounded-corner) var(--rounded-corner) 0;
+  padding: 0 1rem;
+  background-color: var(--fg-muted-1);
+  flex-grow: 1;
+  max-width: calc(100% - 12rem);
+  word-wrap: anywhere;
+}
+
+.someone-say-group {
+  box-shadow: var(--edge-highlight);
+  border-radius: var(--rounded-corner);
+  padding: 0.5rem 1rem;
+  background-color: var(--accent-color-alpha);
+
+  .someone-say-what {
+    background-color: var(--accent-color-alpha);
+  }
+
+  .someone-say-container {
+    margin: 0.5rem;
+
+    &.respond {
+      .someone-say-what {
+        background-color: var(--fg-muted-1);
+      }
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .someone-say-what {
+    max-width: initial;
+  }
+}
+
+@media (max-width: 400px) {
+  .someone-say-container {
+    flex-flow: column;
+
+    &.respond {
+      flex-flow: column;
+
+      .someone-say-who {
+        align-self: end;
+      }
+
+      .someone-say-what {
+        border-radius: var(--rounded-corner) 0 var(--rounded-corner) var(--rounded-corner);
+      }
+    }
+  }
+
+  .someone-say-who {
+    align-self: start;
+  }
+
+  .someone-say-what {
+    width: 100%;
+    border-radius: 0 var(--rounded-corner) var(--rounded-corner) var(--rounded-corner);
+  }
+
+  .someone-say-group {
+    padding: 0.5rem 0;
+  }
+}

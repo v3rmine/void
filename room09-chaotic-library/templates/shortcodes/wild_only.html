@@ -1,21 +1,12 @@
-{%- if reverse -%}
-    {%- if inline -%}
-        <span class="not-wild">
-            {{ content | default(value=body | safe) | markdown(inline=true) | safe }}
-        </span>
-    {%- else -%}
-        <div class="not-wild">
-            {{ content | default(value=body | safe) | markdown | safe }}
-        </div>
-    {%- endif -%}
-{%- else -%}
-    {%- if inline -%}
-        <span class="wild" hidden>
-            {{- content | default(value=body | safe) | markdown(inline=true) | safe | base64_encode -}}
-        </span>
-    {%- else -%}
-        <div class="wild" hidden>
-            {{- content | default(value=body | safe) | markdown | safe | base64_encode -}}
-        </div>
-    {%- endif -%}
-{%- endif -%}
+{% set inline = inline | default(value=false) %}
+{# the replace fix quadruple spaces beeing considered a code block in markdown #}
+{% set wild_content = content | default(value=body | safe) | replace(from="    ", to="  ") | markdown(inline=inline) %}
+
+{% if reverse -%}
+    <div class="not-wild">
+        {{ wild_content | safe }}
+    </div>
+{%- else %}
+    <div class="wild" hidden data-wild="{{ wild_content | base64_encode }}">
+    </div>
+{%- endif %}

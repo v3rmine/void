@@ -31,6 +31,8 @@ services:
           base-uri 'none';
           form-action 'none'"
 
+        redir /feed.rss /rss.xml permanent
+
         reverse_proxy {{upstreams 80}}
       }
       http://qr.astriiid.fr {

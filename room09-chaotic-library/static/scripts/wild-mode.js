@@ -1,41 +1,59 @@
 window.addEventListener('load', function () {
-  let is_wild_mode = localStorage.getItem("wild-mode") === "true";
 
-  // Hide all wild/not-wild elements
-  document.querySelectorAll('.wild').forEach(function (entry) {
-    if (is_wild_mode) {
-      entry.removeAttribute('hidden');
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(
-        new TextDecoder()
-          .decode(Uint8Array.fromBase64(entry.textContent),
-      ), "text/html");
-      entry.innerHTML = '';
-      while (doc.body.firstChild) {
-        entry.appendChild(doc.body.firstChild);
-      }
-    } else {
-      entry.setAttribute('hidden', true);
-      entry.innerHTML = window.atob(entry.innerHTML);
-    }
-  });
-  document.querySelectorAll('.not-wild').forEach(function (entry) {
-    if (is_wild_mode) {
-      entry.setAttribute('hidden', true);
-    } else {
-      entry.removeAttribute('hidden');
-    }
-  });
+  function process_wild_mode() {
+    let is_wild_mode = localStorage.getItem("wild-mode") === "true";
 
-  document.querySelectorAll('.toggle-wild').forEach(function (entry) {
-    entry.addEventListener('click', function () {
-      if (localStorage.getItem("wild-mode") === "true") {
-        localStorage.removeItem("wild-mode");
+    // Hide all wild/not-wild elements
+    document.querySelectorAll('.wild').forEach(function (entry) {
+      if (is_wild_mode) {
+        entry.removeAttribute('hidden');
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(
+          new TextDecoder()
+            .decode(Uint8Array.fromBase64(entry.getAttribute("data-wild")),
+            ), "text/html");
+        entry.innerHTML = '';
+        while (doc.body.firstChild) {
+          entry.appendChild(doc.body.firstChild);
+        }
+
+        add_onclick_listeners(entry);
       } else {
-        localStorage.setItem("wild-mode", "true");
+        entry.setAttribute('hidden', true);
+        entry.innerHTML = "";
       }
-
-      location.reload();
     });
-  });
+
+    document.querySelectorAll('.not-wild').forEach(function (entry) {
+      if (is_wild_mode) {
+        entry.setAttribute('hidden', true);
+      } else {
+        entry.removeAttribute('hidden');
+      }
+    });
+  }
+
+  function add_onclick_listeners(element=document) {
+    element.querySelectorAll('.toggle-wild').forEach(function (entry) {
+      entry.addEventListener("click", function () {
+        entry.setAttribute("disabled", true);
+
+        if (localStorage.getItem("wild-mode") === "true") {
+          localStorage.removeItem("wild-mode");
+        } else {
+          localStorage.setItem("wild-mode", "true");
+        }
+
+        setTimeout(() => {
+          process_wild_mode();
+        }, 250);
+        setTimeout(() => {
+          entry.removeAttribute("disabled");
+        }, 500);
+      });
+    });
+  }
+
+  process_wild_mode();
+  add_onclick_listeners();
 });

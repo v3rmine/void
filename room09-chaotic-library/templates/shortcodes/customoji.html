@@ -15,4 +15,4 @@
     {{ throw(message="Emoji " ~ name ~ " not found") }}
 {%- endif -%}
 
-<img class="inline no-hover" alt=":{{ name }}:" src="{{ image }}" {%- if config.markdown.lazy_async_image -%}decoding="async" loading="lazy"{%- endif -%} />
+<img class="inline no-hover pixels" alt=":{{ name }}:" src="{{ image }}" {%- if config.markdown.lazy_async_image -%}decoding="async" loading="lazy"{%- endif -%} />

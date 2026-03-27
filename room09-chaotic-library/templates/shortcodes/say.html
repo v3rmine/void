@@ -1,0 +1,9 @@
+{%- set what = what | default(value="default") -%}
+{%- set gif_path = "/media/emojis/personas/" ~ who ~ "/x2/" ~ what ~ ".gif" -%}
+
+<div class="someone-say-container{% if res or respond %} respond{% endif %}">
+    <img class="someone-say-who no-hover{% if rev or reverse %} flip-image{% endif %}" alt="persona {{ who }} (variant {{ what }})" src="{{ gif_path }}" {%- if config.markdown.lazy_async_image -%}decoding="async" loading="lazy"{%- endif -%} />
+    <div class="someone-say-what">
+        {{ body | markdown | safe }}
+    </div>
+</div>
