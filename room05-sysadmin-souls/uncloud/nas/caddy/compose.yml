@@ -1,0 +1,15 @@
+services:
+  caddy-custom-nas:
+    build: .
+    command: caddy run -c /config/caddy.json --watch
+    restart: unless-stopped
+    environment:
+      CADDY_ADMIN: unix//run/caddy/admin.sock
+    volumes:
+      - /var/lib/uncloud/caddy:/config
+      - /var/lib/uncloud/caddy:/data
+      - /run/uncloud/caddy:/run/caddy
+    x-ports:
+      - 80:80@host
+    x-machines:
+      - nas
