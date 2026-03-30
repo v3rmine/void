@@ -594,6 +594,7 @@ in {
       "/root/pangolin"
       "/root/.ssh"
       "/var/log"
+      "/root/.cache/restic"
     ];
   };
 
