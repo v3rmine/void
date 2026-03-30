@@ -9,7 +9,7 @@ This website is my **space** so it shouldn't be considered as a fully profession
 
 {% wild_only(reverse=true) %}
 If you want the website to be more personal you can
-<button class="toggle-wild inline"> **activate** the 
+<button class="toggle-wild inline" type="button"> **activate** the 
   {% rainbow() %}**{{ wavy(content="WILD MODE") }}**{% end %}
 </button>
 in this case, some hidden and more personal comments might appear, and maybe some articles that I find too personal to be displayed by default.  
@@ -18,7 +18,7 @@ The theme might also change and be less readable, but with a handmade touch, so 
 
 {% wild_only() %}
 {% rainbow() %}**{{ wavy(content="WILD MODE") }}**{% end %} activated! If you want the website to return to a less personal mode you can
-<button class="toggle-wild inline"> **deactivate** the
+<button class="toggle-wild inline" type="button"> **deactivate** the
   {% rainbow() %}**{{ wavy(content="WILD MODE") }}**{% end %}
 </button>
 {% end %}

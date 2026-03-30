@@ -75,7 +75,7 @@
 		{%- endif %}
 	{%- endif %}
 
-	{%- set scripts = ["closable.js", "scripts/wild-mode.js"] %}
+	{%- set scripts = ["closable.js"] %}
 
 	{%- if config.extra.show_copy_button %}
 		{%- set scripts = scripts | concat(with=["scripts/copy-button.js"]) %}
@@ -120,6 +120,7 @@
 			<script
 				type="text/javascript"
 				defer
+				async
 				{% if script == "count.js" and config.extra.goatcounter.user %}
 					data-goatcounter="https://{{ config.extra.goatcounter.user }}.{{ config.extra.goatcounter.host | default(value='goatcounter.com') }}/count"
 				{% else %}

@@ -30,3 +30,18 @@
         {%- endfor -%}
     </span>
 {%- endmacro wavy -%}
+
+{%- macro wild_only(content, reverse=false, inline=false) -%}
+    {# the replace fix quadruple spaces beeing considered a code block in markdown #}
+    {% set wild_content = content | replace(from="    ", to="  ") | markdown(inline=inline) %}
+    {% set wrapping_el = "div" %}
+    {% if inline %}{% set wrapping_el = "span" %}{% endif %}
+
+    {% if reverse -%}
+        <{{ wrapping_el }} class="not-wild">
+            {{ wild_content | safe }}
+        </{{ wrapping_el }}>
+    {%- else %}
+        <{{ wrapping_el }} class="wild" hidden data-wild="{{ wild_content | base64_encode }}"></{{ wrapping_el }}>
+    {%- endif %}
+{% endmacro wild_only %}

@@ -5,4 +5,7 @@
  (javascript-mode . ((js-indent-level . 2)
                      (tab-width . 2)))
  (scss-mode . ((css-indent-offset . 2)
-               (tab-width . 2))))
+               (tab-width . 2)))
+ (html-mode . ((indent-tabs-mode . t)
+               (web-mode-markup-indent-offset . t)
+               (tab-width . 4))))

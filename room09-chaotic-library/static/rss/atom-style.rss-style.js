@@ -118,7 +118,7 @@ document.onreadystatechange = async function () {
     for (let item of items) {
       const itemTitle =
         item.querySelector("title")?.textContent || "(untitled)";
-      const itemLink = item.querySelector("link").textContent;
+        const itemLink = item.querySelector("link").getAttribute("href");
       const itemPubDate =
         item.querySelector("published")?.textContent ||
         item.querySelector("updated")?.textContent ||

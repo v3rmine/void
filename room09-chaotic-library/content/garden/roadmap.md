@@ -5,6 +5,7 @@ updated: 2026-01-30
 taxonomies:
   tags:
     - blog
+    - en
 extra:
   guid: 65426584-4048-4fb8-b9dd-a0c2c31aa4bf
   toc: true

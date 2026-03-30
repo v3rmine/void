@@ -6,6 +6,7 @@ taxonomies:
     - warframe
     - rust
     - bruteforce
+    - en
 extra:
   guid: c24b38b0-8878-453f-a2f2-48737ae7892d
 ---

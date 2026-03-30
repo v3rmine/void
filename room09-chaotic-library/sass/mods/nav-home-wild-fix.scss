@@ -1,0 +1,9 @@
+#home > a > span:not([hidden]) {
+  display: flex;
+  align-items: center;
+
+  img {
+    margin-inline-end: 0.25rem;
+    border-radius: var(--rounded-corner-small);
+  }
+}

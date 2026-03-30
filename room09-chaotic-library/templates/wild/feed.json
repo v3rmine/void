@@ -4,7 +4,7 @@
 {%- elif section.title -%}
   {%- set title = title ~ " - " ~ section.title -%}
 {%- endif -%}
-{%- set title = title | json_encode() -%}
+{%- set title = title ~ " but WILD" | json_encode() -%}
 {
   "version": "https://jsonfeed.org/version/1.1",
   "user_comment": "This is a JSON feed. Subscribe by copying the URL from the address bar into your newsreader.",
@@ -17,7 +17,6 @@
   "language": "{{ lang }}",
   "items": [
     {%- for page in pages %}
-    {%- if not page.extra.wild or page.extra.wild != true %}
     {
       "id": "{{ page.extra.guid | default(value=page.path) | safe }}",
       "title": {{ page.title | json_encode() }},
@@ -25,7 +24,7 @@
       {%- if page.updated %}
       "date_modified": "{{ page.updated | date(format='%+') }}",
       {%- endif %}
-      "url": "{{ page.permalink | safe }}",
+      "url": "{{ page.permalink | safe }}?wild=true",
       "content_html": {{ page.content | json_encode() }},
       {%- if page.summary %}
       "summary": {{ page.summary | json_encode() }},
@@ -47,7 +46,6 @@
         {% endif %}
       ]
     }{%- if not loop.last -%},{%- endif %}
-    {%- endif %}
     {%- endfor %}
   ]
 }

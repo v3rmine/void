@@ -6,6 +6,7 @@ description: >
 taxonomies:
   tags:
     - project
+    - en
 extra:
   serie: project-illiterate
   serie_index: 1

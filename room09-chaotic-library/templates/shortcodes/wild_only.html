@@ -1,12 +1,6 @@
-{% set inline = inline | default(value=false) %}
-{# the replace fix quadruple spaces beeing considered a code block in markdown #}
-{% set wild_content = content | default(value=body | safe) | replace(from="    ", to="  ") | markdown(inline=inline) %}
+{%- import "macros/partials.html" as macros_partials -%}
+{%- set inline = inline | default(value=false) -%}
+{%- set wild_content = content | default(value=body | safe) -%}
+{%- set reverse = reverse | default(value=false) -%}
 
-{% if reverse -%}
-    <div class="not-wild">
-        {{ wild_content | safe }}
-    </div>
-{%- else %}
-    <div class="wild" hidden data-wild="{{ wild_content | base64_encode }}">
-    </div>
-{%- endif %}
+{{ macros_partials::wild_only(content=wild_content, inline=inline, reverse=reverse) }}

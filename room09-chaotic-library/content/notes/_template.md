@@ -7,6 +7,7 @@ taxonomies:
   tags:
     - notes
     - 100 days to offload 2026
+    - fr
 extra:
   guid: ''
   lang: fr

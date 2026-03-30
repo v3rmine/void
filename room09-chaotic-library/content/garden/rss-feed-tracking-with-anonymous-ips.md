@@ -8,6 +8,7 @@ taxonomies:
     - vps
     - rss
     - tracking
+    - en
 extra:
   guid: cc4ce31e-f956-4bcd-a1c4-aa308259d108
   comments: { host: 'eldritch.cafe', id: "" }

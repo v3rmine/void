@@ -13,9 +13,11 @@
 				<a href="{{ get_url(path='/', lang=lang) }}"
 					{%- if current_url | default(value="/") | trim_end_matches(pat="/") | safe == get_url(path="/", lang=lang) | trim_end_matches(pat='/') | safe -%}
 						class="active"
-					{%- endif -%}>
-					<i class="icon"></i>
-					{{- config.title -}}
+						 {%- endif -%}>
+					{{ macros_partials::wild_only(content='<i class="icon"></i>' ~ config.title, reverse=true, inline=true) }}
+					{%- set home_wild_logo = '<img class="inline no-hover pixels flip" src="/media/emojis/personas/astrid/default.gif" />' -%}
+					{%- set home_wild_title = macros_partials::rainbow(content=config.title) -%}
+					{{ macros_partials::wild_only(content=home_wild_logo ~ home_wild_title, inline=true) }}
 				</a>
 			</li>
 			<li class="divider"></li>
@@ -113,19 +115,25 @@
 							<i class="icon"></i>
 						</summary>
 						<ul>
+							{%- set normal_feeds = "" %}
+							{%- set wild_feeds = "" %}
 							{%- for feed in config.feed_filenames %}
-								<li>
-									<a href="{{ get_url(path=feed, lang=lang) }}" rel="{{ rel_attributes }}">
-										{%- if feed == "atom.xml" -%}
-											Atom
-										{%- elif feed == "feed.json" -%}
-										    JSON
-										{%- else -%}
-											RSS
-										{%- endif -%}
-									</a>
-								</li>
-							{%- endfor -%}
+								{% set feed_name = "RSS" -%}
+								{% if feed is ending_with("atom.xml") -%}
+									{% set feed_name = "Atom" -%}
+								{% elif feed is ending_with("feed.json") -%}
+									{% set feed_name = "JSON" -%}
+								{% endif -%}
+
+								{%- if not feed is starting_with("wild/") %}
+										{%- set_global normal_feeds = normal_feeds ~ '<li><a href="' ~ get_url(path=feed, lang=lang) ~ '" rel="' ~ rel_attributes ~ '">' ~ feed_name ~ '</a></li>' %}
+								{%- else %}
+										{%- set_global wild_feeds = wild_feeds ~ '<li><a href="' ~ get_url(path=feed, lang=lang) ~ '" rel="' ~ rel_attributes ~ '">' ~ feed_name ~ '</a></li>' %}
+								{%- endif %}
+							{%- endfor %}
+							{{ normal_feeds | safe }}
+							{#{{ macros_partials::wild_only(content=normal_feeds, reverse=true) }}
+							{{ macros_partials::wild_only(content=wild_feeds) }}#}
 						</ul>
 					</details>
 				</li>
