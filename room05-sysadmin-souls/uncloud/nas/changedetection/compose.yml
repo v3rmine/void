@@ -1,0 +1,46 @@
+services:
+  changedetection:
+    image: ghcr.io/dgtlmoon/changedetection.io:latest
+    #pull_policy: always
+    container_name: changedetection
+    environment:
+      BASE_URL: https://change.serv4.reta.re
+      TZ: Europe/Paris
+      DISABLE_VERSION_CHECK: true
+      HIDE_REFERER: true
+      PLAYWRIGHT_DRIVER_URL: ws://changedetection-puppet:3000
+      FETCH_WORKERS: 2
+    volumes:
+      - changedetection_data:/datastore
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+    depends_on:
+      changedetection-puppet:
+        condition: service_started
+    x-ports:
+      - change.serv4.reta.re:5000/http
+    x-machines:
+      - nas
+  changedetection-puppet:
+    hostname: changedetection-puppet
+    #image: cloakhq/cloakbrowser:latest
+    #command: cloakserve
+    build: sockpuppetbrowser-cloakbrowser 
+    restart: unless-stopped
+    environment:
+      # SCREEN_WIDTH: 1920
+      # SCREEN_HEIGHT: 1024
+      # SCREEN_DEPTH: 16
+      MAX_CONCURRENT_CHROME_PROCESSES: 2
+      # FINGERPRINT_PLATFORM: linux
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+    x-machines:
+      - nas
+
+volumes:
+  changedetection_data:
