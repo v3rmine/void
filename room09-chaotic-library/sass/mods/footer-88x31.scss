@@ -1,0 +1,25 @@
+#buttons-88x31 {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 1rem auto 0;
+  padding: 0;
+
+  li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  a {
+    display: block;
+  }
+
+  img {
+    margin: 0;
+    border-radius: initial;
+    width: 88px;
+    height: 31px;
+  }
+}

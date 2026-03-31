@@ -1,0 +1,7 @@
+{%- set recipe = load_data(path=path) -%}
+<details>
+    <summary><code>{{ path | split(pat="/") | last }}</code></summary>
+{{ "```cooklang
+" ~ recipe ~ "
+```" | markdown() | safe }}
+</details>

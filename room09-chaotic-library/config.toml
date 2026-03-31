@@ -43,6 +43,7 @@ error_on_missing_language = true
 style = "class"
 light_theme = "solarized-light"
 dark_theme = "solarized-dark"
+extra_grammars = ["grammars/cooklang.json"]
 
 [search]
 # index_format = "elasticlunr_json"
@@ -207,6 +208,16 @@ socials = [
     { url = "https://git.v3rm.in", name = "Self hosted forge", icon = "%3Csvg role='img' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Ctitle%3EForgejo%3C/title%3E%3Cpath d='M16.7773 0c1.6018 0 2.9004 1.2986 2.9004 2.9005s-1.2986 2.9004-2.9004 2.9004c-1.0854 0-2.0315-.596-2.5288-1.4787H12.91c-2.3322 0-4.2272 1.8718-4.2649 4.195l-.0007 2.1175a7.0759 7.0759 0 0 1 4.148-1.4205l.1176-.001 1.3385.0002c.4973-.8827 1.4434-1.4788 2.5288-1.4788 1.6018 0 2.9004 1.2986 2.9004 2.9005s-1.2986 2.9004-2.9004 2.9004c-1.0854 0-2.0315-.596-2.5288-1.4787H12.91c-2.3322 0-4.2272 1.8718-4.2649 4.195l-.0007 2.319c.8827.4973 1.4788 1.4434 1.4788 2.5287 0 1.602-1.2986 2.9005-2.9005 2.9005-1.6018 0-2.9004-1.2986-2.9004-2.9005 0-1.0853.596-2.0314 1.4788-2.5287l-.0002-9.9831c0-3.887 3.1195-7.0453 6.9915-7.108l.1176-.001h1.3385C14.7458.5962 15.692 0 16.7773 0ZM7.2227 19.9052c-.6596 0-1.1943.5347-1.1943 1.1943s.5347 1.1943 1.1943 1.1943 1.1944-.5347 1.1944-1.1943-.5348-1.1943-1.1944-1.1943Zm9.5546-10.4644c-.6596 0-1.1944.5347-1.1944 1.1943s.5348 1.1943 1.1944 1.1943c.6596 0 1.1943-.5347 1.1943-1.1943s-.5347-1.1943-1.1943-1.1943Zm0-7.7346c-.6596 0-1.1944.5347-1.1944 1.1943s.5348 1.1943 1.1944 1.1943c.6596 0 1.1943-.5347 1.1943-1.1943s-.5347-1.1943-1.1943-1.1943Z'/%3E%3C/svg%3E" },
     { url = "https://stats.astriiid.fr", name = "GoatCounter", icon = "%3C%3Fxml version='1.0' encoding='UTF-8' standalone='no'%3F%3E%3C!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'%3E%3Csvg width='100%25' height='100%25' viewBox='0 0 417 429' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xml:space='preserve' xmlns:serif='http://www.serif.com/' style='fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;'%3E%3Crect id='Artboard4' x='0.586' y='0' width='415.356' height='428.505' style='fill:none;'/%3E%3CclipPath id='_clip1'%3E%3Crect x='0.586' y='0' width='415.356' height='428.505'/%3E%3C/clipPath%3E%3Cg clip-path='url(%23_clip1)'%3E%3Cpath d='M25.399,235.075l118.517,-135.285c0,0 -124.734,-57.004 -120.995,-58.98c182.412,-96.381 370.769,214.033 370.769,214.033l-24.839,65.501c0,0 -169.954,-0.509 -192.464,-75.727' style='fill:none;stroke:%23000;stroke-width:44.5px;'/%3E%3Cpath d='M179.11,406.252c-0.044,-36.273 38.389,-117.225 38.389,-117.225' style='fill:none;stroke:%23000;stroke-width:44.5px;'/%3E%3C/g%3E%3C/svg%3E" },
     { url = "https://astriiid.fr/wander", name = "Wander", icon = "%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22currentColor%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20class%3D%22feather%20feather-compass%22%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%2210%22%2F%3E%3Cpolygon%20points%3D%2216.24%207.76%2014.12%2014.12%207.76%2016.24%209.88%209.88%2016.24%207.76%22%2F%3E%3C%2Fsvg%3E" },
+]
+88x31 = [
+    { url = "https://ritual.sh/resources/button-generator/", name = "v3rmine", image = "/media/88x31/v3rmine.gif" },
+    { url = "https://ko-fi.com/s/4662b19f61", name = "Made By a Human", image = "/media/88x31/MadeByAHuman_04.svg" },
+    { url = "https://powrss.com", name = "PowRSS", image = "/media/88x31/powrss.gif" },
+    { url = "https://transfem.social/notes/a1f0uhxntahz003o", name = "Trans Your Gender", image = "/media/88x31/tyg.gif", wild = true },
+    { name = "No Cookie", image = "/media/88x31/nocookie.gif" },
+    { url = "https://astriiid.fr/garden/recipes", name = "Powered by Coffee", image = "/media/88x31/CoffeePowered_02.svg" },
+    # { name = "Piracy now", image = "/media/88x31/piracy.gif", wild = true },
+    # { name = "Violet", image = "/media/88x31/violet.gif" },
 ]
 # Whether to show "© Title, YEAR"
 show_copyright = true

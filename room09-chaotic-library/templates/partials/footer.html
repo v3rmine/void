@@ -65,6 +65,27 @@
 		</ul>
 	{%- endif %}
 
+	{%- if config.extra.footer.88x31 %}
+		<ul id="buttons-88x31">
+			{%- for button in config.extra.footer.88x31 %}
+				{%- set button_content = "" %}
+				{%- if button.url %}
+					{%- set button_content = '<a href="' ~ button.url ~ '" rel="' ~ rel_attributes ~ '" title="' ~ button.name ~ '" target="_blank">' %}
+					{%- set button_content = button_content ~ '<img class="no-hover pixels" alt="' ~ button.name ~ '" src="' ~ button.image ~ '" />' %}
+					{%- set button_content = button_content ~ '</a>' %}
+				{%- else %}
+					{%- set button_content = '<img class="no-hover pixels" alt="' ~ button.name ~ '" src="' ~ button.image ~ '" />' %}
+				{%- endif %}
+
+				{%- if button.wild and button.wild == true %}
+					{{ macros_partials::wild_only(content=button_content, as_elem="li", inline=true) }}
+				{%- else %}
+					<li>{{ button_content | safe }}</li>
+				{%- endif %}
+			{%- endfor %}
+		</ul>
+	{%- endif %}
+
 	{%- if config.extra.goatcounter %}
 		<noscript>
 		{%- if config.extra.goatcounter.user -%}

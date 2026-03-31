@@ -1,6 +1,10 @@
 {%- import "macros/partials.html" as macros_partials -%}
-{%- set inline = inline | default(value=false) -%}
 {%- set wild_content = content | default(value=body | safe) -%}
 {%- set reverse = reverse | default(value=false) -%}
+{%- set inline = inline | default(value=false) -%}
+{%- set as_elem = as | default(value="div") -%}
+{%- if inline == true -%}
+	{%- set as_elem = "span" -%}
+{%- endif -%}
 
-{{ macros_partials::wild_only(content=wild_content, inline=inline, reverse=reverse) }}
+{{ macros_partials::wild_only(content=wild_content, reverse=reverse, inline=inline, as_elem=as_elem) }}

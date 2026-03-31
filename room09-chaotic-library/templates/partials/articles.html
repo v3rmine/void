@@ -1,3 +1,8 @@
+{%- set for_section = "" -%}
+{%- if section -%}
+    {%- set for_section = section -%}
+{%- endif -%}
+
 {%- if (page and page.extra.list_for_section) or (section and section.extra.list_for_section) -%}
     {%- if page and page.extra.list_for_section -%}
         {%- set for_section = get_section(path=page.extra.list_for_section ~ "/_index.md") -%}
@@ -37,16 +42,18 @@
 			{%- set article_type = "poor" -%}
 			{%- set article_string = macros_translate::translate(key="poor", default="Poor", language_strings=language_strings) -%}
 		{%- endif -%}
-		<article {% if article_type %}class="{{ article_type }}"{% endif %}>
-			<a href="{{ page.permalink | safe }}"></a>
-			<span class="article-title">{{ page.title }}</span>
- 			{%- if page.date -%}
-                <small>
-         			<time datetime="{{ page.date | date(format='%+') }}" pubdate>
-        				{{- page.date | date(format=date_format, locale=date_locale) -}}
-         			</time>
-                </small>
- 			{%- endif -%}
+		<a href="{{ page.permalink | safe }}">
+		<article {% if article_type %}class="{{ article_type }}" {% endif %}>
+				<span class="article-title">{{ page.title }}{% if page.extra.lang and for_section.extra.add_lang_to_list %} ({{
+					page.extra.lang }}){% endif %}</span>
+				{%- if page.date -%}
+				<small>
+					<time datetime="{{ page.date | date(format='%+') }}" pubdate>
+						{{- page.date | date(format=date_format, locale=date_locale) -}}
+					</time>
+				</small>
+				{%- endif -%}
 		</article>
+		</a>
 	{%- endfor %}
 </div>

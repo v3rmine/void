@@ -1,8 +1,12 @@
 #simple-article-list {
-	display: flex;
-	flex-direction: column;
-	gap: 0.5rem;
-	margin-block-start: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-block-start: 2rem;
+
+  & > a {
+    border-radius: var(--rounded-corner);
+  }
 
 	article {
 		--bg-overlay: var(--accent-color-alpha);
@@ -10,7 +14,7 @@
 		transition: var(--transition);
 		border-radius: var(--rounded-corner);
 		background-image: linear-gradient(var(--bg-overlay), var(--bg-overlay)),
-			linear-gradient(var(--glass-bg), var(--glass-bg)), var(--blurnail);
+			                linear-gradient(var(--glass-bg), var(--glass-bg)), var(--blurnail);
 		background-position: center;
 		background-size: cover;
 		padding: 0.5rem 1rem;
@@ -25,14 +29,6 @@
 
 		&:hover, &:has(> a:hover) {
   		background-color: var(--bg-overlay);
-		}
-
-		& > a {
-			position: absolute;
-			inset: 0;
-			border-radius: var(--rounded-corner);
-			border-start-end-radius: 2.125rem;
-			border-end-end-radius: 1.8125rem;
 		}
 
 		.article-title {
