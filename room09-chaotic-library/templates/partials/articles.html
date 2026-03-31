@@ -42,18 +42,36 @@
 			{%- set article_type = "poor" -%}
 			{%- set article_string = macros_translate::translate(key="poor", default="Poor", language_strings=language_strings) -%}
 		{%- endif -%}
-		<a href="{{ page.permalink | safe }}">
-		<article {% if article_type %}class="{{ article_type }}" {% endif %}>
-				<span class="article-title">{{ page.title }}{% if page.extra.lang and for_section.extra.add_lang_to_list %} ({{
-					page.extra.lang }}){% endif %}</span>
-				{%- if page.date -%}
-				<small>
-					<time datetime="{{ page.date | date(format='%+') }}" pubdate>
-						{{- page.date | date(format=date_format, locale=date_locale) -}}
-					</time>
-				</small>
-				{%- endif -%}
-		</article>
-		</a>
+
+		{%- set article_block = '<article' %}
+		{%- if article_type %}
+			{%- set article_block = article_block ~ ' class="' ~ article_type ~ '"'%}
+		{%- endif %}
+		{%- set article_block = article_block ~ '>' %}
+		{%- set article_block = article_block ~ '<span class="article-title">' ~ page.title %}
+		{%- if page.extra.lang and for_section.extra.add_lang_to_list %}
+			{%- set article_block = article_block ~ '(' ~ page.extra.lang ~ ')'%}
+		{%- endif %}
+		{%- set article_block = article_block ~ '</span>' %}
+		{%- if page.date %}
+			{%- set article_date = page.date | date(format='%+') %}
+			{%- set article_display_date = page.date | date(format=date_format, locale=date_locale) %}
+
+			{%- set article_block = article_block ~ '<small>' %}
+			{%- set article_block = article_block ~ '<time datetime="' ~ article_date ~ '" pubdate>' %}
+			{%- set article_block = article_block ~ article_display_date %}
+			{%- set article_block = article_block ~ '</time>' %}
+			{%- set article_block = article_block ~ '</small>' %}
+		{%- endif %}
+		{%- set article_block = article_block ~ '</article>' %}
+
+		{%- if page.extra.wild and page.extra.wild == true %}
+			{{ macros_partials::wild_only(content=article_block, as_elem="a", extra_attrs='href=' ~ page.permalink, inline=true) }}
+		{%- else %}
+			<a href="{{ page.permalink }}">
+				{{ article_block | safe }}
+			</a>
+		{%- endif %}
+
 	{%- endfor %}
 </div>

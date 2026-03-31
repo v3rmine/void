@@ -31,15 +31,15 @@
     </span>
 {%- endmacro wavy -%}
 
-{%- macro wild_only(content, reverse=false, inline=false, as_elem="div") -%}
+{%- macro wild_only(content, reverse=false, inline=false, as_elem="div", extra_attrs="") -%}
     {# the replace fix quadruple spaces beeing considered a code block in markdown #}
     {% set wild_content = content | replace(from="    ", to="  ") | markdown(inline=inline) %}
 
     {% if reverse -%}
-        <{{ as_elem }} class="not-wild">
+        <{{ as_elem }} class="not-wild" {{ extra_attrs }}>
             {{ wild_content | safe }}
         </{{ as_elem }}>
     {%- else %}
-        <{{ as_elem }} class="wild" hidden data-wild="{{ wild_content | base64_encode }}"></{{ as_elem }}>
+        <{{ as_elem }} class="wild" hidden data-wild="{{ wild_content | base64_encode }}" {{ extra_attrs }}></{{ as_elem }}>
     {%- endif %}
 {% endmacro wild_only %}

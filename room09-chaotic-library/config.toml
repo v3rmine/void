@@ -99,7 +99,7 @@ card = "card.jpg"
 # URL to website's issue tracker
 issues_url = "https://github.com/v3rmine/void/issues"
 # URL to website's source code
-source_url = "https://git.sr.ht/~v3rmine/void/tree/main/item/room09-chaotic-library"
+source_url = "https://git.v3rm.in/v3rmine/void/src/branch/main/room09-chaotic-library"
 # Additional CSS styles; expects them to be in the "./static/" directory.
 # If you are using Sass it will be generated there automatically.
 styles = ["mods.css"]

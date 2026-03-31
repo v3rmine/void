@@ -9,7 +9,7 @@ services:
         header Strict-Transport-Security "max-age=300; includeSubDomains"
         header X-Content-Type-Options "nosniff"
         # header X-Frame-Options "DENY"
-        header Via "Rodents"
+        header >Via "Rodents"
         header Access-Control-Allow-Origin "*"
 
         # First script-src hash = Show javascript only elem
