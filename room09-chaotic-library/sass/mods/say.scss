@@ -14,26 +14,30 @@
 
 .someone-say-who {
   align-self: end;
-  margin: initial;
-  box-shadow: initial;
-  border-radius: initial;
-  background-color: initial;
   width: 5rem;
 
-  &.flip-image {
-    transform: rotateY(180deg);
+  & > img {
+    margin: initial;
+    box-shadow: initial;
+    border-radius: initial;
+    background-color: initial;
+    width: 100%;
   }
 }
 
 .someone-say-what {
-  align-self: start;
+  // align-self: start;
   box-shadow: var(--edge-highlight);
   border-radius: var(--rounded-corner) var(--rounded-corner) var(--rounded-corner) 0;
-  padding: 0 1rem;
+  padding: 0.5rem 1rem;
   background-color: var(--fg-muted-1);
   flex-grow: 1;
   max-width: calc(100% - 12rem);
   word-wrap: anywhere;
+
+  & > p:first-child {
+    margin-top: 0;
+  }
 }
 
 .someone-say-group {
@@ -66,6 +70,7 @@
 @media (max-width: 400px) {
   .someone-say-container {
     flex-flow: column;
+    gap: 0.25rem;
 
     &.respond {
       flex-flow: column;
@@ -82,6 +87,20 @@
 
   .someone-say-who {
     align-self: start;
+    border-radius: 999px;
+    border: 4px solid color-mix(in srgb, var(--bg-color), var(--accent-color) 30%);
+    overflow: hidden;
+    background-color: var(--fg-muted-3);
+    width: 4rem;
+    box-shadow: inset 0 0 0.4rem rgba(0 0 0 / 0.2);
+
+    & > img {
+      transform: scale(1.2);
+
+      &.flip {
+        transform: rotateY(180deg) scale(1.2);
+      }
+    }
   }
 
   .someone-say-what {
@@ -91,5 +110,9 @@
 
   .someone-say-group {
     padding: 0.5rem 0;
+
+    .someone-say-container {
+      margin: 1rem;
+    }
   }
 }

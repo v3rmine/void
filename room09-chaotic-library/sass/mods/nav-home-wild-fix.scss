@@ -1,6 +1,7 @@
 #home > a > span:not([hidden]) {
   display: flex;
   align-items: center;
+  justify-content: center;
 
   img {
     margin-inline-end: 0.25rem;

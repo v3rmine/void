@@ -5,7 +5,6 @@
   background-color: unset;
 
   & > .spoiler-content {
-    // display: none;
     visibility: hidden;
     display: block;
     margin-top: -0.75em;
@@ -13,6 +12,8 @@
   }
 
   &:hover {
+    vertical-align: initial;
+
     .tw {
       display: block;
       visibility: hidden;

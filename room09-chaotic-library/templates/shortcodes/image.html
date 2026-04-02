@@ -47,7 +47,7 @@
     {%- set url_min = image.url -%}
 {%- endif -%}
 
-{%- if not full_size -%}
+{%- if not full_size and url_min -%}
     {%- set url = url_min -%}
 {%- else -%}
     {%- set url = get_url(path=url) -%}
@@ -55,8 +55,8 @@
 
 {%- if url_min and full_size -%}
     <a href="{{ url }}">
-        <img class="{{ image_classes }}" {%- if alt -%}alt="{{ alt }}" {%- endif -%} src="{{ url_min }}" {%- if config.markdown.lazy_async_image -%}decoding="async" loading="lazy" {%- endif -%} />
+        <img class="{{ image_classes }}" alt="{{ alt }}" src="{{ url_min }}" {%- if config.markdown.lazy_async_image -%}decoding="async" loading="lazy" {%- endif -%} />
     </a>
 {%- else -%}
-    <img class="{{ image_classes }}" {%- if alt -%}alt="{{ alt }}"{%- endif -%} src="{{ url }}" {%- if config.markdown.lazy_async_image -%}decoding="async" loading="lazy"{%- endif -%} />
+    <img class="{{ image_classes }}" alt="{{ alt }}" src="{{ url }}" {%- if config.markdown.lazy_async_image -%}decoding="async" loading="lazy"{%- endif -%} />
 {%- endif -%}

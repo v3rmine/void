@@ -1,0 +1,32 @@
+.details-section {
+  summary {
+    font-family: "Quando", var(--font-system-ui), var(--font-emoji);
+    font-size: var(--font-size-xxx-large);
+    margin-bottom: 1rem;
+
+    &::before {
+      width: 2rem;
+      height: 2rem;
+      vertical-align: initial;
+    }
+  }
+
+  @media (max-width: 400px) {
+    &[open] {
+      padding: 1rem 0 0 0;
+
+      summary {
+        padding: 0 1rem 0.5rem 1rem;
+      }
+    }
+
+    summary {
+      padding: 1rem 1rem 1.5rem 1rem;
+
+      &::before {
+        display: block;
+        margin-bottom: 0.5rem;
+      }
+    }
+  }
+}

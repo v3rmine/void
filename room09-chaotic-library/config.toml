@@ -215,7 +215,7 @@ socials = [
     { url = "https://powrss.com", name = "PowRSS", image = "/media/88x31/powrss.gif" },
     { url = "https://transfem.social/notes/a1f0uhxntahz003o", name = "Trans Your Gender", image = "/media/88x31/tyg.gif", wild = true },
     { name = "No Cookie", image = "/media/88x31/nocookie.gif" },
-    { url = "https://astriiid.fr/garden/recipes", name = "Powered by Coffee", image = "/media/88x31/CoffeePowered_02.svg" },
+    { url = "@/garden/recipes/_index.md", name = "Powered by Coffee", image = "/media/88x31/CoffeePowered_02.svg" },
     # { name = "Piracy now", image = "/media/88x31/piracy.gif", wild = true },
     # { name = "Violet", image = "/media/88x31/violet.gif" },
 ]
@@ -245,7 +245,7 @@ user = "v3rmine"
 # Whether to show the QR code to Mastodon post
 show_qr = true
 # Last cached time
-last_cached_time = "2026-03-29T16:36:01+00:00"
+last_cached_time = "2026-04-02T16:29:00+00:00"
 
 [extra.webmentions]
 # Fixed url for webmentions

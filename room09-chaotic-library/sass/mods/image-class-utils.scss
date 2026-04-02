@@ -2,4 +2,7 @@ img {
   &.flip {
     transform: rotateY(180deg);
   }
+  &.no-radius {
+    border-radius: initial;
+  }
 }

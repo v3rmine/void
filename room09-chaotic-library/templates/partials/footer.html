@@ -70,7 +70,11 @@
 			{%- for button in config.extra.footer.88x31 %}
 				{%- set button_content = "" %}
 				{%- if button.url %}
-					{%- set button_content = '<a href="' ~ button.url ~ '" rel="' ~ rel_attributes ~ '" title="' ~ button.name ~ '" target="_blank">' %}
+					{%- if button.url is matching("^https?://") %}
+						{%- set button_content = '<a href="' ~ button.url ~ '" rel="' ~ rel_attributes ~ '" title="' ~ button.name ~ '" target="_blank">' %}
+					{%- else %}
+						{%- set button_content = '<a href="' ~ get_url(path=button.url) ~ '" rel="' ~ rel_attributes ~ '" title="' ~ button.name ~ '" target="_blank">' %}
+					{%- endif %}
 					{%- set button_content = button_content ~ '<img class="no-hover pixels" alt="' ~ button.name ~ '" src="' ~ button.image ~ '" />' %}
 					{%- set button_content = button_content ~ '</a>' %}
 				{%- else %}

@@ -24,7 +24,7 @@ services:
           script-src
             'self'
             'sha256-N9chTn5S0hU62Hotw4Ml5LKoceaZ+S+9kh1qlOAjuQM='
-            'sha256-6A2XOE9fHuKmf6j0qnKJhw3yo/sIqGgRwpnCc+Y2YaA=';
+            'sha256-1UjZYT1Mt8tj/wXW6L7FetsiNhsuGixA39BHZl9UrFY=';
           style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
           connect-src 'self' https://eldritch.cafe https://tracto.pl https://git.v3rm.in https://stats.astriiid.fr;
           frame-src 'self' https:;
