@@ -10,3 +10,6 @@ Check some cool websites with more cool content:
 - {{ url(link="https://val.packett.cool/") }} (en) she's not a prolific tech blogger, but I still enjoy her posts and she's doing awesome work with her projects!
 - {{ url(link="https://sebsauvage.net/wiki/") }} (en/fr) I always follow his [Shaarli](https://sebsauvage.net/links/)'s RSS feed, but theirs a lot a interesting articles on his wiki.
 - {{ url(link="https://phd.julien-cpsn.com/") }} (en/fr) a friend that mostly posts about his PHD but he also recently published a good article about his desktop config! 
+{% wild_only(as="li", inline=true) %}
+{{ url(link="https://halimedemf.substack.com/") }} (en)
+{% end %}

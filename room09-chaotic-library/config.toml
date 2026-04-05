@@ -245,7 +245,7 @@ user = "v3rmine"
 # Whether to show the QR code to Mastodon post
 show_qr = true
 # Last cached time
-last_cached_time = "2026-04-02T16:29:00+00:00"
+last_cached_time = "2026-04-05T21:26:30+00:00"
 
 [extra.webmentions]
 # Fixed url for webmentions
