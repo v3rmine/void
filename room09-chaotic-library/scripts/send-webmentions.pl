@@ -20,10 +20,6 @@ print "[INFO]: Extracting external links\n";
 my %file_with_links;
 my %file_hashes;
 for my $file (@files) {
-    # Calculate SHA256 hash of the file content
-    use Digest::SHA;
-    $file_hashes{$file} = Digest::SHA->new(256)->addfile($file)->hexdigest;
-
     open( my $fh, "<", $file ) || die "Can't open $file: $!";
     my $html = join("", <$fh>); # Read entire file content
     close $fh;
@@ -35,6 +31,22 @@ for my $file (@files) {
         my $href = $el->{href};
         # Store link if not already in array
         push @{$file_with_links{$file}}, $href unless grep { $_ eq $href } @{$file_with_links{$file}};
+    }
+
+    # Calculate SHA256 hash of the content only
+    use Digest::SHA;
+    # Use page content
+    my $content = $dom->at('#main-content .e-content');
+    # Or use page heading
+    if (!$content) { $content = $dom->at('#main-content p:not(:has(small))') }
+
+    if ($content) {
+        $content = $content->all_text;
+        $content =~ s/(^\s*\n|^\s*)//gm;
+        $file_hashes{$file} = Digest::SHA->new(256)->add($content)->hexdigest;
+    } else {
+        # Or by default use file name (so no update will be sent)
+        $file_hashes{$file} = Digest::SHA->new(256)->add($file)->hexdigest;
     }
 }
 my @unique_links;
@@ -206,7 +218,7 @@ for my $file (keys %file_with_links) {
 
     # Check if the file is new or has been modified
     if (!exists $previous_files_hash{$file} || $previous_files_hash{$file} ne $file_hashes{$file}) {
-        print "[INFO]: --- File $file is new or modified. Sending webmentions. ---\n";
+        print "[INFO]: --- Content of $file is new or modified. Sending webmentions. ---\n";
         print "[DEBUG]: $previous_files_hash{$file}\n";
         print "[DEBUG]: $file_hashes{$file}\n";
         for my $url (@{$file_with_links{$file}}) {
