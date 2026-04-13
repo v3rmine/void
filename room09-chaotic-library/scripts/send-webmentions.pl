@@ -219,8 +219,8 @@ for my $file (keys %file_with_links) {
     # Check if the file is new or has been modified
     if (!exists $previous_files_hash{$file} || $previous_files_hash{$file} ne $file_hashes{$file}) {
         print "[INFO]: --- Content of $file is new or modified. Sending webmentions. ---\n";
-        print "[DEBUG]: $previous_files_hash{$file}\n";
-        print "[DEBUG]: $file_hashes{$file}\n";
+        print "[DEBUG]: Was    => $previous_files_hash{$file}\n";
+        print "[DEBUG]: Is now => $file_hashes{$file}\n";
         for my $url (@{$file_with_links{$file}}) {
             if (defined $webmention_endpoints{$url}) {
                 send_webmention($webmention_endpoints{$url}, $source_url, $url);
