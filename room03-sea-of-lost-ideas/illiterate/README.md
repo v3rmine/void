@@ -17,13 +17,14 @@ illiterate --config examples/entangled.toml --source examples/entangled tangle
 
 ## How It Works
 
-Write your documentation with fenced code blocks. Each block can:
+Write your code inside your documentation. Each code block can:
 
 1. **Be referenced** by other blocks
 2. **Emit code** to a file
 3. **Include other blocks** via references
 
 ````markdown
+<!-- inside a `main.md` file -->
 # Generate main.rs
 
 ```{.txt name=greeting}
@@ -67,12 +68,6 @@ The `#name` entangled syntax (e.g., `{.rust #myname}`) requires configuring the 
 regex_meta_params = '(?<key>#(?!=)|[[:alnum:]]+(?==))=?(?<value>[^\s]+)'
 params_name_key = "#"
 ```
-
-How it works:
-- `#(?!=)` matches `#` when NOT followed by `=` (captures `#name` syntax)
-- `[[:alnum:]]+(?==)` matches alphanumeric keys followed by `=` (captures `key=value` syntax)
-- `=?(?<value>[^\s]+)` captures the value after optional `=`
-- `params_name_key = "#"` tells the parser to look for `#` as the name key
 
 Run with: `cargo run -- --config examples/entangled.toml --source examples/entangled`
 
