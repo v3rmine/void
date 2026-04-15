@@ -312,3 +312,48 @@ fn test_entangled_syntax_compatibility() {
         "exit code should be 0 for clean tangle"
     );
 }
+
+#[test]
+fn test_order_should_be_stable_between_tangles() {
+    for _ in 0..100 {
+        let output = run_illiterate(
+            "examples/stable-order",
+            None,
+            "tangle",
+            &["--dry-run"],
+        );
+
+        let main_content =
+            output.get_dry_run_content("src/main.rs").expect(
+                "should have dry-run content for src/main.rs",
+            );
+        let splitted_main_content = main_content.split("println!").collect::<Vec<_>>();
+
+        assert!(
+            splitted_main_content[1].contains("Should be first"),
+            "content of a.md should come first, got:\n{}",
+            splitted_main_content[1]
+        );
+        assert!(
+            splitted_main_content[2].contains("Should be second"),
+            "content of b.md should come second, got:\n{}",
+            splitted_main_content[2]
+        );
+        assert!(
+            splitted_main_content[3].contains("Should be third"),
+            "content of c.md should come third, got:\n{}",
+            splitted_main_content[3]
+        );
+        assert!(
+            splitted_main_content[4].contains("Should be fourth"),
+            "content of d.md should come fourth, got:\n{}",
+            splitted_main_content[4]
+        );
+
+        assert_eq!(
+            output.exit_code,
+            Some(0),
+            "exit code should be 0 for clean tangle"
+        );
+    }
+}

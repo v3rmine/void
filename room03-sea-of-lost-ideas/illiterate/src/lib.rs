@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+use rayon::prelude::*;
 use tracing::trace;
 use types::{
     IlliterateCodeWithRefs, IlliterateResolvedResult,
@@ -11,6 +12,7 @@ pub mod parse;
 pub mod types;
 
 /// Based on https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm
+/// Could be optimized using https://en.wikipedia.org/wiki/Topological_sorting#Parallel_algorithms to be used with rayon
 pub fn resolve_references(
     blocks: HashMap<String, IlliterateCodeWithRefs>,
 ) -> IlliterateResolvedResult {
@@ -132,12 +134,16 @@ pub fn resolve_references(
 }
 
 pub fn collect_code_blocks(
-    files: Vec<types::IlliterateSourceFile>,
+    mut files: Vec<types::IlliterateSourceFile>,
 ) -> HashMap<String, IlliterateCodeWithRefs> {
     let mut blocks: HashMap<
         String,
         IlliterateCodeWithRefs,
     > = HashMap::new();
+
+    // Stabilize the concatenation of the duplicated named blocks
+    // Prevent their order from changing everytime
+    files.par_sort_by(|a, b| a.file.cmp(&b.file));
 
     for file in &files {
         for block in &file.code_blocks {
