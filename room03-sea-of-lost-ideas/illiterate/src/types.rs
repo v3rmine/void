@@ -43,6 +43,19 @@ pub struct IlliterateRef {
     pub ref_text: String,
 }
 
+#[derive(Debug, Clone)]
+pub struct IlliterateCodeWithRefs {
+    pub code_content: String,
+    pub refs_in_code: Vec<IlliterateRef>,
+}
+
+#[derive(Debug, Clone)]
+pub struct IlliterateResolvedResult {
+    pub resolved: HashMap<String, String>,
+    pub cyclic: Vec<String>,
+    pub missing: Vec<(String, String)>,
+}
+
 impl From<IlliterateParserSourceFile>
     for IlliterateSourceFile
 {
@@ -54,7 +67,7 @@ impl From<IlliterateParserSourceFile>
 
         value.with_code_blocks(|code_blocks| {
             source_file.code_blocks = code_blocks
-                .into_iter()
+                .iter()
                 .map(IlliterateBlock::from)
                 .collect::<Vec<_>>();
         });
@@ -82,7 +95,7 @@ impl<'a> From<&IlliterateParserBlock<'a>>
                     .content
                     .to_string(),
                 params: params
-                    .into_iter()
+                    .iter()
                     .map(|(key, value)| {
                         (
                             key.to_string(),
@@ -91,7 +104,7 @@ impl<'a> From<&IlliterateParserBlock<'a>>
                     })
                     .collect::<HashMap<_, _>>(),
                 refs_in_code: refs_in_code
-                    .into_iter()
+                    .iter()
                     .map(IlliterateRef::from)
                     .collect::<Vec<_>>(),
             },
@@ -109,7 +122,7 @@ impl<'a> From<&IlliterateParserBlock<'a>>
                     .content
                     .to_string(),
                 params: params
-                    .into_iter()
+                    .iter()
                     .map(|(key, value)| {
                         (
                             key.to_string(),
@@ -118,7 +131,7 @@ impl<'a> From<&IlliterateParserBlock<'a>>
                     })
                     .collect::<HashMap<_, _>>(),
                 refs_in_code: refs_in_code
-                    .into_iter()
+                    .iter()
                     .map(IlliterateRef::from)
                     .collect::<Vec<_>>(),
             },
@@ -134,7 +147,7 @@ impl<'a> From<&IlliterateParserBlock<'a>>
                     .content
                     .to_string(),
                 params: params
-                    .into_iter()
+                    .iter()
                     .map(|(key, value)| {
                         (
                             key.to_string(),
@@ -143,7 +156,7 @@ impl<'a> From<&IlliterateParserBlock<'a>>
                     })
                     .collect::<HashMap<_, _>>(),
                 refs_in_code: refs_in_code
-                    .into_iter()
+                    .iter()
                     .map(IlliterateRef::from)
                     .collect::<Vec<_>>(),
             },

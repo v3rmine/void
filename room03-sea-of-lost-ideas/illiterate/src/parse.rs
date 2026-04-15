@@ -70,7 +70,7 @@ pub struct IlliterateParserCodeRef<'a> {
 #[non_exhaustive]
 pub struct RegexMatchWithString<'a> {
     pub content: &'a str,
-    regex_match: fancy_regex::Match<'a>,
+    _regex_match: fancy_regex::Match<'a>,
     pub content_start_offset: usize,
     pub content_end_offset: usize,
 }
@@ -88,7 +88,7 @@ fn regex_match_from_capture<'a>(
         content: m.as_str(),
         content_start_offset: capture_offset + m.start(),
         content_end_offset: capture_offset + m.end(),
-        regex_match: m,
+        _regex_match: m,
     }).ok_or_else(|| {
         debug!(capture_field_name, "no field found on capture");
         anyhow::anyhow!("no {capture_field_name} field found on capture")
@@ -251,7 +251,7 @@ fn get_code_blocks<'a>(
             let (meta_lang, meta_params) =
                 meta_from_code_match(
                     &code_meta,
-                    &meta_regex,
+                    meta_regex,
                     "lang",
                     "params",
                 )?;
@@ -332,7 +332,7 @@ pub fn crawl_source_dir(
                     code_blocks_builder: |content| {
                         get_code_blocks(
                             content,
-                            &config,
+                            config,
                             &code_block_regex,
                             &meta_regex,
                             &param_regex,

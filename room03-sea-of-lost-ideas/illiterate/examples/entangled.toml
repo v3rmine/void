@@ -1,3 +1,2 @@
-log_level = "debug"
 regex_meta_params = '(?<key>#(?!=)|[[:alnum:]]+(?==))=?(?<value>[^\s]+)'
 params_name_key = "#"

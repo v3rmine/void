@@ -3,7 +3,7 @@ use std::path::PathBuf;
 use clap::{Parser, Subcommand, ValueHint};
 use confique::Config;
 
-#[derive(Config, Debug)]
+#[derive(Config, Debug, Clone)]
 #[config(layer_attr(derive(clap::Args, Debug)))]
 pub struct CliConfig {
     /// Log level
@@ -75,7 +75,9 @@ pub struct Cli {
 }
 
 impl Cli {
-    pub fn build() -> anyhow::Result<(String, CliConfig)> {
+    pub fn build()
+    -> anyhow::Result<(String, CliConfig, Option<Commands>)>
+    {
         let cli = Cli::parse();
         let mut config =
             CliConfig::builder().preloaded(cli.cli_config);
@@ -83,11 +85,30 @@ impl Cli {
             config = config.file(file);
         }
 
-        Ok((cli.source, config.load()?))
+        Ok((cli.source, config.load()?, cli.command))
     }
 }
 
 #[derive(Subcommand, Debug)]
 pub enum Commands {
+    /// Validate references without emitting files
     Check,
+    /// Resolve references and emit files
+    Tangle {
+        /// Output directory for generated files
+        #[arg(long, default_value = "out")]
+        outdir: String,
+        /// Log file content to debug instead of writing to disk
+        #[arg(long, default_value_t = false)]
+        dry_run: bool,
+    },
+    /// Watch source directory and tangle on change
+    Watch {
+        /// Output directory for generated files
+        #[arg(long, default_value = "out")]
+        outdir: String,
+        /// Use polling instead of native file watcher
+        #[arg(long, default_value_t = false)]
+        poll: bool,
+    },
 }
