@@ -1,6 +1,9 @@
 use std::collections::HashMap;
+
 use tracing::trace;
-use types::{IlliterateCodeWithRefs, IlliterateResolvedResult};
+use types::{
+    IlliterateCodeWithRefs, IlliterateResolvedResult,
+};
 
 pub mod cli;
 pub mod commands;
@@ -13,13 +16,17 @@ pub fn resolve_references(
 ) -> IlliterateResolvedResult {
     let mut resolved: HashMap<String, String> =
         HashMap::new();
-    let mut refs_deps_to_resolve_count: HashMap<String, usize> =
-        HashMap::new();
+    let mut refs_deps_to_resolve_count: HashMap<
+        String,
+        usize,
+    > = HashMap::new();
     let mut dependants: HashMap<String, Vec<String>> =
         HashMap::new();
 
     for (name, data) in &blocks {
-        refs_deps_to_resolve_count.entry(name.clone()).or_insert(0);
+        refs_deps_to_resolve_count
+            .entry(name.clone())
+            .or_insert(0);
         for dep in &data.refs_in_code {
             if blocks.contains_key(&dep.name) {
                 dependants
@@ -33,11 +40,12 @@ pub fn resolve_references(
         }
     }
 
-    let mut refs_without_deps: Vec<String> = refs_deps_to_resolve_count
-        .iter()
-        .filter(|&(_, count)| *count == 0)
-        .map(|(name, _)| name.clone())
-        .collect();
+    let mut refs_without_deps: Vec<String> =
+        refs_deps_to_resolve_count
+            .iter()
+            .filter(|&(_, count)| *count == 0)
+            .map(|(name, _)| name.clone())
+            .collect();
 
     while let Some(name) = refs_without_deps.pop() {
         let block = blocks.get(&name).unwrap();
@@ -86,11 +94,13 @@ pub fn resolve_references(
         if let Some(deps) = dependants.get(&name) {
             for dependent in deps {
                 if let Some(count) =
-                    refs_deps_to_resolve_count.get_mut(dependent)
+                    refs_deps_to_resolve_count
+                        .get_mut(dependent)
                 {
                     *count -= 1;
                     if *count == 0 {
-                        refs_without_deps.push(dependent.clone());
+                        refs_without_deps
+                            .push(dependent.clone());
                     }
                 }
             }
@@ -124,8 +134,10 @@ pub fn resolve_references(
 pub fn collect_code_blocks(
     files: Vec<types::IlliterateSourceFile>,
 ) -> HashMap<String, IlliterateCodeWithRefs> {
-    let mut blocks: HashMap<String, IlliterateCodeWithRefs> =
-        HashMap::new();
+    let mut blocks: HashMap<
+        String,
+        IlliterateCodeWithRefs,
+    > = HashMap::new();
 
     for file in &files {
         for block in &file.code_blocks {

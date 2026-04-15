@@ -1,13 +1,14 @@
 use std::{fs, path::Path, process::ExitCode};
 
-use crate::collect_code_blocks;
-use crate::resolve_references;
-use crate::types::IlliterateResolvedResult;
 use tracing::{debug, error, info, trace, warn};
 
-use crate::cli::CliConfig;
-use crate::parse;
-use crate::types::IlliterateSourceFile;
+use crate::{
+    cli::CliConfig,
+    collect_code_blocks, parse, resolve_references,
+    types::{
+        IlliterateResolvedResult, IlliterateSourceFile,
+    },
+};
 
 pub fn tangle(
     source_dir: &str,
@@ -57,7 +58,7 @@ fn tangle_result(
         if name.starts_with("__file__:") {
             let path =
                 name.strip_prefix("__file__:").unwrap();
-            info!(
+            debug!(
                 path,
                 len = content.len(),
                 "resolved file block"

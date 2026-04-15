@@ -1,5 +1,4 @@
-use std::process::ExitCode;
-use std::time::Duration;
+use std::{process::ExitCode, time::Duration};
 
 use notify_debouncer_mini::{
     DebounceEventResult, new_debouncer,

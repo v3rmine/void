@@ -1,13 +1,15 @@
 use std::process::ExitCode;
 
-use crate::collect_code_blocks;
-use crate::resolve_references;
-use crate::types::IlliterateResolvedResult;
+use rayon::prelude::*;
 use tracing::{error, info, trace, warn};
 
-use crate::cli::CliConfig;
-use crate::parse;
-use crate::types::IlliterateSourceFile;
+use crate::{
+    cli::CliConfig,
+    collect_code_blocks, parse, resolve_references,
+    types::{
+        IlliterateResolvedResult, IlliterateSourceFile,
+    },
+};
 
 pub fn check(
     source_dir: &str,
@@ -24,7 +26,7 @@ pub fn check(
     };
 
     let files = files
-        .into_iter()
+        .into_par_iter()
         .map(IlliterateSourceFile::from)
         .collect::<Vec<_>>();
 
@@ -33,7 +35,9 @@ pub fn check(
     check_result(&resolved)
 }
 
-fn check_result(result: &IlliterateResolvedResult) -> ExitCode {
+fn check_result(
+    result: &IlliterateResolvedResult,
+) -> ExitCode {
     for (block, missing_ref) in &result.missing {
         warn!(
             "block '{block}' references missing block '{missing_ref}'"

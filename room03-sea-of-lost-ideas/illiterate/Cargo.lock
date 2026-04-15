@@ -439,6 +439,7 @@ dependencies = [
  "fancy-regex",
  "notify-debouncer-mini",
  "ouroboros",
+ "rayon",
  "tracing",
  "tracing-subscriber",
  "walkdir",

@@ -2,7 +2,8 @@ use std::{collections::HashMap, fs::read_to_string};
 
 use fancy_regex::Captures;
 use ouroboros::self_referencing;
-use tracing::{debug, info, trace, warn};
+use rayon::prelude::*;
+use tracing::{debug, trace, warn};
 use walkdir::{DirEntry, WalkDir};
 
 use crate::cli::CliConfig;
@@ -316,7 +317,12 @@ pub fn crawl_source_dir(
 
     let walker = WalkDir::new(source_dir).into_iter();
     let all_files = walker
-        .filter_entry(|e| {
+        .par_bridge()
+        .filter(|e| {
+            if e.is_err() {
+                return false;
+            }
+            let e = e.as_ref().unwrap();
             is_dir(e) || is_filetype(e, &config.filetype)
         })
         .filter_map(|e| e.ok())
@@ -324,7 +330,7 @@ pub fn crawl_source_dir(
         .map(|entry| -> anyhow::Result<_> {
             let file = entry.path().display().to_string();
             let content = read_to_string(&file)?;
-            info!(file, "processing file");
+            debug!(file, "processing file");
             let source_file: IlliterateParserSourceFile =
                 IlliterateParserSourceFileTryBuilder {
                     file,

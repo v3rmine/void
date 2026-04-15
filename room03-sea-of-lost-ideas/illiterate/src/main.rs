@@ -1,12 +1,11 @@
 use std::process::ExitCode;
 
-use tracing::trace;
-use tracing_subscriber::{EnvFilter, fmt, prelude::*};
-
 use illiterate::{
     cli::{self, Commands},
     commands,
 };
+use tracing::trace;
+use tracing_subscriber::{EnvFilter, fmt, prelude::*};
 
 fn main() -> ExitCode {
     match run() {

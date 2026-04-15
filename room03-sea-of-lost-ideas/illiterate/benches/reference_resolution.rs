@@ -5,7 +5,7 @@ use criterion::{
 };
 use illiterate::{
     resolve_references,
-    types::{BlockData, IlliterateRef},
+    types::{IlliterateCodeWithRefs, IlliterateRef},
 };
 
 fn gen_ref(name: &str) -> IlliterateRef {
@@ -17,8 +17,11 @@ fn gen_ref(name: &str) -> IlliterateRef {
     }
 }
 
-fn gen_block(content: &str, deps: &[&str]) -> BlockData {
-    BlockData {
+fn gen_block(
+    content: &str,
+    deps: &[&str],
+) -> IlliterateCodeWithRefs {
+    IlliterateCodeWithRefs {
         code_content: content.to_string(),
         refs_in_code: deps
             .iter()
