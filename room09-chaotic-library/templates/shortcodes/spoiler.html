@@ -9,10 +9,14 @@
 {% set tw_elem = "p" %}
 {%- endif -%}
 
+{%- if true -%}
 <{{ spoiler_elem }} class="spoiler {%-if solid %} solid{%- endif -%}">
+	{%- if true -%}
     {%- if tw -%}
         <{{ tw_elem }} class="tw"><strong>TW:</strong> {{ tw }}&nbsp;</{{ tw_elem }}>
     {%- endif -%}
     {%- set content = content | default(value=body) | default(value="") -%}
     <span class="spoiler-content">{{- content | markdown(inline=true) | safe -}}</span>
+	{%- endif -%}
 </{{ spoiler_elem }}>
+{%- endif -%}

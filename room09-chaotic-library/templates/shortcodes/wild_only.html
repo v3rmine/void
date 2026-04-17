@@ -3,7 +3,7 @@
 {%- set reverse = reverse | default(value=false) -%}
 {%- set inline = inline | default(value=false) -%}
 {%- set as_elem = as | default(value="div") -%}
-{%- if inline == true -%}
+{%- if inline == true and not as -%}
 	{%- set as_elem = "span" -%}
 {%- endif -%}
 

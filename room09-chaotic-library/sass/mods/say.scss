@@ -26,7 +26,7 @@
 }
 
 .someone-say-what {
-  // align-self: start;
+  align-self: start;
   box-shadow: var(--edge-highlight);
   border-radius: var(--rounded-corner) var(--rounded-corner) var(--rounded-corner) 0;
   padding: 0.5rem 1rem;
@@ -38,6 +38,9 @@
   & > p:first-child {
     margin-top: 0;
   }
+  & > p:last-child {
+    margin-bottom: 0;
+  }
 }
 
 .someone-say-group {
@@ -47,6 +50,7 @@
   background-color: var(--accent-color-alpha);
 
   .someone-say-what {
+    align-self: initial;
     background-color: var(--accent-color-alpha);
   }
 
