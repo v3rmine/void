@@ -66,12 +66,6 @@
 }
 
 @media (max-width: 600px) {
-  .someone-say-what {
-    max-width: initial;
-  }
-}
-
-@media (max-width: 400px) {
   .someone-say-container {
     flex-flow: column;
     gap: 0.25rem;
@@ -109,6 +103,7 @@
 
   .someone-say-what {
     width: 100%;
+    max-width: initial;
     border-radius: 0 var(--rounded-corner) var(--rounded-corner) var(--rounded-corner);
   }
 

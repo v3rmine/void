@@ -12,7 +12,10 @@ ARG CACHE_BREAKER=1337
 # find /compressed ! -name "*.br" -o -name "*.gz" -o -name "*.zst" -type f -exec rm -i {} \; fi &&\
 RUN --mount=type=cache,id=blog,target=/compressed \
     if [ ! -f /compressed/.cache_breaker ]; then echo "${CACHE_BREAKER}" > /compressed/.cache_breaker; fi && \
-    if cat /compressed/.cache_breaker | grep -qv "${CACHE_BREAKER}"; then rm -rf /compressed/*; fi && \
+    if cat /compressed/.cache_breaker | grep -qv "${CACHE_BREAKER}"; then \
+        rm -rf /compressed/* && \
+        echo "${CACHE_BREAKER}" > /compressed/.cache_breaker; \
+    fi && \
     cp -r /uncached-public/* /compressed
 ARG COMPRESS=true
 RUN --mount=type=cache,id=blog,target=/compressed \

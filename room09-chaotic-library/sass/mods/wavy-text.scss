@@ -3,10 +3,14 @@ span:has(.wavy-text) {
   overflow: visible;
 }
 
-.wavy-text span {
-  display: inline-block;
-  animation: wave 2s infinite;
-  animation-delay: calc(var(--nth) * 0.1s);
+.wavy-text {
+  text-wrap: nowrap;
+
+  & > span {
+    display: inline-block;
+    animation: wave 2s infinite;
+    animation-delay: calc(var(--nth) * 0.1s);
+  }
 }
 
 @keyframes wave {
