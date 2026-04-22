@@ -320,10 +320,6 @@ in {
     '';
   };
 
-  networking.firewall.extraCommands = ''
-    ${firewall-block-scrapers-rules}/bin/add-firewall-block-scrapers-rules.sh
-  '';
-
   services.logrotate = {
     enable = true;
     settings = {
@@ -346,7 +342,7 @@ in {
     journaldAccess = true;
     settings = {
       api.enabled = true;
-
+      data_dir = "/var/lib/private/vector";
       sources = {
         journald.type = "journald";
         traefik = {
@@ -404,6 +400,7 @@ in {
           compression = "gzip";
           framing = { method = "newline_delimited"; };
           healthcheck = { enabled = false; };
+          buffer = { type = "disk"; max_size = 512 * 1024 * 1024; when_full = "drop_newest"; };
         };
         victorialogs_traefik = {
           type = "http";
@@ -416,6 +413,7 @@ in {
           compression = "gzip";
           framing = { method = "newline_delimited"; };
           healthcheck = { enabled = false; };
+          buffer = { type = "disk"; max_size = 512 * 1024 * 1024; when_full = "drop_newest"; };
         };
       };
     };
@@ -518,8 +516,8 @@ in {
 
   systemd.services."newt" = {
     enable = true;
-    after = [ "network-online.target" ];
-    wants = [ "network-online.target" ];
+    after = [ "network-online.target" "persist-mnt-drive.automount" ];
+    wants = [ "network-online.target" "persist-mnt-drive.automount" ];
     serviceConfig = {
       Type = "simple";
       Restart = "always";
@@ -537,6 +535,17 @@ in {
     wantedBy = [ "multi-user.target" ];
   };
 
+  systemd.services."ipset-filters-setup" = {
+    enable = true;
+    after = [ "firewall.service" "uncloud.service" "docker.service" "tailscaled.service" ];
+    wants = [ "firewall.service" "uncloud.service" "docker.service" "tailscaled.service" ];
+    path = [ pkgs.iptables ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${firewall-block-scrapers-rules}/bin/add-firewall-block-scrapers-rules.sh";
+    };
+    wantedBy = [ "multi-user.target" ];
+  };
 
   # System
   services.cron.systemCronJobs = [
@@ -591,6 +600,7 @@ in {
       "/var/lib/containerd"
       "/var/lib/uncloud"
       "/var/lib/systemd/system"
+      "/var/lib/private/vector"
       "/root/pangolin"
       "/root/.ssh"
       "/var/log"
@@ -650,7 +660,7 @@ in {
   # Hardware configuration
   boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.tmp.cleanOnBoot = true;
-  zramSwap.enable = true;
+  # zramSwap.enable = true;
   boot.loader.grub.device = "/dev/sda";
   boot.loader.grub.storePath = "/persist/nix/store";
   boot.initrd.availableKernelModules = [ "ata_piix" "uhci_hcd" "xen_blkfront" "vmw_pvscsi" ];
