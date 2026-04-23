@@ -56,7 +56,12 @@
 		<ul id="external-links">
 			{%- for link in config.extra.footer.socials %}
 				<li>
-					<a href="{{ link.url | safe }}" rel="{{ rel_attributes }} me" title="{{ link.name }}" target="_blank">
+					{%- if link.url is matching("^https?://") %}
+						{%- set link_url = link.url %}
+					{%- else %}
+						{%- set link_url = get_url(path=link.url) %}
+					{%- endif %}
+					<a href="{{ link_url | safe }}" rel="{{ rel_attributes }} me" title="{{ link.name }}" target="_blank">
 						<i class="icon" style='--icon: url("data:image/svg+xml,{{ link.icon }}")'></i>
 						<span>{{ link.name }}</span>
 					</a>

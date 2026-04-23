@@ -61,3 +61,25 @@ services:
       }
     x-machines:
       - phloeomys
+  hidden-website:
+    build:
+      context: .
+      args:
+        CACHE_BREAKER: 1213
+        CACHE_ID: hidden-blog
+        REPLACEMENT_DOMAIN: kkpos3jxlzmovsxu4tpdj2rgfu5hwprefyyyxbmzmtjh5vcnltxfiiid.onion
+    x-machines:
+      - phloeomys
+  tor-proxy:
+    image: containers.torproject.org/tpo/onion-services/onimages/tor:alpine
+    # pull_policy: always
+    depends_on:
+      - hidden-website  
+    command: --RunAsDaemon 0 --HiddenServiceDir /var/lib/tor/onion --HiddenServicePort "80 hidden-website:80"
+    volumes:
+      - tor-data:/var/lib/tor
+    x-machines:
+      - phloeomys
+
+volumes:
+  tor-data:
