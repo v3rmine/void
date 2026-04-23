@@ -131,6 +131,7 @@ let
     # Clean iptables of previous rules
     iptables-save | \
       sed -E 's/^.*scanners-ipv4.*//m' | \
+      sed -E 's/^.*Alibaba-crawler.*//m' | \
       grep -vE '^$' > "$tmpdir/iptables"
     iptables-restore "$tmpdir/iptables"
     ip6tables-save | \
@@ -142,6 +143,11 @@ let
     iptables -I FORWARD 1 -m set --match-set scanners-ipv4 src -j DROP
     ip6tables -I INPUT 1 -m set --match-set scanners-ipv6 src -j DROP
     ip6tables -I FORWARD 1 -m set --match-set scanners-ipv6 src -j DROP
+    # Ban Alibaba crawlers subnet
+    iptables -I INPUT 1 -m comment --comment Alibaba-crawler -s 8.219.128.0/17 -j DROP
+    iptables -I FORWARD 1 -m comment --comment Alibaba-crawler -s 8.219.128.0/17 -j DROP
+    iptables -I INPUT 1 -m comment --comment Alibaba-crawler -s 47.79.192.0/19 -j DROP
+    iptables -I FORWARD 1 -m comment --comment Alibaba-crawler -s 47.79.192.0/19 -j DROP
   '';
 
   uncloud = pkgs.stdenv.mkDerivation rec {
@@ -222,6 +228,7 @@ in {
     ipset
     cifs-utils
     record-rss-readers
+    firewall-block-scrapers-rules
   ];
 
   environment.etc."autorestic.yml" = {
@@ -469,8 +476,8 @@ in {
 
   systemd.services."uncloud" = {
     enable = true;
-    after = [ "network-online.target" "ipset-persistent.service" "firewall.service" ];
-    wants = [ "network-online.target" ];
+    after = [ "network-online.target" ];
+    wants = [ "network-online.target" "docker.service" "firewall.service" ];
     path = [ pkgs.iptables ];
     serviceConfig = {
       Type = "notify";
@@ -516,7 +523,7 @@ in {
 
   systemd.services."newt" = {
     enable = true;
-    after = [ "network-online.target" "persist-mnt-drive.automount" ];
+    after = [ "network-online.target" ];
     wants = [ "network-online.target" "persist-mnt-drive.automount" ];
     serviceConfig = {
       Type = "simple";
@@ -537,8 +544,8 @@ in {
 
   systemd.services."ipset-filters-setup" = {
     enable = true;
-    after = [ "firewall.service" "uncloud.service" "docker.service" "tailscaled.service" ];
     wants = [ "firewall.service" "uncloud.service" "docker.service" "tailscaled.service" ];
+    after = [ "uncloud.service" "docker.service" "tailscaled.service" ];
     path = [ pkgs.iptables ];
     serviceConfig = {
       Type = "oneshot";
@@ -607,6 +614,10 @@ in {
       "/root/.cache/restic"
     ];
   };
+  boot.initrd.postResumeCommands = ''
+    ${pkgs.systemd}/bin/systemctl daemon-reload
+    ${pkgs.systemd}/bin/systemctl start newt
+  '';
 
   # SSH
   services.openssh = {
