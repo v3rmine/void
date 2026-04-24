@@ -2,6 +2,7 @@
 {% import "macros/translate.html" as macros_translate %}
 {% import "macros/comments.html" as macros_comments %}
 {% import "macros/partials.html" as macros_partials %}
+{% import "macros/articles.html" as macros_articles %}
 
 {%- set language_strings = load_data(path="i18n/" ~ lang ~ '.toml', required=false) -%}
 {%- if not language_strings -%}
@@ -10,7 +11,7 @@
 {%- set rtl_languages = ["ar", "arc", "az", "dv", "ff", "he", "ku", "nqo", "fa", "rhg", "syc", "ur"] -%}
 
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" {% if lang in rtl_languages %}dir="rtl"{% endif %} lang="{{ lang }}" {% include "partials/default_theme.html" %}>
+<html xmlns="http://www.w3.org/1999/xhtml" {% if lang in rtl_languages %}dir="rtl"{% endif %} lang="{{ page.extra.lang | default(value=lang) }}" {% include "partials/default_theme.html" %}>
 {% include "partials/head.html" %}
 <body>
 {% block body %}

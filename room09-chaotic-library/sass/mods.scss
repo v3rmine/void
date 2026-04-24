@@ -23,3 +23,23 @@
 @use "mods/wavy-text";
 @use "mods/wild-mode";
 @use "mods/zola-anchor";
+
+.split-util {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-flow: wrap;
+  gap: 1rem;
+
+  h2 {
+    margin: initial;
+  }
+
+  .buttons {
+    margin: initial;
+  }
+}
+
+.split-util:has(h2) {
+  margin: 2rem 0 1rem;
+}

@@ -1,9 +1,7 @@
 ---
 title: "Astrid"
-template: "article_list.html"
+template: "homepage.html"
 insert_anchor_links: "none"
-extra:
-  list_for_section: garden
 ---
 
 {% crt(extra_classes="reverse-scroll") %}

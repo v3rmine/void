@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block content %}
+{%- set date_format = macros_translate::translate(key="date_format", default="%B %d, %Y", language_strings=language_strings) -%}
+{%- set date_locale = macros_translate::translate(key="date_locale", default="en_US", language_strings=language_strings) -%}
+
+<h1>{{ section.title }}</h1>
+
+{{ section.content | safe }}
+
+<p>
+	<small>
+		{%- if config.taxonomies | length > 0 -%}
+		    {%- for taxon in config.taxonomies -%}
+			    {%- set taxon_name = taxon.name -%}
+			    <a href="{{- get_url(path='$TAXON', lang=lang) | replace(from="$TAXON", to=taxon.name) | lower -}}">
+					{{ macros_translate::translate(key='filter_by_taxon', default='Filter by $TAXON', language_strings=language_strings) | replace(from="$TAXON", to=taxon.name) }}
+			    </a>
+			    <br />
+			{%- endfor %}
+		{%- endif %}
+	</small>
+</p>
+
+{%- set for_section = get_section(path="garden/_index.md") -%}
+{%- set pages = for_section.pages -%}
+{%- set more_target = for_section.permalink -%}
+<div class="split-util">
+	<h2>Last posts</h2>
+	<div>
+		{%- if more_target and pages | length > 5 -%}
+			<div class="buttons m-s">
+				<a href="{{ more_target }}">
+					{{ macros_translate::translate(key='more_posts', default='Older posts...', language_strings=language_strings) }}
+				</a>
+			</div>
+		{%- endif -%}
+	</div>
+</div>
+
+{{ macros_articles::articles(pages=pages | slice(end=5), date_format=date_format, date_locale=date_locale, language_strings=language_strings) }}
+
+{%- set for_section = get_section(path="notes/_index.md") -%}
+{%- set pages = for_section.pages -%}
+{%- set more_target = for_section.permalink -%}
+<div class="split-util">
+	<h2>Dernières notes hebdo</h2>
+	<div>
+		{%- if more_target and pages | length > 3 -%}
+			<div class="buttons m-s">
+				<a href="{{ more_target }}">
+					{{ macros_translate::translate(key='more_notes', default='Older notes...', language_strings=language_strings) }}
+				</a>
+			</div>
+		{%- endif -%}
+	</div>
+</div>
+
+{{ macros_articles::articles(pages=pages | slice(end=3), date_format=date_format, date_locale=date_locale, language_strings=language_strings) }}
+
+{% endblock content %}
