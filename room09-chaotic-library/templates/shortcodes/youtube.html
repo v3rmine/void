@@ -20,7 +20,7 @@
     videoid="{{ id }}"
     style="background-image: url('https://i.ytimg.com/vi/{{ id }}/maxresdefault.jpg');"
 >
-  <a href="https://youtube.com/watch?v={{ id }}" class="lyt-playbtn" title="Play Video">
+  <a href="https://youtube.com/watch?v={{ id }}{% if params | length > 0 %}{{ params }}{% endif %}" class="lyt-playbtn" title="Play Video">
       <span class="lyt-visually-hidden">Play Video</span>
   </a>
 </lite-youtube>

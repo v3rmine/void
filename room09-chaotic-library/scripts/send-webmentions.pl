@@ -4,6 +4,14 @@ use strict;
 use warnings;
 use Mojo::DOM;
 
+my $dry_run = 0;
+foreach my $arg (@ARGV) {
+    if ($arg eq '--dry-run') {
+        $dry_run = 1;
+        last;
+    }
+}
+
 # Base url
 my $base_url = "https://astriiid.fr/";
 
@@ -149,15 +157,37 @@ my @defined_endpoints = grep { defined $webmention_endpoints{$_} } keys %webment
 print "[INFO]: Collected " . scalar(@defined_endpoints) . " webmention endpoints.\n";
 
 # Storing state in $state_file html_file, url, webmention_endpoint
-open( my $fh_state, ">", $state_file ) || die "Can't open $state_file: $!";
+my $fh_state;
+if (! $dry_run) {
+    open( $fh_state, ">", $state_file ) || die "Can't open $state_file: $!";
+}
 for my $file (keys %file_with_links) {
     for my $url (@{$file_with_links{$file}}) {
         my $endpoint_value = defined $webmention_endpoints{$url} ? $webmention_endpoints{$url} : "";
-        print $fh_state "$file,$url,$endpoint_value,$file_hashes{$file}\n";
+        if (! $dry_run) {
+            print $fh_state "$file,$url,$endpoint_value,$file_hashes{$file}\n";
+        }
     }
 }
-close $fh_state;
+if (! $dry_run) {
+    close $fh_state;
+}
 print "[INFO]: Stored webmention data in $state_file\n";
+
+# https://stackoverflow.com/questions/18103501/prompting-multiple-questions-to-user-yes-no-file-name-input
+sub prompt {
+    my ($query) = @_; # take a prompt string as argument
+    local $| = 1; # activate autoflush to immediately show the prompt
+    print $query;
+    chomp(my $answer = <STDIN>);
+    return $answer;
+}
+
+sub prompt_yn {
+    my ($query) = @_;
+    my $answer = prompt("$query (Y/N): ");
+    return lc($answer) eq 'y';
+}
 
 # Function to send webmention
 sub send_webmention {
@@ -177,9 +207,15 @@ sub send_webmention {
               "--data-urlencode 'target=$target_url' " .
               "-H \"Content-Type: application/x-www-form-urlencoded\" " .
               "-X POST '$endpoint'";
+    my $send_req = prompt_yn("Do you want to send a webmention to $target_url (endpoint: $endpoint)");
     my $http_code;
-    $http_code = `$cmd`;
-    if ($http_code =~ /^(200|201|202)$/) {
+    if ((! $dry_run) && $send_req) {
+        $http_code = `$cmd`;
+    }
+    if (!defined $http_code) {
+        print "[DEBUG]: Webmention not sent \n";
+        return 0;
+    } elsif ($http_code =~ /^(200|201|202)$/) {
         print "[DEBUG]: Webmention sent successfully (HTTP $http_code)\n";
         return 1;
     } else {
@@ -218,8 +254,12 @@ for my $file (keys %file_with_links) {
 
     # Check if the file is new or has been modified
     if (!exists $previous_files_hash{$file} || $previous_files_hash{$file} ne $file_hashes{$file}) {
+        my $previous_hash = "";
+        if (defined $previous_files_hash{$file}) {
+            $previous_hash = $previous_files_hash{$file};
+        }
         print "[INFO]: --- Content of $file is new or modified. Sending webmentions. ---\n";
-        print "[DEBUG]: Was    => $previous_files_hash{$file}\n";
+        print "[DEBUG]: Was    => $previous_hash\n";
         print "[DEBUG]: Is now => $file_hashes{$file}\n";
         for my $url (@{$file_with_links{$file}}) {
             if (defined $webmention_endpoints{$url}) {
