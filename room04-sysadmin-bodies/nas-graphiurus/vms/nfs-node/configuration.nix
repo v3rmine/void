@@ -99,18 +99,22 @@ in {
   };
 
   fileSystems."/export/proxmox-backup" = {
+    fsType = "fuse.mergerfs";
     device = "/media/merged/proxmox-backup";
     options = [ "bind" ];
   };
   fileSystems."/export/uncloud-palmr-uploads" = {
+    fsType = "fuse.mergerfs";
     device = "/media/merged/uncloud/palmr-uploads";
     options = [ "bind" ];
   };
   fileSystems."/export/uncloud-garage" = {
+    fsType = "fuse.mergerfs";
     device = "/media/merged/uncloud/garage";
     options = [ "bind" ];
   };
   fileSystems."/export/uncloud-immich" = {
+    fsType = "fuse.mergerfs";
     device = "/media/merged/uncloud/immich";
     options = [ "bind" ];
   };
@@ -120,7 +124,7 @@ in {
     exports = ''
       /export/proxmox-backup 10.0.0.0/16(fsid=1,rw,subtree_check,insecure,all_squash)
       # /export/kube 10.0.0.0/16(fsid=2,rw,subtree_check,insecure,root_squash)
-      /export/uncloud-palmr-uploads 10.0.0.0/16(fsid=3,rw,subtree_check,insecure,root_squash)
+      /export/uncloud-palmr-uploads 10.0.0.0/16(fsid=3,rw,subtree_check,insecure,no_root_squash)
       /export/uncloud-garage 10.0.0.0/16(fsid=4,rw,subtree_check,insecure,root_squash)
       /export/uncloud-immich 10.0.0.0/16(fsid=5,rw,subtree_check,insecure,root_squash)
       /export 10.0.0.0/16(ro,fsid=0,root_squash,no_subtree_check,hide)
