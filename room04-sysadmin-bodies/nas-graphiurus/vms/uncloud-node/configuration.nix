@@ -293,6 +293,7 @@ in {
       "/var/lib/uncloud"
       "/var/lib/systemd/system"
       "/var/log"
+      "/root/.cache/restic"
     ];
   };
 
@@ -343,7 +344,6 @@ in {
   boot.extraSystemdUnitPaths = [ "/var/lib/systemd/system/" ];
   boot.supportedFilesystems = [ "nfs" ];
   services.rpcbind.enable = true;
-  zramSwap.enable = true;
 
   # Secure settings
   users.mutableUsers = false;
