@@ -24,7 +24,7 @@
       PermitEmptyPasswords = "yes";
     };
   };
-  system.stateVersion = "24.11";
+  system.stateVersion = "25.11";
 
   time.timeZone = "Europe/Paris";
 }

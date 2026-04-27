@@ -16,4 +16,8 @@ destroy:
   tofu destroy -var-file={{credentials_file}}
 
 deploy:
-  nixos-rebuild switch  --target-host root@tailscale --flake .#tailscale
+  # nixos-rebuild switch  --target-host root@10.0.0.10 --flake .#tailscale
+  nixos-rebuild switch \
+    --target-host root@10.0.0.10 \
+    -I nixos-config=./configuration.nix \
+    -I nixpkgs=channel:nixos-25.11
