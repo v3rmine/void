@@ -17,6 +17,7 @@
 "https://github.com/miniflux/v2" = ["Miniflux"]
 "https://github.com/vectordotdev/vector" = ["Vector"]
 "https://github.com/VictoriaMetrics/VictoriaLogs" = ["VictoriaLogs"]
+"https://github.com/VictoriaMetrics/VictoriaMetrics" = ["VictoriaMetrics"]
 "https://github.com/grafana/grafana" = ["Grafana"]
 "https://github.com/crowdsecurity/crowdsec" = ["Crowdsec"]
 
