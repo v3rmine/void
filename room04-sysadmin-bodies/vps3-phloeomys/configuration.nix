@@ -5,7 +5,7 @@ let
 
   run-autorestic = pkgs.writeShellScriptBin "run-autorestic.sh" ''
     # Merge location and backend autorestic confs
-    autorestic_conf="$(${pkgs.yq-go}/bin/yq eval-all '. as $item ireduce ({}; . * $item)' /etc/autorestic.yml /etc/autorestic-backends.yml)"
+    autorestic_conf="$(${pkgs.yq-go}/bin/yq eval-all '. as $item ireduce ({}; . * $item)' /etc/autorestic.yml /etc/autorestic-backends.yml | sed 's/"<<"/<</')"
     echo "$autorestic_conf" > /tmp/.autorestic.yml
 
     # Run the cron task of autorestic
@@ -238,8 +238,8 @@ in {
       extras:
         policies: &backup-policy
           keep-daily: 7
-          keep-weekly: 52
-          keep-yearly: 10
+          keep-weekly: 8
+          keep-yearly: 2
         standard: &standard
           to:
             - backblaze
@@ -323,7 +323,11 @@ in {
           cron: '0 2 * * *'
           options:
             backup:
+              compression: max
+              skip-if-unchanged: true
               exclude-file: /persist/mnt/drive/.backup-ignore
+            forget:
+              <<: *backup-policy
     '';
   };
 

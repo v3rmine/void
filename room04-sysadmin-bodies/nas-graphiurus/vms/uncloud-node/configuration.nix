@@ -4,7 +4,7 @@ let
     "https://github.com/nix-community/impermanence/archive/master.tar.gz";
 
   run-autorestic = pkgs.writeShellScriptBin "run-autorestic.sh" ''
-    autorestic_conf="$(${pkgs.yq-go}/bin/yq eval-all '. as $item ireduce ({}; . * $item)' /etc/autorestic.yml /etc/autorestic-backends.yml)"
+    autorestic_conf="$(${pkgs.yq-go}/bin/yq eval-all '. as $item ireduce ({}; . * $item)' /etc/autorestic.yml /etc/autorestic-backends.yml | sed 's/"<<"/<</')"
     echo "$autorestic_conf" > /tmp/.autorestic.yml
     ${pkgs.autorestic}/bin/autorestic -c /tmp/.autorestic.yml --ci cron > /var/log/autorestic.log 2>&1
     rm -f /tmp/.autorestic.yml
@@ -84,8 +84,8 @@ in {
       extras:
         policies: &backup-policy
           keep-daily: 7
-          keep-weekly: 52
-          keep-yearly: 10
+          keep-weekly: 8
+          keep-yearly: 2
         standard: &standard
           to:
             - backblaze
@@ -310,6 +310,7 @@ in {
       "/var/lib/systemd/system"
       "/var/log"
       "/root/.cache/restic"
+      "/root/.ssh"
     ];
   };
 
