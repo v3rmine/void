@@ -15,7 +15,7 @@
 						class="active"
 						 {%- endif -%}>
 					{{ macros_partials::wild_only(content='<i class="icon"></i>' ~ config.title, reverse=true, inline=true, as_elem="span") }}
-					{%- set home_wild_logo = '<img class="inline no-hover pixels flip" src="/media/emojis/personas/astrid/default.gif" />' -%}
+					{%- set home_wild_logo = '<img class="inline no-hover pixels" src="/media/emojis/personas/astrid/default-flip.gif" />' -%}
 					{%- set home_wild_title = macros_partials::rainbow(content=config.title) -%}
 					{{ macros_partials::wild_only(content=home_wild_logo ~ home_wild_title, inline=true, as_elem="span") }}
 				</a>

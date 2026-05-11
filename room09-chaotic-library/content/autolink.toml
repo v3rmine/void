@@ -20,6 +20,7 @@
 "https://github.com/VictoriaMetrics/VictoriaMetrics" = ["VictoriaMetrics"]
 "https://github.com/grafana/grafana" = ["Grafana"]
 "https://github.com/crowdsecurity/crowdsec" = ["Crowdsec"]
+"https://github.com/navidrome/navidrome" = ["Navidrome"]
 
 # Services
 "https://kagi.com/" = ["Kagi"]

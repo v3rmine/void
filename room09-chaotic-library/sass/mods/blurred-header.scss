@@ -1,4 +1,6 @@
-#site-nav,
+#site-nav::before,
+#site-nav #search-results-container,
 #site-nav nav details ul {
   backdrop-filter: saturate(1.8) blur(8px) brightness(125%);
+  -webkit-backdrop-filter: saturate(1.8) blur(8px) brightness(125%);
 }
