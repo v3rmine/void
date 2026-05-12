@@ -1,3 +1,6 @@
+{% import "macros/translate.html" as macros_translate %}
+{%- set language_strings = load_data(path="i18n/" ~ lang ~ '.toml', required=false) -%}
+
 {%- set image_classes = [] -%}
 {%- if full -%}
 {%- set image_classes = image_classes | concat(with="full") -%}
@@ -54,9 +57,21 @@
 {%- endif -%}
 
 {%- if url_min and full_size -%}
-    <a href="{{ url }}">
+	{# <a href="{{ url }}">
+	        <img class="{{ image_classes }}" alt="{{ alt }}" src="{{ url_min }}" {%- if config.markdown.lazy_async_image -%}decoding="async" loading="lazy" {%- endif -%} />
+	    </a> #}
+	<button popovertarget="{{ url }}" class="center-img">
         <img class="{{ image_classes }}" alt="{{ alt }}" src="{{ url_min }}" {%- if config.markdown.lazy_async_image -%}decoding="async" loading="lazy" {%- endif -%} />
-    </a>
+	</button>
+	<dialog id="{{ url }}" popover>
+		<button class="button" popovertarget="{{ url }}" popovertargetaction="hide">
+			{{ macros_translate::translate(key='dialog_back', default='Back', language_strings=language_strings) }}
+		</button>
+		<figure>
+			<img class="no-hover full" alt="{{ alt }}" src="{{ url }}" {%- if config.markdown.lazy_async_image -%}decoding="async" loading="lazy" {%- endif -%} />
+			<figcaption>{{ alt }}</figcaption>
+		</figure>
+	</dialog>
 {%- else -%}
     <img class="{{ image_classes }}" alt="{{ alt }}" src="{{ url }}" {%- if config.markdown.lazy_async_image -%}decoding="async" loading="lazy"{%- endif -%} />
 {%- endif -%}

@@ -1,0 +1,92 @@
+:where(dialog:not([open])) {
+  display: revert;
+}
+
+:where(dialog:not([popover]):not([open])) {
+  display: none;
+}
+
+@keyframes slide-in {
+  0% {
+    width: 0;
+    height: 0;
+  }
+  50% {
+    width: 10px;
+    height: 100dvh;
+  }
+  100% {
+    width: 100dvw;
+  }
+}
+
+@keyframes blur-in {
+  0% {
+    backdrop-filter: blur(0px);
+  }
+  100% {
+    backdrop-filter: blur(8px);
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  75% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+$popover_max_width: 1124px;
+
+dialog[popover] {
+  width: 100dvw;
+  height: 100dvh;
+  padding: 1rem;
+  border: none;
+  background-color: var(--bg-color);
+  position: revert;
+
+  &::backdrop {
+    background-color: var(--fg-muted-4);
+    backdrop-filter: blur(8px);
+    animation: blur-in 0.5s ease-in forwards;
+  }
+
+  @media (width >= $popover_max_width) {
+    max-width: min(90dvw, $popover_max_width);
+    max-height: 90dvh;
+    border-radius: var(--rounded-corner);
+    animation: slide-in 0.5s ease-in forwards;
+
+    & > * {
+      animation: fade-in 0.5s ease-in forwards;
+    }
+  }
+}
+
+// Button that open an img popover
+button[popovertarget]:has(img) {
+  display: block;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  background-color: transparent;
+
+  & > *:first-child {
+    margin-top: 0;
+  }
+
+  & > *:last-child {
+    margin-bottom: 0;
+  }
+}
+
+// Disable scroll when popover is opened
+body:has(:popover-open) {
+  overflow: hidden;
+}
