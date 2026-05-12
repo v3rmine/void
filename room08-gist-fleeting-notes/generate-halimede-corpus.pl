@@ -5,6 +5,7 @@ use warnings;
 use Mojo::DOM;
 
 my @links = (
+    "https://halimedemf.substack.com/p/the-penis-monologues-because-she",
     "https://halimedemf.substack.com/p/a-part-at-the-seams-recognizing-differences",
     "https://halimedemf.substack.com/p/queer-safety-and-visibility",
     "https://halimedemf.substack.com/p/an-actual-defense-of-effeminate-boys",
@@ -37,7 +38,7 @@ my @links = (
 
 my $corpus = "";
 my $title_corpus = "";
-for my $post_url (@links) {
+for my $post_url (@links[0..0]) {
     print "[DEBUG]: Fetching $post_url\n";
     my $post = `curl -s -X GET '$post_url'`;
     my $dom = Mojo::DOM->new;
