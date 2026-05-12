@@ -496,8 +496,8 @@ in {
 
   systemd.services."uncloud" = {
     enable = true;
-    after = [ "network-online.target" ];
-    wants = [ "network-online.target" "docker.service" "firewall.service" ];
+    after = [ "network-online.target" "docker.service" ];
+    wants = [ "network-online.target" "docker.service" "firewall.service" "tailscaled.service" ];
     path = [ pkgs.iptables ];
     serviceConfig = {
       Type = "notify";
@@ -634,10 +634,11 @@ in {
       "/root/.cache/restic"
     ];
   };
-  boot.initrd.postResumeCommands = ''
-    ${pkgs.systemd}/bin/systemctl daemon-reload
-    ${pkgs.systemd}/bin/systemctl start newt
-  '';
+  # Try to fix newt service initialisation
+  # boot.initrd.postResumeCommands = ''
+  #   ${pkgs.systemd}/bin/systemctl daemon-reload
+  #   ${pkgs.systemd}/bin/systemctl start newt
+  # '';
 
   # SSH
   services.openssh = {
