@@ -36,7 +36,7 @@ services:
         reverse_proxy {{upstreams 80}}
       }
       http://qr.astriiid.fr {
-        @mine expression {http.request.uri.query.data}.startsWith("https://eldritch.cafe/@v3rmine/")
+        @mine expression {http.request.uri.query.data}.startsWith("https://eldritch.cafe/@v3rmine/") || {http.request.uri.query.data}.startsWith("https://tracto.pl/notes/")
         handle @mine {
           cache {
             key {

@@ -12,6 +12,12 @@
 
 {%- set id = page.extra.comments.id -%}
 
+{%- if page.extra.comments.type and page.extra.comments.type == "misskey" -%}
+	{%- set post_url = "https://" ~ host ~ "/notes/" ~ id -%}
+{%- else -%}
+	{%- set post_url = "https://" ~ host ~ "/@" ~ user ~ "/" ~ id -%}
+{%- endif -%}
+
 {%- set time_format = macros_translate::translate(key="time_format", default="%B %d, %Y", language_strings=language_strings) -%}
 {%- set js_date_locale = macros_translate::translate(key="date_locale", default="en-US", language_strings=language_strings) | replace(from="_", to="-") -%}
 
@@ -45,7 +51,7 @@
 			class="pixels no-hover"
 			title="{{ macros_translate::translate(key='comments_qr', default='QR code to a Mastodon post', language_strings=language_strings) }}"
 			{%- if config.markdown.lazy_async_image -%}decoding="async" loading="lazy"{%- endif -%}
-			src="https://qr.astriiid.fr/v1/create-qr-code/?data=https://{{ host }}/@{{ user }}/{{ id }}"
+			src="https://qr.astriiid.fr/v1/create-qr-code/?data={{ post_url }}"
 		/>
 	{%- endif -%}
 	<h2>{{ macros_translate::translate(key="comments", default="Comments", language_strings=language_strings) }}</h2>
@@ -62,7 +68,7 @@
 		<button id="load-comments">
 			{{- macros_translate::translate(key="load_comments", default="Load Comments", language_strings=language_strings) -}}
 		</button>
-		<a class="colored external" href="https://{{ host }}/@{{ user }}/{{ id }}" rel="{{ rel_attributes }}">
+		<a class="colored external" href="{{ post_url }}" rel="{{ rel_attributes }}">
 			{{- macros_translate::translate(key="open_post", default="Open Post", language_strings=language_strings) -}}
 		</a>
 	</div>

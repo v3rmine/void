@@ -25,3 +25,6 @@
 # Services
 "https://kagi.com/" = ["Kagi"]
 "https://tailscale.com/" = ["Tailscale"]
+
+# Who
+"https://zoriya.dev" = ["Zoriya", "Zoe"]
