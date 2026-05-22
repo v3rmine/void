@@ -29,6 +29,14 @@ function process_wild_mode() {
             entry.removeAttribute('hidden');
         }
     });
+
+    document.querySelectorAll('.wild-link').forEach(function (entry) {
+        if (is_wild_mode) {
+            entry.removeAttribute('disabled');
+        } else {
+            entry.setAttribute('disabled', true);
+        }
+    });
 }
 
 function add_onclick_listeners(element = document) {

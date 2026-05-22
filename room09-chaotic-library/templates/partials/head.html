@@ -1,6 +1,5 @@
 <head>
 	<meta charset="UTF-8" />
-	<meta name="scanfyi-verification" content="6912823179d3f4de322f8b3308a197cab7c69fa6171daa2461691fd9c6f8722d">
 	<meta name="description" content="{{ config.description }}" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<meta name="theme-color" content="{{ config.extra.accent_color | default(value='#9a9996') | safe }}" />
@@ -19,9 +18,22 @@
 	{%- endif %}
 
 	{%- if config.extra.webmentions %}
-    	<link rel="me" href="mailto:{{ config.extra.webmentions.mail }}" />
-    	<link rel="webmention" href="https://webmention.io/{{ config.extra.webmentions.base_url | replace(from='https://', to='') }}/webmention">
+		<link rel="me" href="mailto:{{ config.extra.webmentions.mail }}" />
+		<link rel="webmention" href="https://webmention.io/{{ config.extra.webmentions.base_url | replace(from='https://', to='') }}/webmention">
 	{%- endif %}
+
+	{%- if config.extra.indieweb %}
+		{%- if config.extra.indieweb.scanfyi %}
+			<meta name="scanfyi-verification" content="{{ config.extra.indieweb.scanfyi }}">
+		{%- endif %}
+
+		{%- if config.extra.indieweb.auth_endpoints %}
+			{%- for endpoint in config.extra.indieweb.auth_endpoints %}
+				<link rel="authorization_endpoint" href="{{ endpoint }}">
+			{%- endfor %}
+		{%- endif %}
+	{%- endif %}
+
 
 	{%- include "partials/favicon.html" %}
 
@@ -74,6 +86,8 @@
 				<link type="text/css" rel="stylesheet" href="{{ get_url(path='giallo.css') }}" />
 			{%- endif %}
 		{%- endif %}
+
+		<link type="text/css" rel="stylesheet" href="{{ get_url(path="/wild.css", cachebust=true) | safe }}" disabled class="wild-link">
 	{%- endif %}
 
 	{%- set scripts = ["closable.js"] %}

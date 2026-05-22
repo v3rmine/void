@@ -248,6 +248,10 @@ show_qr = true
 # Last cached time
 last_cached_time = "2026-05-19T12:32:45+00:00"
 
+[extra.indieweb]
+scanfyi = "6912823179d3f4de322f8b3308a197cab7c69fa6171daa2461691fd9c6f8722d"
+auth_endpoints = ["https://indieauth.com/auth"]
+
 [extra.webmentions]
 # Fixed url for webmentions
 base_url = "https://astriiid.fr"

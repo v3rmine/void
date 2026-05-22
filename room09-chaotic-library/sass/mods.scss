@@ -12,6 +12,7 @@
 @use "mods/image-class-utils";
 @use "mods/inline-image";
 @use "mods/main-width-fix";
+// Wild mode fix
 @use "mods/nav-home-wild-fix";
 @use "mods/no-js-nav";
 @use "mods/rainbow-text";
@@ -24,6 +25,7 @@
 @use "mods/spoiler-tw";
 @use "mods/tag-label";
 @use "mods/wavy-text";
+// Wild mode toggle button
 @use "mods/wild-mode";
 @use "mods/zola-anchor";
 
