@@ -76,6 +76,9 @@ for my $post_url (@links[0..0]) {
 
         $content = $content . $el_content . "\n";
     }
+    # We clean every single dot on lines
+    $content =~ s/^\.$//;
+    # We clean empty spaces in front of paragraphs and multiline jumps
     $content =~ s/(^\s*\n|^\s*)//gm;
     $content = $post_title
         . $subtitle
