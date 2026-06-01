@@ -1,7 +1,16 @@
 {%- set png_path = "/media/emojis/" ~ name ~ ".png" -%}
 {%- set png = get_image_metadata(path=png_path, allow_missing=true) -%}
+{%- if not png -%}
+	{%- set png_path = "/media/emojis/personas/" ~ name ~ ".png" -%}
+	{%- set png = get_image_metadata(path=png_path, allow_missing=true) -%}
+{%- endif -%}
+
 {%- set gif_path = "/media/emojis/" ~ name ~ ".gif" -%}
 {%- set gif = get_image_metadata(path=gif_path, allow_missing=true) -%}
+{%- if not gif %}
+	{%- set gif_path = "/media/emojis/personas/" ~ name ~ ".gif" -%}
+	{%- set gif = get_image_metadata(path=gif_path, allow_missing=true) -%}
+{%- endif -%}
 
 {%- set size = size | default(value=48) -%}
 {%- set quality = quality | default(value=90) -%}
