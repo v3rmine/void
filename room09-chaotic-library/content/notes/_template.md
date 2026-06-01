@@ -11,7 +11,7 @@ taxonomies:
 extra:
   guid: ''
   lang: fr
-  comments: { host: eldritch.cafe, id: '' }
+  comments: { host: tracto.pl, id: '', type: misskey }
 ---
 
 # 💸 Des soutiens
