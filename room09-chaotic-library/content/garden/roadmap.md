@@ -71,6 +71,6 @@ extra:
 > - Add [hovercards](https://indieweb.org/hovercard).  
 
 ## Website Component Checklist
-<https://shellsharks.com/notes/2023/08/15/website-component-checklist/>
+<https://shellsharks.com/notes/2023/08/15/website-component-checklist>
 
 - TODO: List interesting things
