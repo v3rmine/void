@@ -9,3 +9,7 @@ fn normal() {}
 I'm in a comment
 ```
 -->
+
+```{.rust name=other}
+fn other() {}
+```
