@@ -1,8 +1,8 @@
 on:
   push:
     branches: [main]
-    paths:
-      - 'room09-chaotic-library/**'
+    #paths:
+    #  - 'room09-chaotic-library/**'
 jobs:
   deploy:
     runs-on: docker
