@@ -1,0 +1,27 @@
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'room09-chaotic-library/**'
+jobs:
+  deploy:
+    runs-on: docker
+    steps:
+      - actions/checkout@v6
+        with:
+          sparse-checkout: |
+            room09-chaotic-library
+          fetch-depth: 1
+      - name: Cache uncloud
+        id: cache-uncloud
+        uses: actions/cache@v5
+        with:
+          path: /usr/local/bin/uncloud
+          key: ${{ runner.os }}-uncloud
+      - name: Install uncloud
+        if: steps.cache-uncloud.outputs.cache-hit != 'true'
+        run: curl -fsS https://get.uncloud.run/install.sh | sh
+      - name: Deploy
+        run: |
+          cd room09-chaotic-library
+          echo uncloud deploy
