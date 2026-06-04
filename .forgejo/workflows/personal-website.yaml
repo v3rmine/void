@@ -37,8 +37,10 @@ jobs:
       - name: Deploy clearnet only
         if: inputs.only-clearnet == true
         run: |
+          cd room09-chaotic-library
           uncloud --connect "${{ secrets.UNCLOUD_CLUSTER }}" deploy -y personal-website
       - name: Deploy all
         if: inputs.only-clearnet != true
         run: |
+          cd room09-chaotic-library
           uncloud --connect "${{ secrets.UNCLOUD_CLUSTER }}" deploy -y
