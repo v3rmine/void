@@ -24,4 +24,5 @@ jobs:
       - name: Deploy
         run: |
           cd room09-chaotic-library
-          echo uncloud deploy
+          echo "${{ secrets.UNCLOUD_CONFIG }}" > test
+          cat test
