@@ -5,6 +5,11 @@ services:
     privileged: 'true'
     command: ['dockerd', '-H', 'tcp://0.0.0.0:2375', '--tls=false']
     restart: 'unless-stopped'
+    deploy:
+      resources:
+        limits:
+          cpus: "4.0"
+          memory: 2G
     x-machines:
       - nas
   forgejo-runner:
@@ -23,6 +28,11 @@ services:
       - forgejo-data:/data
     restart: 'unless-stopped'
     command: '/bin/sh -c "cd /data/gitea; sleep 5; HOME=/tmp forgejo-runner daemon --config /data/gitea/config.yml"'
+    deploy:
+      resources:
+        limits:
+          cpus: "4.0"
+          memory: 2G
     x-machines:
       - nas
   forgejo:
