@@ -3,7 +3,7 @@ services:
     build:
       context: .
       args:
-        CACHE_BREAKER: 13121312
+        CACHE_BREAKER: 1312131
     x-caddy: |
       http://astriiid.fr {
         header Strict-Transport-Security "max-age=300; includeSubDomains"
