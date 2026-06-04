@@ -24,5 +24,6 @@ jobs:
       - name: Deploy
         run: |
           cd room09-chaotic-library
-          echo "${{ secrets.UNCLOUD_CONFIG }}" > test
-          cat test
+          mkdir -p ~/.ssh
+          echo ${{ secrets.UNCLOUD_PRIVATE_KEY }} > ~/.ssh/uncloud
+          uc ps --connect ${{ secrets.UNCLOUD_CLUSTER }}
