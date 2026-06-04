@@ -27,7 +27,7 @@ ARG COMPRESS=true
 RUN --mount=type=cache,id="${CACHE_ID}",target=/compressed \
     --mount=type=cache,id="${CACHE_ID}-state",target=/state ${COMPRESS} &&\
     incremental-compress --dir=/compressed --statedir=/state/state.sqlite \
-        --gzip_level=9 --zstd=16 --brotli=8 \
+        --gzip_level=9 --zstd_level=16 --brotli_level=8 \
         --types html,css,js,json,xml,ico,svg
     RUN --mount=type=cache,id="${CACHE_ID}",target=/compressed cp -r /compressed /public
 
