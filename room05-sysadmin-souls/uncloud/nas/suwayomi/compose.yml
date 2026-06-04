@@ -8,6 +8,7 @@ services:
       TZ: Europe/Paris
       FLARESOLVERR_ENABLED: true
       FLARESOLVERR_URL: http://flaresolverr:8191
+      JAVA_TOOL_OPTIONS: -Xms256m -Xmx1g
     volumes:
       - suwayomi-data:/home/suwayomi/.local/share/Tachidesk
     deploy:
