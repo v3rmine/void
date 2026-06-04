@@ -33,7 +33,7 @@ RUN --mount=type=cache,id="${CACHE_ID}",target=/compressed \
 RUN --mount=type=cache,id="${CACHE_ID}",target=/compressed \
     --mount=type=cache,id="${CACHE_ID}-state",target=/state ${COMPRESS} &&\
     incremental-compress --dir=/compressed --statedir=/state/state.sqlite \
-        --gzip=false --zstd_level=19 --brotli=false \
+        --gzip=false --zstd_level=10 --brotli=false \
         --types html,css,js,json,xml,ico,svg
     RUN --mount=type=cache,id="${CACHE_ID}",target=/compressed cp -r /compressed /public
 
