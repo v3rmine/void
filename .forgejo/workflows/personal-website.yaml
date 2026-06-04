@@ -1,8 +1,15 @@
 on:
-  push:
-    branches: [main]
-    #paths:
-    #  - 'room09-chaotic-library/**'
+  #push:
+  #  branches: [main]
+  #  paths:
+  #    - 'room09-chaotic-library/**'
+  workflow_dispatch:
+    inputs:
+      only-clearnet:
+        description: 'Deploy only the clearnet version of the blog (to post on mastodon)'
+        required: false
+        type: boolean
+        default: false
 jobs:
   deploy:
     runs-on: docker
@@ -21,10 +28,17 @@ jobs:
       - name: Install uncloud
         if: steps.cache-uncloud.outputs.cache-hit != 'true'
         run: curl -fsS https://get.uncloud.run/install.sh | sh
-      - name: Deploy
+      - name: Configure uncloud
         run: |
           cd room09-chaotic-library
           mkdir -p ~/.ssh
           echo "${{ secrets.UNCLOUD_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-          uncloud --connect "${{ secrets.UNCLOUD_CLUSTER }}" image ls
+      - name: Deploy clearnet only
+        if: inputs.only-clearnet == true
+        run: |
+          echo uncloud --connect "${{ secrets.UNCLOUD_CLUSTER }}" deploy -y personal-website
+      - name: Deploy all
+        if: inputs.only-clearnet != true
+        run: |
+          echo uncloud --connect "${{ secrets.UNCLOUD_CLUSTER }}" deploy -y
