@@ -7,7 +7,7 @@ jobs:
   deploy:
     runs-on: docker
     steps:
-      - actions/checkout@v6
+      - uses: actions/checkout@v6
         with:
           sparse-checkout: |
             room09-chaotic-library
