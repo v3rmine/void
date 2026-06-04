@@ -27,7 +27,19 @@ ARG COMPRESS=true
 RUN --mount=type=cache,id="${CACHE_ID}",target=/compressed \
     --mount=type=cache,id="${CACHE_ID}-state",target=/state ${COMPRESS} &&\
     incremental-compress --dir=/compressed --statedir=/state/state.sqlite \
-        --gzip_level=9 --zstd_level=19 --brotli_level=11 \
+        --gzip_level=9 --zstd=false --brotli=false \
+        --types html,css,js,json,xml,ico,svg
+    RUN --mount=type=cache,id="${CACHE_ID}",target=/compressed cp -r /compressed /public
+RUN --mount=type=cache,id="${CACHE_ID}",target=/compressed \
+    --mount=type=cache,id="${CACHE_ID}-state",target=/state ${COMPRESS} &&\
+    incremental-compress --dir=/compressed --statedir=/state/state.sqlite \
+        --gzip=false --zstd_level=19 --brotli=false \
+        --types html,css,js,json,xml,ico,svg
+    RUN --mount=type=cache,id="${CACHE_ID}",target=/compressed cp -r /compressed /public
+RUN --mount=type=cache,id="${CACHE_ID}",target=/compressed \
+    --mount=type=cache,id="${CACHE_ID}-state",target=/state ${COMPRESS} &&\
+    incremental-compress --dir=/compressed --statedir=/state/state.sqlite \
+        --gzip=false --zstd=false --brotli_level=11 \
         --types html,css,js,json,xml,ico,svg
     RUN --mount=type=cache,id="${CACHE_ID}",target=/compressed cp -r /compressed /public
 
