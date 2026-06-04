@@ -2,8 +2,12 @@ services:
   silverbullet:
     image: ghcr.io/silverbulletmd/silverbullet:latest
     pull_policy: always
-    user: 1001:1001
+    # user: 1001:1001
     restart: unless-stopped
+    environment:
+      PUID: 1001
+      PGID: 1001
+      SB_SPACE_IGNORE: 'room09-chaotic-library/themes/'
     env_file: .env
     volumes:
       - silverbullet-data:/space
