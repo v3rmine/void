@@ -1,0 +1,16 @@
+services:
+  silverbullet:
+    image: ghcr.io/silverbulletmd/silverbullet:latest
+    pull_policy: always
+    user: 1001:1001
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - silverbullet-data:/space
+    x-ports:
+      - notes.astriiid.fr:3000/http
+    x-machines:
+      - phloeomys
+
+volumes:
+  silverbullet-data:
