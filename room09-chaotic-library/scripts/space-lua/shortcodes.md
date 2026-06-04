@@ -151,4 +151,14 @@ Temp:
 start1#start2#end2#end1#end3
 
 (?:(?<!(?<ns>start[0-9]\S*))|(?<=(?<nse>(?:(?<!(?<nse_ns>start[0-9]\S*)))start[0-9]\S*end[0-9]\S*)))end[0-9]
+
+All testscases:
+e1
+s#e2#e3
+s#e4#s#e5#e6
+s#s#e7#e8#e9
+s#s#s#e10#s#e11#e12#e13
+
+Comment test lines using '--'
+(?<!^--.*)(?:(?<!(?<ns>s\S+?))|(?<=(?<se>s[^e]+?e[0-9]+[^s]+?)))e[0-9]+
 ```
