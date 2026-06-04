@@ -18,7 +18,7 @@ ARG CACHE_ID=blog
 # find /compressed ! -name "*.br" -o -name "*.gz" -o -name "*.zst" -type f -exec rm -i {} \; fi &&\
 RUN --mount=type=cache,id="${CACHE_ID}",target=/compressed \
     if [ ! -f /compressed/.cache_breaker ]; then echo "${CACHE_BREAKER}" > /compressed/.cache_breaker; fi && \
-    if cat /compressed/.cache_breaker | grep -qvE "^${CACHE_BREAKER}$" || true; then \
+    if cat /compressed/.cache_breaker | grep -qvE "^${CACHE_BREAKER}$"; then \
         rm -rf /compressed/* && \
         echo "${CACHE_BREAKER}" > /compressed/.cache_breaker; \
     fi && \
