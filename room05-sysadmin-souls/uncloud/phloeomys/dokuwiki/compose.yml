@@ -1,15 +1,15 @@
 services:
-  otterwiki:
-    image: redimp/otterwiki:2-slim
+  dokuwiki:
+    image: dokuwiki/dokuwiki:stable
     pull_policy: always
     user: 1001:1001
     restart: unless-stopped
     volumes:
-      - otterwiki-data:/app-data
+      - dokuwiki-data:/storage
     x-ports:
-      - otterwiki.serv4.reta.re:8080/http
+      - dokuwiki.serv4.reta.re:8080/http
     x-machines:
       - phloeomys
 
 volumes:
-  otterwiki-data:
+  dokuwiki-data:
