@@ -1,6 +1,7 @@
 services:
   miniflux-db:
     image: postgres:14
+    hostname: miniflux-db
     volumes:
       - miniflux-data:/var/lib/postgresql/data
     healthcheck:
