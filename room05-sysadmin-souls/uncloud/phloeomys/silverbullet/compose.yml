@@ -1,6 +1,6 @@
 services:
   silverbullet:
-    image: ghcr.io/silverbulletmd/silverbullet:latest
+    image: ghcr.io/silverbulletmd/silverbullet:2.8.1
     pull_policy: always
     # user: 1001:1001
     restart: unless-stopped
