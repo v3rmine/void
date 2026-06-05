@@ -35,3 +35,8 @@ https://bouvier.cc/notes/comment-notes-hebdo/
 # Rédaction / édition
 - LanguageTool + hunspell sur Emacs
 - Entre 1 et 2h le temps de tout mettre au propre, repasser sur les articles et me perdre au passage sur un sujet ou tweat quelque chose sur le blog
+
+# Publication
+Déploiement en un clic avec un pipeline sur Forgejo.
+Et publication manuelle sur mastodon puis en ajout de l'id du post dans la note.
+J'ai besoin de publier une première fois le post, pour correctement gérer la carte de preview. Pas forcément envie de me prendre la tête dessus.

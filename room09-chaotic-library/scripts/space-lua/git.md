@@ -5,7 +5,7 @@ ${widgets.commandButton("System: Reload")}
 command.define {
   name = "Git: Fetch void",
   run = function()
-    local result = shell.run('sh', {"-c", 'cd void && git pull'})
+    local result = shell.run('sh', {"-c", 'cd void && git pull --ff-only'})
     print("Output:", result.stdout)
     print("Error:", result.stderr)
     print("Exit code:", result.code)
