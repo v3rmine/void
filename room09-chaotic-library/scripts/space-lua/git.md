@@ -1,4 +1,6 @@
 # Fetch void updates
+${widgets.commandButton("System: Reload")}
+
 ```space-lua
 command.define {
   name = "Git: Fetch void",
@@ -17,6 +19,8 @@ command.define {
 ```
 
 # Push void updates
+${widgets.commandButton("System: Reload")}
+
 ```space-lua
 command.define {
   name = "Git: Push void",
@@ -35,6 +39,8 @@ command.define {
 ```
 
 # Void status
+${widgets.commandButton("System: Reload")}
+
 ```space-lua
 command.define {
   name = "Git: Status void",
@@ -53,6 +59,8 @@ command.define {
 ```
 
 # Commit void updates
+${widgets.commandButton("System: Reload")}
+
 ```space-lua
 command.define {
   name = "Git: Commit void",

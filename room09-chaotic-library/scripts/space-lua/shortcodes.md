@@ -117,48 +117,25 @@ ${widgets.commandButton("System: Reload")}
 ```lua
 syntax.define {
   name = "ZolaShortcodeBlock",
-  startMarker = "\\{%.*?%\\}",
-  endMarker = "\\{%\\s*end\\s*%\\}",
+  startMarker = "{%\\s*(?!end\\s*%)[^%]+%}",
+  endMarker = "(?:(?!{%)[\\s\\S])*(?:{%\\s*(?!end\\s*%)[^%]+%}(?:(?!{%)[\\s\\S])*(?:{%\\s*(?!end\\s*%)[^%]+%}(?:(?!{%)[\\s\\S])*(?:{%\\s*(?!end\\s*%)[^%]+%}(?:(?!{%)[\\s\\S])*{%\\s*end\\s*%}(?:(?!{%)[\\s\\S])*)*{%\\s*end\\s*%}(?:(?!{%)[\\s\\S])*)*{%\\s*end\\s*%}(?:(?!{%)[\\s\\S])*)*({%\\s*end\\s*%})",
   mode = "block",
   startMarkerClass = "sb-zola-shortcode-marker",
   --bodyClass = "",
   endMarkerClass = "sb-zola-shortcode-marker",
   --renderClass = "",
   renderWidget = function(body, pageName)
-    local parsed = parse_inline_shortcode(body)
-    return widget.html(parsed.render)
+    return widget.html(dom.i { body })
   end,
   renderHtml = function(body, pageName)
-    local parsed = parse_inline_shortcode(body)
-    return parsed.render
+    return dom.i { body }
   end
 }
 ```
 
-```
-No start before
-(?<!start(\s|\S)*)
-Start before but ending
-(?<=start(?:\s|\S)*?end(?:[^e]*|(?!end)\s)*)
-
-Start after
-No start after
-(?!(?:\s|\S)*start)
-Start after but ending
-(?=(?:\s|\S)*start(?:\s|\S)*end)
-
-Temp:
-start1#start2#end2#end1#end3
-
-(?:(?<!(?<ns>start[0-9]\S*))|(?<=(?<nse>(?:(?<!(?<nse_ns>start[0-9]\S*)))start[0-9]\S*end[0-9]\S*)))end[0-9]
-
-All testscases:
-e1
-s#e2#e3
-s#e4#s#e5#e6
-s#s#e7#e8#e9
-s#s#s#e10#s#e11#e12#e13
-
-Comment test lines using '--'
-(?<!^--.*)(?:(?<!(?<ns>s\S+?))|(?<=(?<se>s[^e]+?e[0-9]+[^s]+?)))e[0-9]+
-```
+{% say(who="astrid", what="Sweat", rev=1) %}
+{% xxx %}
+Bon ça allait pas super fort non plus.  
+Toujours pas de bonne piste de taff et le changement de prénom toujours au point mort... Mais après une bonne pause lecture et **loin de l'ordi** ça a l'air d'aller un peu mieux
+{% end %}
+{% end %}
