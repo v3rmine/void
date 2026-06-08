@@ -2,13 +2,13 @@
 date: 2026-06-07
 title: "Comment j'écris mes notes hebdomadaires"
 description: ""
-draft: true
 taxonomies:
   tags:
     - notes
     - 100 days to offload 2026
     - fr
 extra:
+  ongoing: true
   guid: '118f19be-e0b0-4289-96fc-4b0015a64a47'
   lang: fr
   comments: { host: tracto.pl, id: '', type: misskey }

@@ -17,7 +17,9 @@
   "language": "{{ lang }}",
   "items": [
     {%- for page in pages %}
+    {%- if page.ancestors | last != "series/_index.md" %}
     {%- if not page.extra.wild or page.extra.wild != true %}
+    {%- if not page.extra.ongoing or page.extra.ongoing != true %}
     {
       "id": "{{ page.extra.guid | default(value=page.path) | safe }}",
       "title": {{ page.title | json_encode() }},
@@ -47,6 +49,8 @@
         {% endif %}
       ]
     }{%- if not loop.last -%},{%- endif %}
+    {%- endif %}
+    {%- endif %}
     {%- endif %}
     {%- endfor %}
   ]

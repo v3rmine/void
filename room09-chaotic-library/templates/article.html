@@ -11,6 +11,10 @@
 	{%- set list_element = "ul" -%}
 {%- endif -%}
 
+{%- if page.path != "/notes/template/" and (not page.extra.guid or page.extra.guid | length == 0) -%}
+	{{ throw(message="Page " ~ page.path ~ " got no guid") }}
+{%- endif -%}
+
 <article class="h-entry">
 	{%- if page.extra.banner -%}
 	    {%- set banner = resize_image(path=page.extra.banner, width=1200, height=628, op="fill", format="avif") -%}
