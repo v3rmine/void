@@ -41,7 +41,7 @@ let
 
   custom-newt = pkgs.stdenv.mkDerivation rec {
     pname = "newt";
-    version = "1.10.1";
+    version = "1.12.5";
     src = builtins.fetchurl "https://github.com/fosrl/newt/releases/download/${version}/newt_linux_amd64";
     dontUnpack = true;
 
@@ -55,7 +55,7 @@ let
   };
 in {
   system.stateVersion = "25.11";
-  system.autoUpgrade.channel = "https://nixos.org/channels/nixos-25.11";
+  # system.autoUpgrade.channel = "https://nixos.org/channels/nixos-26.05";
 
   networking.firewall = {
     enable = false;
@@ -108,11 +108,6 @@ in {
             - /persist/var/lib/docker/volumes/syncthing-config
             - /persist/var/lib/docker/volumes/syncthing-data
           cron: '0 * * * *'
-        palmr:
-          <<: *standard
-          from:
-            - /persist/var/lib/docker/volumes/palmr_data
-          cron: '0 * * * *'
         garage-hot:
           <<: *standard
           from:
@@ -133,11 +128,6 @@ in {
           <<: *standard
           from:
             - /persist/var/lib/docker/volumes/suwayomi-data
-          cron: '0 * * * *'
-        yacy:
-          <<: *standard
-          from:
-            - /persist/var/lib/docker/volumes/yacy-data
           cron: '0 * * * *'
         forgejo:
           <<: *standard
@@ -237,6 +227,17 @@ in {
     wantedBy = [ "multi-user.target" ];
   };
 
+  systemd.services."reload-daemon-after-boot" = {
+    enable = true;
+    after = [ "persist.mount" ];
+    path = [ pkgs.systemd ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "/bin/sh -c 'systemctl daemon-reload && systemctl start newt'";
+    };
+    wantedBy = [ "multi-user.target" ];
+  };
+
   systemd.services."newt" = {
     enable = true;
     after = [ "network-online.target" ];
@@ -329,6 +330,11 @@ in {
     };
   };
 
+  swapDevices = [{
+    device = "/persist/var/lib/swapfile";
+    size = 8 * 1024; # 8 GiB
+  }];
+
   # SSH
   services.openssh = {
     enable = true;
@@ -394,7 +400,7 @@ in {
   # Hardware configuration
   imports = [ (modulesPath + "/profiles/qemu-guest.nix") "${impermanence}/nixos.nix" ];
   boot.loader.grub.device = "/dev/vda";
-  boot.loader.grub.storePath = "/persist/nix/store";
+  boot.loader.grub.storePath = "/persist//nix/store";
   boot.tmp.cleanOnBoot = true;
   boot.growPartition = lib.mkDefault true;
   boot.initrd.availableKernelModules =
