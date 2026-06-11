@@ -125,7 +125,7 @@ let
   '';
 
   firewall-block-scrapers-rules = pkgs.writeShellScriptBin "add-firewall-block-scrapers-rules.sh" ''
-    tmpdir=$(mktemp)
+    tmpdir=$(mktemp -d)
     trap exiting exit
     function exiting() { rm -r "$tmpdir"; exit; }
     # Clean iptables of previous rules
@@ -148,6 +148,36 @@ let
     iptables -I FORWARD 1 -m comment --comment Alibaba-crawler -s 8.219.128.0/17 -j DROP
     iptables -I INPUT 1 -m comment --comment Alibaba-crawler -s 47.79.192.0/19 -j DROP
     iptables -I FORWARD 1 -m comment --comment Alibaba-crawler -s 47.79.192.0/19 -j DROP
+  '';
+
+  log-network-traffic = pkgs.writeShellScriptBin "log-network-traffic.sh" ''
+    ${pkgs.tshark}/bin/tshark -l \
+      -i eth0 \
+      -T fields \
+      -E header=y -E separator=, -E quote=d -E occurrence=f \
+      -e _ws.col.protocol \
+      -e ip.proto \
+      -e ip.geoip.dst_asnum \
+      -e ip.geoip.dst_org \
+      -e ip.geoip.dst_country \
+      -e ip.geoip.dst_city \
+      -e ip.src \
+      -e ip.dst \
+      -e ipv6.geoip.dst_asnum \
+      -e ipv6.geoip.dst_org \
+      -e ipv6.geoip.dst_country \
+      -e ipv6.geoip.dst_city \
+      -e ipv6.src \
+      -e ipv6.dst \
+      -e tcp.ack \
+      -e tcp.srcport \
+      -e tcp.dstport \
+      -e udp.srcport \
+      -e udp.dstport \
+      -e http.host \
+      -e tls.handshake.extensions_server_name \
+      -f '(src net 46.225.11.44/32) or (src net 2a01:4f8:1c19:cc7a::/64)' \
+      -Y '(tls.handshake.extensions_server_name || http.host || (tcp.flags.syn==1 && tcp.flags.ack==0) || udp) && !wg && !ssdp && !stun && !nat-pmp && !(pcp || ip.proto==17)' 2>/dev/null
   '';
 
   uncloud = pkgs.stdenv.mkDerivation rec {
@@ -181,7 +211,7 @@ let
 
   custom-newt = pkgs.stdenv.mkDerivation rec {
     pname = "newt";
-    version = "1.10.1";
+    version = "1.12.5";
     src = builtins.fetchurl "https://github.com/fosrl/newt/releases/download/${version}/newt_linux_amd64";
     dontUnpack = true;
 
@@ -198,7 +228,7 @@ in {
     [ (modulesPath + "/profiles/qemu-guest.nix") "${impermanence}/nixos.nix" ];
 
   system.stateVersion = "25.11";
-  system.autoUpgrade.channel = "https://nixos.org/channels/nixos-25.11";
+  # system.autoUpgrade.channel = "https://nixos.org/channels/nixos-25.11";
 
   networking.firewall = {
     enable = true;
@@ -284,20 +314,10 @@ in {
           from:
             - /persist/var/lib/docker/volumes/miniflux-data
           cron: '0 * * * *'
-        shaarli:
-          <<: *standard
-          from:
-            - /persist/var/lib/docker/volumes/shaarli-data
-          cron: '0 * * * *'
         linkding:
           <<: *standard
           from:
             - /persist/var/lib/docker/volumes/linkding-data
-          cron: '0 * * * *'
-        otterwiki:
-          <<: *standard
-          from:
-            - /persist/var/lib/docker/volumes/otterwiki-data
           cron: '0 * * * *'
         continuwuity:
           <<: *standard
@@ -341,6 +361,17 @@ in {
         missingok = true; # Ignore if file is missing
         postrotate = ''
           ${pkgs.systemd}/bin/systemctl start traefik-logrotate
+        '';
+        nocompress = true; # Do not compress for postprocess by ipset
+        notifempty = true; # Do not rotate if empty
+      };
+      "/var/log/logs/tshark/traffic.log" = {
+        frequency = "daily";
+        maxsize = "50M"; # Rotate when size reach 50MB
+        rotate = 1; # Keep the last version
+        missingok = true; # Ignore if file is missing
+        postrotate = ''
+          ${pkgs.systemd}/bin/systemctl restart tshark-monitoring
         '';
         nocompress = true; # Do not compress for postprocess by ipset
         notifempty = true; # Do not rotate if empty
@@ -445,6 +476,17 @@ in {
       ExecStart = "${pkgs.docker}/bin/docker kill -s USR1 traefik";
     };
   };
+  systemd.services."tshark-monitoring" = {
+    enable = false;
+    after = [ "network-online.target" ];
+    wants = [ "network-online.target" ];
+    serviceConfig = {
+      Type = "simple";
+      ExecStart = "${log-network-traffic}/bin/log-network-traffic.sh";
+      StandardOutput = "file:/var/log/logs/tshark/traffic.log";
+    };
+    wantedBy = [ "multi-user.target" ];
+  };
 
   services.prometheus.exporters.node = {
     enable = true;
@@ -544,7 +586,7 @@ in {
   systemd.services."newt" = {
     enable = true;
     after = [ "network-online.target" ];
-    wants = [ "network-online.target" "persist-mnt-drive.automount" ];
+    wants = [ "network-online.target" ];
     serviceConfig = {
       Type = "simple";
       Restart = "always";
@@ -574,6 +616,17 @@ in {
     wantedBy = [ "multi-user.target" ];
   };
 
+  systemd.services."reload-daemon-after-boot" = {
+    enable = true;
+    after = [ "persist.mount" ];
+    path = [ pkgs.systemd ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "/bin/sh -c 'systemctl daemon-reload && systemctl start newt'";
+    };
+    wantedBy = [ "multi-user.target" ];
+  };
+ 
   # System
   services.cron.systemCronJobs = [
     "0 * * * * root journalctl --vacuum-size=512M"
@@ -634,11 +687,6 @@ in {
       "/root/.cache/restic"
     ];
   };
-  # Try to fix newt service initialisation
-  # boot.initrd.postResumeCommands = ''
-  #   ${pkgs.systemd}/bin/systemctl daemon-reload
-  #   ${pkgs.systemd}/bin/systemctl start newt
-  # '';
 
   # SSH
   services.openssh = {
@@ -692,9 +740,8 @@ in {
   # Hardware configuration
   boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.tmp.cleanOnBoot = true;
-  # zramSwap.enable = true;
   boot.loader.grub.device = "/dev/sda";
-  boot.loader.grub.storePath = "/persist/nix/store";
+  boot.loader.grub.storePath = "/persist//nix/store";
   boot.initrd.availableKernelModules = [ "ata_piix" "uhci_hcd" "xen_blkfront" "vmw_pvscsi" ];
   boot.initrd.kernelModules = [ "nvme" ];
   fileSystems = {
@@ -722,8 +769,11 @@ in {
 
   # Networking
   networking = {
-    nameservers = [ "8.8.8.8" ];
-    defaultGateway = "172.31.1.1";
+    nameservers = [ "8.8.8.8" "1.1.1.1" ];
+    defaultGateway = {
+      address = "172.31.1.1";
+      interface = "eth0";
+    };
     defaultGateway6 = {
       address = "fe80::1";
       interface = "eth0";
