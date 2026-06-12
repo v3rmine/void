@@ -84,6 +84,19 @@ function parse_inline_shortcode(body)
       end
     end
   end
+
+  -- Parse shortcode {{ youtube(id="") }}
+  local match_youtube = string.matchRegex(body, 'youtube\\(id="(?<id>.*?)"[^)]*\\)')
+  if match_youtube != nil then
+    local id = match_youtube.groups.id
+    
+    render = dom.iframe {
+      src = "https://www.youtube.com/embed/"..id,
+      allow="encrypted-media; picture-in-picture",
+      referrerpolicy="strict-origin-when-cross-origin",
+      frameborder = "0"
+    }
+  end
   
   return {
     render = render,
@@ -136,6 +149,10 @@ syntax.define {
 .sb-blog-image {
   max-height: 500px;
   max-width: 100%;
+}
+/* Youtube embed */
+#sb-editor iframe[src*="youtube.com"] {
+  aspect-ratio: 16/9;
 }
 ```
 

@@ -1,18 +1,18 @@
-# Fetch void updates
+# Pull void updates
 ${widgets.commandButton("System: Reload")}
 
 ```space-lua
 command.define {
-  name = "Git: Fetch void",
+  name = "Git: Pull void",
   run = function()
     local result = shell.run('sh', {"-c", 'cd void && git pull --ff-only'})
     print("Output:", result.stdout)
     print("Error:", result.stderr)
     print("Exit code:", result.code)
     if result.code == 0 then
-      editor.flashNotification "Successfully fetched repo"
+      editor.flashNotification "Successfully pulled repo"
     else
-      editor.flashNotification("Error fetching repo: " .. result.stderr)
+      editor.flashNotification("Error pulling repo: " .. result.stderr)
     end
   end
 }
@@ -78,6 +78,26 @@ command.define {
       editor.flashNotification "Successfully commited repo"
     else
       editor.flashNotification("Error commiting repo: " .. result.stderr)
+    end
+  end
+}
+```
+
+# Git merge
+${widgets.commandButton("System: Reload")}
+
+```space-lua
+command.define {
+  name = "Git: Merge void",
+  run = function()
+    local result = shell.run('sh', {"-c", 'cd void && git merge --no-ff'})
+    print("Output:", result.stdout)
+    print("Error:", result.stderr)
+    print("Exit code:", result.code)
+    if result.code == 0 then
+      editor.flashNotification "Successfully merged repo"
+    else
+      editor.flashNotification("Error merging repo: " .. result.stderr)
     end
   end
 }
