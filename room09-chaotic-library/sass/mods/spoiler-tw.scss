@@ -1,3 +1,7 @@
+span.spoiler.solid:has(.tw):hover {
+  vertical-align: initial;
+}
+
 .spoiler.solid:has(.tw) {
   position: relative;
   display: inline-block;
@@ -12,8 +16,6 @@
   }
 
   &:hover {
-    vertical-align: initial;
-
     .tw {
       display: block;
       visibility: hidden;

@@ -15,6 +15,10 @@ div.spoiler {
 
     & > .spoiler-content {
       color: transparent;
+
+      img {
+        opacity: 0;
+      }
     }
 
     &:hover,
@@ -24,6 +28,10 @@ div.spoiler {
       & > .spoiler-content {
         display: initial;
         color: inherit;
+
+        img {
+            opacity: initial;
+        }
       }
     }
   }
