@@ -38,7 +38,7 @@
 	</div>
 </div>
 
-{{ macros_articles::articles(pages=pages | slice(end=5), date_format=date_format, date_locale=date_locale, language_strings=language_strings) }}
+{{ macros_articles::articles(max_count=5, pages=pages, date_format=date_format, date_locale=date_locale, language_strings=language_strings) }}
 
 {%- set for_section = get_section(path="notes/_index.md") -%}
 {%- set pages = for_section.pages -%}
@@ -56,6 +56,6 @@
 	</div>
 </div>
 
-{{ macros_articles::articles(pages=pages | slice(end=3), date_format=date_format, date_locale=date_locale, language_strings=language_strings) }}
+{{ macros_articles::articles(max_count=3, pages=pages, date_format=date_format, date_locale=date_locale, language_strings=language_strings) }}
 
 {% endblock content %}

@@ -165,6 +165,17 @@
 		{%- include "partials/toc.html" -%}
 	{%- endif -%}
 
+	{%- if page.extra.rssclub and page.relative_path != "garden/welcome-antechamber.md" -%}
+	<blockquote class="markdown-alert-note">
+		<p>
+		{#
+		{{ macros_translate::translate(key="rss_club_post", default='This post is an exclusivity for the <a href="ANTECHAMBER_LINK">Antechamber</a>', language_strings=language_strings) | replace(from="ANTECHAMBER_LINK", to=get_url(path="@/garden/welcome-antechamber.md")) | safe }} -->
+		#}
+			This post is an exclusivity for the <a href="{{ get_url(path="@/garden/welcome-antechamber.md") }}">Antechamber</a>
+		</p>
+	</blockquote>
+	{%- endif -%}
+
 	<div class="e-content content">
 	    {{ page.content | safe }}
 	</div>

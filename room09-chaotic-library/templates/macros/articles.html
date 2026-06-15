@@ -1,4 +1,5 @@
-{%- macro articles(pages, date_format, date_locale, language_strings) %}
+{%- macro articles(pages, date_format, date_locale, language_strings, max_count=-1) %}
+{%- set count = 0 -%}
 <div id="simple-article-list">
 	{%- for page in pages %}
 		{%- if page.draft -%}
@@ -18,6 +19,15 @@
 			{%- set article_string = macros_translate::translate(key="poor", default="Poor", language_strings=language_strings) -%}
 		{%- endif -%}
 
+		{%- if page.extra.rssclub -%}
+			{%- continue -%}
+		{%- endif -%}
+
+		{%- set_global count = count + 1 -%}
+		{%- if not max_count == -1 and count > max_count -%}
+			{%- break -%}
+		{%- endif -%}
+
 		{%- set article_block = '<article' %}
 		{%- if article_type %}
 			{%- set article_block = article_block ~ ' class="' ~ article_type ~ '"'%}
@@ -25,7 +35,7 @@
 		{%- set article_block = article_block ~ '>' %}
 		{%- set article_block = article_block ~ '<span class="article-title">' ~ page.title %}
 		{%- if page.extra.lang and for_section.extra.add_lang_to_list %}
-			{%- set article_block = article_block ~ '(' ~ page.extra.lang ~ ')'%}
+			{%- set article_block = article_block ~ ' (' ~ page.extra.lang ~ ')'%}
 		{%- endif %}
 		{%- set article_block = article_block ~ '</span>' %}
 		{%- if page.date %}

@@ -24,54 +24,9 @@
     {%- set pages = [] -%}
 {%- endif -%}
 
-<div id="simple-article-list">
-	{%- for page in pages %}
-		{%- if page.draft -%}
-			{%- set article_type = "draft" -%}
-			{%- set article_string = macros_translate::translate(key="drafted", default="Drafted", language_strings=language_strings) -%}
-		{%- elif page.extra.archive -%}
-			{%- set article_type = "archive" -%}
-			{%- set article_string = macros_translate::translate(key="archived", default="Archived", language_strings=language_strings) -%}
-		{%- elif page.extra.featured -%}
-			{%- set article_type = "featured" -%}
-			{%- set article_string = macros_translate::translate(key="featured", default="Featured", language_strings=language_strings) -%}
-		{%- elif page.extra.hot -%}
-			{%- set article_type = "hot" -%}
-			{%- set article_string = macros_translate::translate(key="hot", default="Hot", language_strings=language_strings) -%}
-		{%- elif page.extra.poor -%}
-			{%- set article_type = "poor" -%}
-			{%- set article_string = macros_translate::translate(key="poor", default="Poor", language_strings=language_strings) -%}
-		{%- endif -%}
-
-		{%- set article_block = '<article' %}
-		{%- if article_type %}
-			{%- set article_block = article_block ~ ' class="' ~ article_type ~ '"'%}
-		{%- endif %}
-		{%- set article_block = article_block ~ '>' %}
-		{%- set article_block = article_block ~ '<span class="article-title">' ~ page.title %}
-		{%- if page.extra.lang and for_section.extra.add_lang_to_list %}
-			{%- set article_block = article_block ~ '(' ~ page.extra.lang ~ ')'%}
-		{%- endif %}
-		{%- set article_block = article_block ~ '</span>' %}
-		{%- if page.date %}
-			{%- set article_date = page.date | date(format='%+') %}
-			{%- set article_display_date = page.date | date(format=date_format, locale=date_locale) %}
-
-			{%- set article_block = article_block ~ '<small>' %}
-			{%- set article_block = article_block ~ '<time datetime="' ~ article_date ~ '" pubdate>' %}
-			{%- set article_block = article_block ~ article_display_date %}
-			{%- set article_block = article_block ~ '</time>' %}
-			{%- set article_block = article_block ~ '</small>' %}
-		{%- endif %}
-		{%- set article_block = article_block ~ '</article>' %}
-
-		{%- if page.extra.wild and page.extra.wild == true %}
-			{{ macros_partials::wild_only(content=article_block, as_elem="a", extra_attrs='href=' ~ page.permalink, inline=true) }}
-		{%- else %}
-			<a href="{{ page.permalink }}">
-				{{ article_block | safe }}
-			</a>
-		{%- endif %}
-
-	{%- endfor %}
-</div>
+{{ macros_articles::articles(
+	pages=pages,
+	date_format=date_format,
+	date_locale=date_locale,
+	language_strings=language_strings
+) }}
