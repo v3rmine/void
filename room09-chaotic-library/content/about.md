@@ -28,9 +28,9 @@ The theme might also change and be less readable, but with a handmade touch, so 
 > I only store a boolean in `localStorage` to know if it's enabled.
 
 # To get in touch
-- For private and instant conversations on [Simplex](https://smp17.simplex.im/a#11lVFGeZZ79cnHYtECsMga4nOPAsI1pFni9RkqFYPh0) or on [Matrix (@astrid:m.v3rm.in)](https://matrix.to/#/@astrid:m.v3rm.in), and if I know you even from afar, you can ask me for my Signal if you prefer (I just won't drop it publicly because it's linked to my phone number).
+- For private and instant conversations on [Matrix (@astrid:m.v3rm.in)](https://matrix.to/#/@astrid:m.v3rm.in) or on [Simplex](https://smp17.simplex.im/a#11lVFGeZZ79cnHYtECsMga4nOPAsI1pFni9RkqFYPh0), and if I know you even from afar, you can ask me for my Signal if you prefer (I just won't drop it publicly because it's linked to my phone number).
 - For long term asynchronous or professional contact I prefer by [mail (v3rmine\[at\]astriiid.fr)](mailto:v3rmine@astriiid.fr)
-- For informal questions/contact on [mastodon](https://eldritch.cafe/@v3rmine)
+- For informal questions/contact on [mastodon](https://tracto.pl/@v3rmine)
 - For a fast response contact me on Discord `v3rm.ine`
 
 > [!NOTE]
