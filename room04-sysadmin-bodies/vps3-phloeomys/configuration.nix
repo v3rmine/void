@@ -211,7 +211,7 @@ let
 
   custom-newt = pkgs.stdenv.mkDerivation rec {
     pname = "newt";
-    version = "1.12.5";
+    version = "1.13.0";
     src = builtins.fetchurl "https://github.com/fosrl/newt/releases/download/${version}/newt_linux_amd64";
     dontUnpack = true;
 
@@ -681,6 +681,7 @@ in {
       "/var/lib/uncloud"
       "/var/lib/systemd/system"
       "/var/lib/private/vector"
+      "/var/lib/GeoIP"
       "/root/pangolin"
       "/root/.ssh"
       "/var/log"
