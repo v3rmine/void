@@ -1,7 +1,7 @@
 ---
 title: Blog's roadmap
 date: 2026-01-14
-updated: 2026-01-30
+updated: 2026-06-17
 taxonomies:
   tags:
     - blog
@@ -20,7 +20,7 @@ extra:
   - [ ] /ideas
   - [ ] /now
   - [ ] /uses
-- [ ] add 88x31 buttons
+- [x] add 88x31 buttons
 - [ ] differenciates series and posts in tag lists
 - [ ] add a direct link to edit the page
 - [ ] add a link on every page to the source of the page
