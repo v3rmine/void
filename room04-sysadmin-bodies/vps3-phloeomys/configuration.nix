@@ -77,17 +77,18 @@ let
     echo "$iocaine_rejected_ips" | grep -F '.' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv4 -exist
     echo "$iocaine_rejected_ips" | grep -F ':' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv6 -exist
 
-    # Facebook IPs (fuck them changing IPs constantly)
-    iocaine_facebook_ips=$(journalctl CONTAINER_NAME=pangolin-iocaine-1 -o json -r \
+    # Facebook IPs (fuck them changing IPv6s constantly)
+    # Claude do the same fucking thing but on ipv4
+    iocaine_fuckers_ips=$(journalctl CONTAINER_NAME=pangolin-iocaine-1 -o json -r \
       | grep '\\"verdict.type\\":\\"accept\\"' \
-      | grep '\\"classification\\":\\"Facebook\\"' \
-      | yq -p=json '.MESSAGE | from_json | select(."verdict.type" == "accept" and ."classification" == "Facebook") | .request.header.x-forwarded-for' \
+      | grep -E '\\"classification\\":\\"(Facebook|Claude)\\"' \
+      | yq -p=json '.MESSAGE | from_json | select(."verdict.type" == "accept" and (."classification" == "Facebook" or ."classification" == "Claude")) | .request.header.x-forwarded-for' \
       | grep -v "\---" \
       | sort \
       | uniq)
 
-    echo "$iocaine_facebook_ips" | grep -F '.' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv4 -exist
-    echo "$iocaine_facebook_ips" | grep -F ':' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv6 -exist
+    echo "$iocaine_fuckers_ips" | grep -F '.' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv4 -exist
+    echo "$iocaine_fuckers_ips" | grep -F ':' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv6 -exist
 
     # Make banned IP list persistent
     ${pkgs.ipset}/bin/ipset save > /etc/iptables/ipsets
@@ -501,7 +502,7 @@ in {
       "processes"
       "tcpstat"
     ];
-    extraFlags = [ "--collector.disable-defaults" ];
+    extraFlags = [ "--collector.disable-defaults" "--collector.textfile.directory='/persist/etc/node-exporter/textfile'" ];
   };
 
   users.users = {
@@ -767,6 +768,11 @@ in {
       neededForBoot = false;
     };
   };
+
+  swapDevices = [{
+    device = "/persist/var/lib/swapfile";
+    size = 8 * 1024; # 8 GiB
+  }];
 
   # Networking
   networking = {
