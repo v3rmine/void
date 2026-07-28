@@ -133,9 +133,13 @@ syntax.define {
   padding: 0;
 }
 /* Customoji */
+span:has(.sb-blog-customoji-inline) {
+  position: relative;
+}
 .sb-blog-customoji-inline {
   position: absolute;
   top: 50%;
+  left: 0;
   transform: translateY(-50%);
   height: 30px;
 }
