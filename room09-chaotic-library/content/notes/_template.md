@@ -25,14 +25,10 @@ extra:
 # 🎨 Mise à jour du site
 
 {% wild_only() %}
-<details class="details-section">
-<summary>
-♡ Comment j'me sens
-</summary>
+# ♡ Comment j'me sens
 {% say_group() %}
 {% say(who="astrid") %}
 Something
 {% end %}
 {% end %}
-</details>
 {% end %}
