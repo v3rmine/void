@@ -3,6 +3,7 @@ date: 2026-05-01
 title: 'Notes hebdomadaires #'
 description: ""
 draft: true
+hidden: true
 taxonomies:
   tags:
     - notes
