@@ -15,10 +15,14 @@ extra:
   comments: { host: tracto.pl, id: '', type: misskey }
 ---
 
-# 💸 Des soutiens
+Avec le retour de la chaleur à nouveau, j'ai vraiment pas eu trop le courage de bosser sur mes projets à part mettre à jour ma [configuration Iocaine](https://git.v3rm.in/v3rmine/lophiomys-imhausi) et rajouter de la [completion](https://git.v3rm.in/v3rmine/void/src/branch/main/room09-chaotic-library/scripts/space-lua/autocomplete.md) pour les emojis et les images dans ma configuration {{ al(k="SilverBullet") }}.
+
 # 🌲 Des sorties
+
 # 📚 Lu
+
 {{ image(url="/media/the-art-of-heikala-book.png", alt="Couverture du livre The Art Of Heikala" height=500) }}
+
 
 {{ image(url="/media/the-art-of-feefal-book.png", alt="Couverture du livre The Art Of Feefal", height=500) }}
 

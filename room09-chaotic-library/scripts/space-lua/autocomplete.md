@@ -189,4 +189,63 @@ event.listen {
 }
 ```
 
+# Complete autolink
+```space-lua
+local toml = js.import("https://esm.sh/toml")
+local autolink_path = "void/room09-chaotic-library/content/autolink.toml"
+local raw_autolink_content = space.readFile(autolink_path)
+-- Convert bytes to array
+local autolink_content_arr = {}
+for i, val in ipairs(raw_autolink_content) do
+  autolink_content_arr[i] = val
+end
+local autolink_content = string.char(table.unpack(autolink_content_arr))
+local autolink = js.tolua(toml.parse(autolink_content))
+
+event.listen {
+  name = "editor:complete",
+  run = function(e)
+    local linePrefix = e.data.linePrefix or ""
+    local pos = e.data.pos or 0
+
+    local match = linePrefix:match("al%(k=\"([a-zA-Z0-9_]*)$")
+    if not match then
+      return
+    end
+
+    local keys = {}
+    for url, a_keys in pairs(autolink) do
+      for _, key in pairs(a_keys) do
+        keys[key] = url
+      end
+    end
     
+    local opts = {}
+    
+    for key, url in pairs(keys) do
+      local label = key
+      local completionText = key
+      js.log(key)
+
+      table.insert(opts, {
+        label = label,
+        detail = url,
+        apply = function()
+          editor.dispatch({
+            changes = {
+              from = pos - match:len(),
+              to = pos,
+              insert = completionText
+            }
+          })
+        end
+      })
+    end
+
+    return {
+      from = pos - string.len(match),
+      options = opts
+    }
+  end
+}
+```
