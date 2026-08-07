@@ -1,8 +1,7 @@
 ---
-date: 2026-05-01
+date: 2026-08-09
 title: 'Notes hebdomadaires #20'
 description: ""
-draft: true
 hidden: true
 taxonomies:
   tags:
@@ -10,7 +9,8 @@ taxonomies:
     - 100 days to offload 2026
     - fr
 extra:
-  guid: ''
+  public_draft: true
+  guid: '1590c5b8-afb9-47d7-890f-64785d3db90a'
   lang: fr
   comments: { host: tracto.pl, id: '', type: misskey }
 ---
@@ -18,15 +18,15 @@ extra:
 # 💸 Des soutiens
 # 🌲 Des sorties
 # 📚 Lu
-{{ image(url="/media/the-art-of-heikala-book.png", height=500) }}
+{{ image(url="/media/the-art-of-heikala-book.png", alt="Couverture du livre The Art Of Heikala" height=500) }}
 
-{{ image(url="/media/the-art-of-feefal-book.png", height=500) }}
+{{ image(url="/media/the-art-of-feefal-book.png", alt="Couverture du livre The Art Of Feefal", height=500) }}
 
-{{ image(url="/media/the-art-of-simz-book.png", height=500) }}
+{{ image(url="/media/the-art-of-simz-book.png", alt="Couverture du livre The Art Of Simz", height=500) }}
 
-{{ image(url="/media/multiamory-book.jpg", height=500) }}
+{{ image(url="/media/multiamory-book.jpg", alt="Couverture du livre Multiamory - Essential Tools for Modern Relationships", height=500) }}
 
-{{ image(url="/media/aimer-sans-posseder-book.jpg", height=500) }}
+{{ image(url="/media/aimer-sans-posseder-book.jpg", alt="Couverture du livre Aimer sans posséder - Une critique féministe de la fidélité" height=500) }}
 
 # 🎮 Jeux
 # 📹 Regardé

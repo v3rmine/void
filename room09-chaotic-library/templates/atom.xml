@@ -22,6 +22,7 @@
     <id>{{ feed_url | safe }}</id>
     {%- for page in pages %}
     {%- if page.ancestors | last != "series/_index.md" %}
+    {%- if not page.extra.public_draft or page.extra.public_draft != true %}
     {%- if not page.extra.wild or page.extra.wild != true %}
     {%- if not page.extra.ongoing or page.extra.ongoing != true %}
     <entry xml:lang="{{ page.extra.lang | default(value=page.lang) }}">
@@ -53,6 +54,7 @@
         <content type="html" xml:base="{{ page.permalink | escape_xml | safe }}">{{ page.content }}</content>
         {% endif %}
     </entry>
+    {%- endif %}
     {%- endif %}
     {%- endif %}
     {%- endif %}

@@ -10,6 +10,7 @@ taxonomies:
     - 100 days to offload 2026
     - fr
 extra:
+  public_draft: true
   guid: ''
   lang: fr
   comments: { host: tracto.pl, id: '', type: misskey }
