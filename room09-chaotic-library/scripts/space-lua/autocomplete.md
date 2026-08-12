@@ -60,7 +60,7 @@ event.listen {
   
     local media = query[[ 
       from p = index.documents()
-      where p.name:match("^void/room09%-chaotic%-library/static/media/emojis/[^/]+$")
+      where p.name:match("^void/room09%-chaotic%-library/static/media/emojis/[^/]+$") or p.name:match("^void/room09%-chaotic%-library/static/media/emojis/personas/[^/]+/[^/]+$")
     ]]
     local opts = {}
   
