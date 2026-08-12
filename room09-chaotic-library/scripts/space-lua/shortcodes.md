@@ -203,7 +203,7 @@ function parse_block_shortcode(body)
   if match_end != nil then
     render = dom.span {
       class = "sb-zola-shortcode-marker",
-      "--- end ---"
+      __rawText = "--- end ---"
     }
   end
 
@@ -212,7 +212,7 @@ function parse_block_shortcode(body)
   if match_end != nil then
     render = dom.span {
       class = "sb-zola-shortcode-marker",
-      "--- wild only ---"
+      __rawText = "--- wild only ---"
     }
   end
 
@@ -260,6 +260,9 @@ syntax.define {
   end
 }
 ```
+
+{% end %}
+{% end %}
 
 ```space-style
 #sb-main .cm-editor .sb-lua-directive-inline:has(.sb-blog-say) {
