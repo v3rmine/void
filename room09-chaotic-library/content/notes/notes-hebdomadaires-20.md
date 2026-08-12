@@ -1,7 +1,7 @@
 ---
 date: 2026-08-09
 title: 'Notes hebdomadaires #20'
-description: ""
+description: "Beaucoup de lecture ces dernières semaines, quelques mises à jour du blog et retour de la canicule."
 hidden: true
 taxonomies:
   tags:
@@ -52,10 +52,25 @@ J'ai vraiment pas adhéré au début du livre en particulier, mais je me suis ac
 
 En petite news tech j'ai pas lu grand chose d'intéressant, uniquement le portage pour Linux des cracks via hyperviseur pour les jeux protégé par Denuvo : [A Hypervisor(-less) Denuvo bypass for Linux](https://cs.rin.ru/forum/viewtopic.php?f=10&t=159989).
 
+Je vois de plus en plus d'influenceurs qui vendent les mérites des lunettes meta que c'est super pratique et tout mais je penses que ava à parfaitement résumé ma pensée la dessus : [we don't shame smart glasses wearers enough](https://blog.avas.space/shame-smart-glasses/) {{ customoji(name="personas/astrid/Angry") }}
 
-- [we don't shame smart glasses wearers enough – ava's blog](https://blog.avas.space/shame-smart-glasses/) : Yup, I said it.
-- [Rupture de stock de la testostérone Besins : un obstacle de plus pour l'accès aux soins | Problematik](https://www.problematik-media.com/articles/rupture-de-stock-de-la-testosterone-besins-transgenre) : Le générique de la testostérone Nebido produit par le laboratoire Besins est en rupture de stock depuis février. Une pénurie qui, dans un système de santé difficile d'accès pour les personnes trans, complique les parcours de soin.
-- [Along Came Poly: A Polyamorous Person's Guide to Coming Out to Your Monogamous Partner - Everyday Feminism](https://everydayfeminism.com/2015/03/coming-out-as-polyamorous/) : So you've figured out that you're polyamorous. Awesome! But you're also currently in a monogamous relationship. Uh-oh. Entering into a polyamorous relationship from a previously monogamous one can take work – but not only is it not impossible. It also can lead to healthier, more fulfilling relationships! Check out this comic to learn how to talk to your partner about your polyamory.
-- [ZINES! — Christine Larsen](https://christinelarsenillustration.com/blarg/zines#foldable=) : There’s a good sized community out there for any kind of zine you can think of, not to mention numerous local and national zine fests where zinesters can gather to trade their books. They have long served the comics community as a way to tell a story that is short and unfettered. Some zines are akin to tiny works of art: riso printed, screen printed, hand bound, and full of fancy papers. Others are quick and dirty fold-ups that serve the purpose of any ephemera, a quick relay of information…
-- [Merci aux blogs qui me donnent envie de bloguer - La Lune Mauve](https://lalunemauve.fr/blogs-bloguer-blogging/) : Lire des blogs cool qui publient des notes régulières et partagent des liens me donne envie de faire pareil.
+[Rupture de stock de la testostérone Besins](https://www.problematik-media.com/articles/rupture-de-stock-de-la-testosterone-besins-transgenre) : Le générique de la testostérone Nebido produit par le laboratoire Besins était en rupture de stock de février à juillet (5 mois de rupture).
+Trois options possibles hors ne rien prendre en cas de rupture : Option 1 passer au Nebido qui coûte 180€ par injection. Option 2 changer de molécule mais l'injec passe d'une fois toutes les 10/14 semaines à toutes les 2/3 semaines, en plus le changement de molécule se fait pas comme ça, il faut repasser par un endocrinologue et forcément ça tout le monde tolère pas les deux molécules de la même façon. Option 3 le [DIY](https://diyhrt.info/transmasc/intro/) qui comporte tout son lot de risques aussi. {% wild_only %}
+<small>Le DIY c'est l'option que j'ai choisie pour l'œstradiol, parce qu'il n'existe pas d'injection d'E vendue par les labos en france et aussi pour être indépendante du système. Un peu parano du virement possible de la france en 2027 sur les droits des personnes trans {{ customoji(name="personas/astrid/Sweat") }}</small>
+{% end %}
 
+Et pour finir la note de la semaine un petit guide pour faire vos propres [ZINES!](https://christinelarsenillustration.com/blarg/zines) {{ customoji(name="Amazed") }}
+
+{% wild_only() %}
+{% say_group() %}
+{% say(who="astrid", what="Type Annoyed") %}
+Bon mes débuts de changements de prénom c'est mitigé, la carte vitale c'était très simple et rapide (le plus long c'est de commander la carte) en envoyant un mail à [parcourstrans@assurance-maladie.fr](mailto:parcourstrans@assurance-maladie.fr).  
+{% end %}
+{% say(who="astrid", what="Cry 1") %}
+Par contre le permis a été refusé, photo non conforme... Photo prise en photomaton pour refaire mon permis en début d'année, le code est passé pour le premier (mais utilisable qu'une seule fois) et la version papier a été refusée du coup {{ customoji(name="SmileBecauseThisIsFine") }}
+{% end %}
+{% say(who="astrid", what="Sweat") %}
+Pour la CNI et le passport je croises les doigts mais il y a de grandes chances que ma demande soit retardée (au lieu d'annulée au moins)
+{% end %}
+{% end %}
+{% end %}

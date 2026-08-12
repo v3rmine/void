@@ -43,9 +43,11 @@ function parse_inline_shortcode(body)
     end
 
     if space.fileExists(file) then
-      render = dom.img {
-        class = "sb-blog-customoji-inline",
-        src = "/.fs/"..file
+      render = dom.span {
+        dom.img {
+          class = "sb-blog-customoji-inline",
+          src = "/.fs/"..file
+        }
       }
     else
       print("Emoji not found: " .. file)
@@ -133,7 +135,8 @@ syntax.define {
   padding: 0;
 }
 /* Customoji */
-span:has(.sb-blog-customoji-inline) {
+span:has(.sb-blog-customoji-inline), 
+small:has(.sb-blog-customoji-inline) {
   position: relative;
 }
 .sb-blog-customoji-inline {
