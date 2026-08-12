@@ -28,8 +28,8 @@ jobs:
       - name: Install uncloud
         if: steps.cache-uncloud.outputs.cache-hit != 'true'
         run: |
-          curl -L https://github.com/psviderski/uncloud/releases/download/v0.19.0/uc_linux_amd64.tar.gz | tar xz
-          mv uc /usr/local/bin/uncloud
+          curl -L https://github.com/psviderski/uncloud/releases/download/v0.19.0/uncloud_linux_amd64.tar.gz | tar xz
+          mv uncloud /usr/local/bin/uncloud
           chmod +x /usr/local/bin/uncloud
       - name: Configure uncloud
         run: |
