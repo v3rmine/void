@@ -196,7 +196,7 @@
 				<span class="post-title">{{ page.higher.title }}</span>
 			</a>
 		{%- endif -%}
-		{%- if page.lower -%}
+		{%- if page.lower and not page.lower.extra.public_draft -%}
 			<a class="post-nav-item post-nav-next" href="{{ page.lower.permalink }}">
 				<div class="nav-arrow">{{ macros_translate::translate(key="next", default="Next", language_strings=language_strings) }}</div>
 				<span class="post-title">{{ page.lower.title }}</span>

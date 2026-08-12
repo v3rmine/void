@@ -17,7 +17,7 @@
   "language": "{{ lang }}",
   "items": [
     {%- for page in pages %}
-    {%- if page.ancestors | last != "series/_index.md" %}
+    {%- if page.ancestors | last in ["garden/_index.md", "notes/_index.md"] %}
     {%- if not page.extra.public_draft or page.extra.public_draft != true %}
     {%- if not page.extra.ongoing or page.extra.ongoing != true %}
     {
