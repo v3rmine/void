@@ -61,7 +61,7 @@
 	        <img class="{{ image_classes }}" alt="{{ alt }}" src="{{ url_min }}" {%- if config.markdown.lazy_async_image -%}decoding="async" loading="lazy" {%- endif -%} />
 	    </a> #}
 	<button popovertarget="{{ url }}" class="center-img">
-        <img class="{{ image_classes }}" alt="{{ alt }}" src="{{ url_min }}" {%- if config.markdown.lazy_async_image -%}decoding="async" loading="lazy" {%- endif -%} />
+        <img class="{{ image_classes }}" alt="{{ alt }}" src="{{ url_min }}" {%- if config.markdown.lazy_async_image -%}decoding="async" loading="lazy" {%- endif -%} {%- if height -%}height="{{ height }}"{%- endif -%} />
 	</button>
 	<dialog id="{{ url }}" popover>
 		<button class="button" popovertarget="{{ url }}" popovertargetaction="hide">
@@ -73,5 +73,5 @@
 		</figure>
 	</dialog>
 {%- else -%}
-    <img class="{{ image_classes }}" alt="{{ alt }}" src="{{ url }}" {%- if config.markdown.lazy_async_image -%}decoding="async" loading="lazy"{%- endif -%} />
+    <img class="{{ image_classes }}" alt="{{ alt }}" src="{{ url }}" {%- if config.markdown.lazy_async_image -%}decoding="async" loading="lazy"{%- endif -%} {%- if height -%}height="{{ height }}"{%- endif -%} />
 {%- endif -%}

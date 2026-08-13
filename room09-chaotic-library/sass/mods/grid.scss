@@ -1,0 +1,25 @@
+.grid-2 {
+  display: grid;
+  gap: 1rem;
+  margin: 1rem 0;
+
+  & > img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    margin: 0;
+  }
+  & > .center-img {
+    margin: 0;
+
+    & > img {
+      width: 100%;
+      object-fit: cover;
+      margin: 0;
+    }
+  }
+}
+
+.grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}

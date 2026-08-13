@@ -34,21 +34,21 @@ J'ai beaucoup lu ces dernières semaines, c'était un peu la seule chose pour la
 
 Quelques artbook que j'ai dévoré d'une traite, c'était vraiment intéressant de lire leurs différentes approches, leur façon de mixer digital/traditionnel et leur point de vue sur leur travail.
 
-{{ image(url="/media/the-art-of-heikala-book.png", alt="Couverture du livre The Art Of Heikala", height=500, full_size=true) }}
-
-{{ image(url="/media/the-art-of-feefal-book.png", alt="Couverture du livre The Art Of Feefal", height=500, full_size=true) }}
-
-{{ image(url="/media/the-art-of-simz-book.png", alt="Couverture du livre The Art Of Simz", height=500, full_size=true) }}
+<div class="grid grid-2">
+{{ image(url="/media/the-art-of-heikala-book.png", alt="Couverture du livre The Art Of Heikala" height=400, full_size=true) }}
+{{ image(url="/media/the-art-of-feefal-book.png", alt="Couverture du livre The Art Of Feefal", height=400, full_size=true) }}
+{{ image(url="/media/the-art-of-simz-book.png", alt="Couverture du livre The Art Of Simz", height=400, full_size=true) }}
+</div>
 
 J'ai aussi lu Multiamory, il était dans ma liste de lecture depuis un moment après l'avoir vu dans les notes de Benjamin et c'était une super reco' {{ customoji(name="CoolThumbsUp") }} j'ai noté plein de parties sur lesquelles il faut que je repasse, mais c'est vraiment plein d'outils qui je pense pourront m'être utiles.
 
-{{ image(url="/media/multiamory-book.jpg", alt="Couverture du livre Multiamory - Essential Tools for Modern Relationships", height=500) }}
+{{ image(url="/media/multiamory-book.jpg", alt="Couverture du livre Multiamory - Essential Tools for Modern Relationships", height=400, full_size=true) }}
 
 Aimer sans posséder, un livre que j'ai vu recommandé dans [la librairie à soi.e](https://www.librairieasoie.com/) à Lyon (la librairie était une super découverte) et je suis partagée dessus. Je l'ai lu juste après Multiamory et je m'attendais à y trouver des outils, à la place, c'est vraiment ce qui y est noté sur la page "Une critique féministe de la fidélité" (oui, il faudrait juste que je fasse plus attention aux sous-titres... je sais {{ customoji(name="personas/astrid/Dum Sticker 3") }}).
 
 J'ai vraiment pas adhéré au début du livre en particulier, mais je me suis accrochée jusqu'au bout <small>(j'aime pas laisser des livres en suspend sinon je me connais je n'y reviendrai jamais)</small> et je regrette pas. J'ai trouvé qu'il soulevait plein de réflexions intéressantes, même si je suis pas d'accord sur plein de points soulevé. J'pense qu'il faudra que j'en parle avec des amies qui le liraient aussi ou le relire plus tard maintenant que je sais de quoi il parle histoire d'affiner mon avis dessus !
 
-{{ image(url="/media/aimer-sans-posseder-book.jpg", alt="Couverture du livre Aimer sans posséder - Une critique féministe de la fidélité" height=500) }}
+{{ image(url="/media/aimer-sans-posseder-book.jpg", alt="Couverture du livre Aimer sans posséder - Une critique féministe de la fidélité" height=400, full_size=true) }}
 
 En petite news tech j'ai pas lu grand chose d'intéressant, uniquement le portage pour Linux des cracks via hyperviseur pour les jeux protégé par Denuvo : [A Hypervisor(-less) Denuvo bypass for Linux](https://cs.rin.ru/forum/viewtopic.php?f=10&t=159989).
 
@@ -66,7 +66,7 @@ Et pour finir la note de la semaine un petit guide pour faire vos propres [ZINES
 {% say_group() %}
 
 {% say(who="astrid", what="Type Annoyed", rev=1) %}
-Bon mes débuts de changements de prénom, c'est mitigé, la carte vitale, c'était très simple et rapide (le plus long, c'est de commander la carte) en envoyant un mail à [parcourstrans@assurance-maladie.fr](mailto:parcourstrans@assurance-maladie.fr).  
+Bon mes débuts de changements de prénom, c'est mitigé, la carte vitale, c'était très simple et rapide (le plus long, c'est de commander la carte) en envoyant un mail à [parcourstrans@assurance-maladie.fr](mailto:parcourstrans@assurance-maladie.fr)
 {% end %}
 
 {% say(who="astrid", what="Cry 1") %}
