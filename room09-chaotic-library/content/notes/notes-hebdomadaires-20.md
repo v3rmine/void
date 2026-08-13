@@ -1,17 +1,13 @@
 ---
-date: 2026-08-09
+date: 2026-08-13
 title: 'Notes hebdomadaires #20'
-description: "Beaucoup de lecture ces dernières semaines, quelques mises à jour du blog et retour de la canicule."
-hidden: true
-in_search_index: false
-include_in_feeds: false
+description: "Beaucoup de lecture ces dernières semaines, quelques mises à jour du blog, un changement de format pour les notes et retour de la canicule."
 taxonomies:
   tags:
     - notes
     - 100 days to offload 2026
     - fr
 extra:
-  public_draft: true
   guid: '1590c5b8-afb9-47d7-890f-64785d3db90a'
   lang: fr
   comments: { host: tracto.pl, id: '', type: misskey }
@@ -42,7 +38,7 @@ Du coup quelques artbook que j'ai dévoré d'une traite, c'était vraiment inté
 {{ image(url="/media/the-art-of-simz-book.png", alt="Couverture du livre The Art Of Simz", height=400, full_size=true) }}
 </div>
 
-J'ai aussi lu Multiamory, il était dans ma liste de lecture depuis un moment après l'avoir vu dans les notes de Benjamin et c'était une super reco' {{ customoji(name="CoolThumbsUp") }} j'ai noté plein de parties sur lesquelles il faut que je repasse, mais c'est vraiment plein d'outils qui je pense pourront m'être utiles !
+J'ai aussi lu Multiamory, il était dans ma liste de lecture depuis un moment après l'avoir vu dans les notes de Benjamin et c'était une super reco' {{ customoji(name="CoolThumbsUp") }} j'ai noté plein de parties sur lesquelles il faut que je repasse, mais c'est vraiment plein d'outils qui pourront m'être utiles je pense !
 
 {{ image(url="/media/multiamory-book.jpg", alt="Couverture du livre Multiamory - Essential Tools for Modern Relationships", height=400, full_size=true) }}
 
