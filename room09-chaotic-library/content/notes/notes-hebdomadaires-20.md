@@ -34,11 +34,11 @@ J'ai beaucoup lu ces dernières semaines, c'était un peu la seule chose pour la
 
 Quelques artbook que j'ai dévoré d'une traite, c'était vraiment intéressant de lire leurs différentes approches, leur façon de mixer digital/traditionnel et leur point de vue sur leur travail.
 
-{{ image(url="/media/the-art-of-heikala-book.png", alt="Couverture du livre The Art Of Heikala" height=500) }}
+{{ image(url="/media/the-art-of-heikala-book.png", alt="Couverture du livre The Art Of Heikala", height=500, full_size=true) }}
 
-{{ image(url="/media/the-art-of-feefal-book.png", alt="Couverture du livre The Art Of Feefal", height=500) }}
+{{ image(url="/media/the-art-of-feefal-book.png", alt="Couverture du livre The Art Of Feefal", height=500, full_size=true) }}
 
-{{ image(url="/media/the-art-of-simz-book.png", alt="Couverture du livre The Art Of Simz", height=500) }}
+{{ image(url="/media/the-art-of-simz-book.png", alt="Couverture du livre The Art Of Simz", height=500, full_size=true) }}
 
 J'ai aussi lu Multiamory, il était dans ma liste de lecture depuis un moment après l'avoir vu dans les notes de Benjamin et c'était une super reco' {{ customoji(name="CoolThumbsUp") }} j'ai noté plein de parties sur lesquelles il faut que je repasse, mais c'est vraiment plein d'outils qui je pense pourront m'être utiles.
 
@@ -65,7 +65,7 @@ Et pour finir la note de la semaine un petit guide pour faire vos propres [ZINES
 {% wild_only() %}
 {% say_group() %}
 
-{% say(who="astrid", what="Type Annoyed") %}
+{% say(who="astrid", what="Type Annoyed", rev=1) %}
 Bon mes débuts de changements de prénom, c'est mitigé, la carte vitale, c'était très simple et rapide (le plus long, c'est de commander la carte) en envoyant un mail à [parcourstrans@assurance-maladie.fr](mailto:parcourstrans@assurance-maladie.fr).  
 {% end %}
 
