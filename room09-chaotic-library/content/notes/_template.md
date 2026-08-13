@@ -4,6 +4,8 @@ title: 'Notes hebdomadaires #'
 description: ""
 draft: true
 hidden: true
+in_search_index: false
+include_in_feeds: false
 taxonomies:
   tags:
     - notes
