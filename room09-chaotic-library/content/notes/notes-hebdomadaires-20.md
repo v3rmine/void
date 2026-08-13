@@ -10,7 +10,7 @@ taxonomies:
 extra:
   guid: '1590c5b8-afb9-47d7-890f-64785d3db90a'
   lang: fr
-  comments: { host: tracto.pl, id: '', type: misskey }
+  comments: { host: tracto.pl, id: 'apuxkswoj3bt0003', type: misskey }
 ---
 
 Avec le retour de la chaleur à nouveau, j'ai vraiment pas eu trop le courage de bosser sur mes projets à part mettre à jour ma [configuration Iocaine](https://git.v3rm.in/v3rmine/lophiomys-imhausi) et rajouter de la [completion](https://git.v3rm.in/v3rmine/void/src/branch/main/room09-chaotic-library/scripts/space-lua/autocomplete.md) pour les emojis/images dans ma configuration {{ al(k="SilverBullet") }} (ce qui devrait beaucoup plus me motiver à l'utiliser pour taper mes notes).
