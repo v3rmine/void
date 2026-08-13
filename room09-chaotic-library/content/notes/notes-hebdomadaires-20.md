@@ -3,6 +3,8 @@ date: 2026-08-09
 title: 'Notes hebdomadaires #20'
 description: "Beaucoup de lecture ces dernières semaines, quelques mises à jour du blog et retour de la canicule."
 hidden: true
+in_search_index: false
+include_in_feeds: false
 taxonomies:
   tags:
     - notes
