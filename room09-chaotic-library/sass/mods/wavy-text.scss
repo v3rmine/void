@@ -1,6 +1,6 @@
 span:has(.wavy-text) {
   display: inline-block;
-  overflow: visible;
+  line-height: 1.2em;
 }
 
 .wavy-text {
@@ -8,7 +8,7 @@ span:has(.wavy-text) {
 
   & > span {
     display: inline-block;
-    animation: wave 2s infinite;
+    animation: wave 2s ease-in-out infinite;
     animation-delay: calc(var(--nth) * 0.1s);
   }
 }
