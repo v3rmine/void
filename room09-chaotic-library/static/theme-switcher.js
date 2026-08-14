@@ -85,7 +85,7 @@ function updateActiveButton(theme) {
     }
 }
 
-document.addEventListener("DOMContentLoaded", function () {
+(function () {
     document.getElementById("theme-light").addEventListener("click", function () {
         switchTheme("light");
     });
@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const currentTheme = localStorage.getItem("theme") || window.defaultTheme || "system";
     updateIconClass(currentTheme);
     updateActiveButton(currentTheme);
-});
+})();
 
 // Make the switchTheme function accessible globally
 window.switchTheme = switchTheme;
