@@ -88,6 +88,7 @@ view_profile = "View Profile At"
 
 from_serie = "From the series $SERIE"
 more_posts = "Older posts..."
+more_thoughts = "Older thoughts..."
 
 webmentions_mentions_count = "This post has been mentioned $COUNT times on the Internet"
 webmentions_mention_by = "by $SOMEONE"

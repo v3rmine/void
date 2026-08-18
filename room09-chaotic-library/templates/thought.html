@@ -11,40 +11,31 @@
 	{%- set list_element = "ul" -%}
 {%- endif -%}
 
-{%- if page.path != "/thoughts/template/" and (not page.extra.guid or page.extra.guid | length == 0) -%}
-	{{ throw(message="Page " ~ page.path ~ " got no guid") }}
+{%- if page.path != "/thoughts/template/" and (not page.date or page.date | length == 0) -%}
+	{{ throw(message="Page " ~ page.path ~ " got no date") }}
 {%- endif -%}
 
 <article class="h-entry">
-	{%- if page.extra.banner -%}
-	    {%- set banner = resize_image(path=page.extra.banner, width=1200, height=628, op="fill", format="avif") -%}
-		<div id="banner-container">
-			<img id="banner" class="full-bleed{% if page.extra.banner_pixels %} pixels{% endif %}" src="{{ banner.url }}" {% if config.markdown.lazy_async_image %}decoding="async" loading="lazy"{% endif %} />
-		</div>
-	{%- endif -%}
-
 	<div id="heading">
-		{%- if page.date -%}
-			<p>
-				<small>
-					<time class="dt-published" datetime="{{ page.date | date(format=' %+') }}">
-						{{- macros_translate::translate(key="published", default="Published on", language_strings=language_strings) }}
-						{{ page.date | date(format=date_format, locale=date_locale) -}}
+		<p hidden>
+			<small>
+				<time class="dt-published" datetime="{{ page.date | date(format=' %+') }}">
+					{{- macros_translate::translate(key="published", default="Published on", language_strings=language_strings) }}
+					{{ page.date | date(format=date_format, locale=date_locale) -}}
+				</time>
+				{%- if page.updated -%}
+					<span> {{ config.extra.separator | default(value="•") }} </span>
+					<time class="dt-updated" datetime="{{ page.updated | date(format=' %+') }}">
+						{{- macros_translate::translate(key="updated", default="Updated on", language_strings=language_strings) }}
+						{{ page.updated | date(format=date_format, locale=date_locale) -}}
 					</time>
-					{%- if page.updated -%}
-						<span> {{ config.extra.separator | default(value="•") }} </span>
-						<time class="dt-updated" datetime="{{ page.updated | date(format=' %+') }}">
-							{{- macros_translate::translate(key="updated", default="Updated on", language_strings=language_strings) }}
-							{{ page.updated | date(format=date_format, locale=date_locale) -}}
-						</time>
-					{%- endif -%}
-				</small>
-			</p>
-		{%- endif -%}
+				{%- endif -%}
+			</small>
+		</p>
 
-		<h1 class="p-name">{{ page.title }}</h1>
+		<h1 class="p-name">{{ page.date | date(format="%d %h %Y @ %H:%M") }}</h1>
 		<p class="p-summary" style="display: none;">{{ page.description | default(value="") }}</p>
-		<p class="u-uid" style="display: none;">{{ page.extra.guid }}</p>
+		<p class="u-uid" hidden>{{ page.slug ~ '_' ~ page.date | base64_encode }}</p>
 
 		<div class="details">
     		{%- if page.taxonomies -%}
@@ -86,17 +77,6 @@
 	</div>
 
 	{%- include "partials/statements.html" -%}
-
-	{%- if page.extra.rssclub and page.relative_path != "garden/welcome-antechamber.md" -%}
-	<blockquote class="markdown-alert-note">
-		<p>
-		{#
-		{{ macros_translate::translate(key="rss_club_post", default='This post is an exclusivity for the <a href="ANTECHAMBER_LINK">Antechamber</a>', language_strings=language_strings) | replace(from="ANTECHAMBER_LINK", to=get_url(path="@/garden/welcome-antechamber.md")) | safe }} -->
-		#}
-			This post is an exclusivity for the <a href="{{ get_url(path="@/garden/welcome-antechamber.md") }}">Antechamber</a>
-		</p>
-	</blockquote>
-	{%- endif -%}
 
 	<div class="e-content content">
 	    {{ page.content | safe }}

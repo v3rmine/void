@@ -1,0 +1,56 @@
+#simple-thought-list {
+  & > article:not([hidden]) {
+    display: block;
+  }
+
+  & > article {
+    position: relative;
+    padding: 1rem 2rem;
+    border-radius: 1.375rem;
+    background-color: var(--fg-muted-2);
+    box-shadow: var(--edge-highlight);
+    transition: var(--transition);
+
+    font-weight: normal;
+    color: var(--fg-color);
+
+    &:hover {
+      background-color: var(--fg-muted-3);
+    }
+  }
+
+  article + article {
+    margin-top: 1rem;
+  }
+
+  .thought-content {
+    margin-bottom: 1rem;
+
+    a {
+      position: relative;
+      z-index: 1;
+    }
+
+    & > *:first-child {
+      margin-top: 0;
+    }
+
+    & > *:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .thought-date {
+    display: block;
+    color: var(--fg-muted-5);
+    text-decoration: none;
+    text-align: right;
+    margin: 0;
+
+    &::after {
+      content: "";
+      inset: 0;
+      position: absolute;
+    }
+  }
+}

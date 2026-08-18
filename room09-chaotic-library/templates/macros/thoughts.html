@@ -1,0 +1,33 @@
+{%- macro thoughts(pages, date_format, date_locale, language_strings, max_count=-1) %}
+{%- set count = 0 -%}
+<div id="simple-thought-list">
+	{%- for page in pages %}
+		{%- set_global count = count + 1 -%}
+		{%- if not max_count == -1 and count > max_count -%}
+			{%- break -%}
+		{%- endif -%}
+
+		{%- set article_block = '<article' %}
+		{%- set article_block = article_block ~ '>' %}
+		{%- set article_block = article_block ~ '<div class="thought-content">' ~ page.content ~ '</div>' %}
+		{%- set article_block = article_block ~ '<a class="thought-date" href="' ~ page.permalink ~ '">' %}
+		{%- set article_date = page.date | date(format='%+') %}
+		{%- set article_display_date = page.date | date(format=date_format, locale=date_locale) %}
+		{%- set article_block = article_block ~ '<time datetime="' ~ article_date ~ '" pubdate>' %}
+		{%- set article_block = article_block ~ article_display_date %}
+		{%- set article_block = article_block ~ '</time>' %}
+		{%- if page.extra.lang and for_section.extra.add_lang_to_list %}
+			{%- set article_block = article_block ~ ' (' ~ page.extra.lang ~ ')'%}
+		{%- endif %}
+		{%- set article_block = article_block ~ '</a>' %}
+		{%- set article_block = article_block ~ '</article>' %}
+
+		{%- if page.extra.wild and page.extra.wild == true %}
+			{{ macros_partials::wild_only(content=article_block, as_elem="article", inline=true) }}
+		{%- else %}
+			{{ article_block | safe }}
+		{%- endif %}
+
+	{%- endfor %}
+</div>
+{% endmacro thoughts -%}
