@@ -164,7 +164,8 @@ in {
   };
 
   services.cron.systemCronJobs = [
-    "0 5 * * * root journalctl --vacuum-size=512M"
+    "0 5 * * * root journalctl --vacuum-size=256M"
+    "0 4 * * * root nix-collect-garbage --delete-older-than 5d"
     "*/5 * * * * root ${run-autorestic}/bin/run-autorestic.sh"
     # Run short SMART test once a day
     "0 5 * * * root ${pkgs.smartmontools}/bin/smartctl -t short /dev/sdb"
@@ -258,10 +259,13 @@ in {
     hostName = "nas-nfs";
     domain = "";
     nameservers = [ "10.0.0.1" ];
-    defaultGateway = "10.0.0.1";
+    defaultGateway = {
+      address = "10.0.0.1";
+      interface = "ens18";
+    };
     defaultGateway6 = {
       address = "";
-      interface = "eth0";
+      interface = "ens18";
     };
     dhcpcd.enable = true;
   };
@@ -278,9 +282,9 @@ in {
   imports = [ (modulesPath + "/profiles/qemu-guest.nix") "${impermanence}/nixos.nix" ];
   boot.loader.grub.enable = lib.mkDefault true; # Use the boot drive for GRUB
   boot.loader.grub.device = "/dev/vda";
-  boot.loader.grub.storePath = "/persist/nix/store";
+  boot.loader.grub.storePath = "/persist//nix/store";
   boot.tmp.cleanOnBoot = true;
-  boot.growPartition = lib.mkDefault true;
+  #boot.growPartition = lib.mkDefault true;
   boot.initrd.availableKernelModules =
     [ "ata_piix" "uhci_hcd" "xen_blkfront" "vmw_pvscsi" ];
   boot.initrd.kernelModules = [ "nvme" ];
