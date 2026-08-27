@@ -2,7 +2,10 @@ FROM alpine AS patcher
 COPY . /project
 WORKDIR /project
 ARG REPLACEMENT_DOMAIN=
-RUN if [ ! -z "${REPLACEMENT_DOMAIN}" ]; then sed -iE 's|^base_url.*|base_url = "http://kkpos3jxlzmovsxu4tpdj2rgfu5hwprefyyyxbmzmtjh5vcnltxfiiid.onion/"|' config.toml; fi
+RUN if [ ! -z "${REPLACEMENT_DOMAIN}" ]; then \
+    sed -iE 's|^base_url = "https://astriiid.fr"|base_url = "http://kkpos3jxlzmovsxu4tpdj2rgfu5hwprefyyyxbmzmtjh5vcnltxfiiid.onion/"|' config.toml; \
+    sed -iE 's|^base_url = "https://townsquare.astriiid.fr"|base_url = "blob:void"|' config.toml; \
+fi
 
 FROM ghcr.io/getzola/zola:v0.22.1 AS zola
 COPY --from=patcher /project /project
