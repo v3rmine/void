@@ -165,20 +165,22 @@
 			</p>
 			{%- if serie.pages | length > 1 %}
 			<ol id="serie-part-list">
-				{%- for serie_page in serie.pages %}
+				{%- for serie_page in serie.pages | reverse %}
 				<li>
 					<a href="{{ serie_page.permalink }}">
 						{{ serie_page.title }}
-						{%- if serie_page.permalink == page.permalink %}
-						{%- endif %}
 					</a>
+					{%- if serie_page.permalink == page.permalink %}
 					{{ macros_translate::translate(key="you_are_here_in_serie", default="(👈 you are here)") }}
+					{%- endif %}
 				</li>
 				{%- endfor %}
 			</ol>
 			{%- endif %}
 		</div>
 		{%- endif %}
+
+    <hr/>
 	{%- endif %}
 
 	{%- if page.extra.toc_inline %}
