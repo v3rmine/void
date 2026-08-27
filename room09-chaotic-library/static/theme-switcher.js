@@ -1,5 +1,9 @@
 // Theme Initialization
-(function () {
+window.v3rmine_themeSwitcherInitStatus = false;
+function initThemeSwitcher() {
+    if (window.v3rmine_themeSwitcherInitStatus) return;
+    window.v3rmine_themeSwitcherInitStatus = true;
+
     // Get the default theme from the HTML data-theme attribute.
     const defaultTheme = document.documentElement.getAttribute("data-theme");
 
@@ -22,7 +26,7 @@
 
     // Expose defaultTheme to the outer scope.
     window.defaultTheme = defaultTheme;
-})();
+}
 
 // Icon Update and Theme Switching
 function setTheme(theme, saveToLocalStorage = false) {
@@ -85,14 +89,24 @@ function updateActiveButton(theme) {
     }
 }
 
-(function () {
-    document.getElementById("theme-light").addEventListener("click", function () {
+window.v3rmine_themeSwitcherSetupStatus = false;
+function setupThemeSwitcherListeners() {
+    if (window.v3rmine_themeSwitcherSetupStatus) return;
+
+    const themeLightEl = document.getElementById("theme-light");
+    const themeDarkEl = document.getElementById("theme-dark");
+    const themeSystemEl = document.getElementById("theme-system");
+    
+    if (!themeLightEl || !themeDarkEl || !themeSystemEl) return;
+    window.v3rmine_themeSwitcherSetupStatus = true;
+
+    themeLightEl.addEventListener("click", function () {
         switchTheme("light");
     });
-    document.getElementById("theme-dark").addEventListener("click", function () {
+    themeDarkEl.addEventListener("click", function () {
         switchTheme("dark");
     });
-    document.getElementById("theme-system").addEventListener("click", function () {
+    themeSystemEl.addEventListener("click", function () {
         switchTheme("system");
     });
 
@@ -100,7 +114,16 @@ function updateActiveButton(theme) {
     const currentTheme = localStorage.getItem("theme") || window.defaultTheme || "system";
     updateIconClass(currentTheme);
     updateActiveButton(currentTheme);
-})();
+}
 
 // Make the switchTheme function accessible globally
-window.switchTheme = switchTheme;
+window.v3rmine_switchTheme = switchTheme;
+
+
+// Some browsers fires DOMContentLoaded even after load like FF but somes like chrome don't 
+initThemeSwitcher();
+setupThemeSwitcherListeners();
+document.addEventListener('DOMContentLoaded', function () {
+    initThemeSwitcher();
+    setupThemeSwitcherListeners();
+});
