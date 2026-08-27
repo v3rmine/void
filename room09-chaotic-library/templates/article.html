@@ -12,7 +12,7 @@
 	{%- set list_element = "ul" -%}
 {%- endif -%}
 
-{%- if page.path != "/notes/template/" and (not page.extra.guid or page.extra.guid | length == 0) -%}
+{%- if page.path not in ["/notes/template/", "/garden/template/"] and (not page.extra.guid or page.extra.guid | length == 0) -%}
 	{{ throw(message="Page " ~ page.path ~ " got no guid") }}
 {%- endif -%}
 

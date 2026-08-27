@@ -13,7 +13,7 @@ taxonomies:
     - fr
 extra:
   public_draft: true
-  guid: ''
+  guid: '33bd703c-d47e-41c0-a53c-eb3919fce060'
   lang: fr
   comments: { host: tracto.pl, id: '', type: misskey }
 ---
