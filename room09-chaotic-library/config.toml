@@ -25,7 +25,7 @@ author = "Astrid"
 # ISO 639-1: https://localizely.com/iso-639-1-list/
 # BCP 47: https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry
 default_language = "en"
-taxonomies = [{ name = "tags", feed = true }]
+taxonomies = [{ name = "tags", feed = true }, { name = "series", feed = true }]
 
 theme = "duckquill"
 
@@ -178,7 +178,7 @@ links = [
     { name = "Sections", menu = [
         { url = "@/garden/_index.md", name = "Garden" },
         { url = "@/notes/_index.md", name = "Notes"},
-        { url = "@/series/_index.md", name = "Series" },
+        { url = "/series/", name = "Series" },
     ] },
        { url = "@/blogroll.md", name = "Blogroll"},
        { url = "@/about.md", name = "About"},
@@ -191,7 +191,7 @@ links = [
 links = [
     { url = "@/garden/_index.md", name = "Garden" },
     { url = "@/notes/_index.md", name = "Notes"},
-    { url = "@/series/_index.md", name = "Series" },
+    { url = "/series/", name = "Series" },
     { url = "@/blogroll.md", name = "Blogroll"},
     { url = "@/about.md", name = "About"},
     { url = "https://ko-fi.com/v3rmine", name = "Coffee" },
@@ -261,6 +261,11 @@ mail = "v3rmine@astriiid.fr"
 
 [extra.goatcounter]
 host = "stats.astriiid.fr"
+
+[extra.townsquare]
+base_url = "https://townsquare.astriiid.fr"
+site_key = "site_gQrvqLL452LqN-cC"
+reading_url = "https://astriiid.fr"
 
 [extra.debug]
 # Display outlines around all elements for debugging purposes

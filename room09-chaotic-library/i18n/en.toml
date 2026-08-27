@@ -86,7 +86,10 @@ updated = "Updated on"
 view_comment = "View Comment At"
 view_profile = "View Profile At"
 
-from_serie = "From the series $SERIE"
+part_of_serie = "This article is part of a series: $SERIE."
+other_articles_in_series = "Other articles in the series include:"
+you_are_here_in_serie = "(👈 you are here)"
+
 more_posts = "Older posts..."
 more_thoughts = "Older thoughts..."
 

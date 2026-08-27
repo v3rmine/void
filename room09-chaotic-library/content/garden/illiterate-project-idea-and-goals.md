@@ -7,9 +7,8 @@ taxonomies:
   tags:
     - project
     - en
+  series: [project-illiterate]
 extra:
-  serie: project-illiterate
-  serie_index: 1
   guid: f49496b1-2f7d-485d-bb20-e93ba5d7f64b
   toc: true
 ---

@@ -4,6 +4,7 @@
 {%- set date_format = macros_translate::translate(key="date_format", default="%B %d, %Y", language_strings=language_strings) -%}
 {%- set date_locale = macros_translate::translate(key="date_locale", default="en_US", language_strings=language_strings) -%}
 {%- set rel_attributes = macros_rel_attributes::rel_attributes() | trim -%}
+{%- set series_meta = load_data(path="/series.toml") -%}
 
 {%- if page.extra.toc_ordered or section.extra.toc_ordered or config.extra.toc_ordered -%}
 	{%- set list_element = "ol" -%}
@@ -46,29 +47,6 @@
 		<p class="p-summary" style="display: none;">{{ page.description | default(value="") }}</p>
 		<p class="u-uid" style="display: none;">{{ page.extra.guid }}</p>
 
-		{%- if page.extra.serie -%}
-    	{%- set serie_page = get_page(path="series/" ~ page.extra.serie ~ ".md", lang=lang) -%}
-        {%- if serie_page -%}
-      		{%- set serie_link = '<a class="link" href="' ~ get_url(path='@/' ~ serie_page.relative_path ) ~ '">' ~ serie_page.title ~ '</a>' -%}
-            {%- set garden = get_section(path="garden/_index.md", lang=lang) -%}
-            {%- set serie_pages = garden.pages | filter(attribute="extra.serie", value=page.extra.serie) | sort(attribute="extra.serie_index") -%}
-    	    <div id="serie-parts-container">
-    			<p>
-              		{{ macros_translate::translate(key="from_serie", default="From the series $SERIE", language_strings=language_strings) | replace(from="$SERIE", to=serie_link) | safe }}
-    			</p>
-    			{%- if serie_pages | length > 1 -%}
-                <nav id="serie-part-list">
-                    {%- for serie_page in serie_pages -%}
-                        <a {%- if serie_page.permalink == page.permalink %} class="active" {% endif %} href="{{ serie_page.permalink }}">
-                            {{- loop.index -}}
-                        </a>
-                    {%- endfor -%}
-                </nav>
-                {%- endif -%}
-    		</div>
-			{%- endif -%}
-		{%- endif -%}
-
 		<div class="details">
     		{%- if page.authors or config.extra.show_reading_time -%}
     			<p>
@@ -92,13 +70,15 @@
 
     		{%- if page.taxonomies -%}
     			{%- for name, taxon in page.taxonomies %}
-    				<ul class="tags">
-    					<li><a class="tag label" href="{{- get_url(path=name, lang=lang) | lower -}}">{{ macros_translate::translate(key=name, default=name, language_strings=language_strings) }}:</a></li>
-    					{%- for item in taxon -%}
-    					    <li><a class="p-category tag" href="{{ get_taxonomy_url(kind=name, name=item, lang=lang) }}">{{ item }}</a></li>
-    					{%- endfor %}
-    				</ul>
-    				<br />
+					{%- if name in ["tags"] %}
+						<ul class="tags">
+							<li><a class="tag label" href="{{- get_url(path=name, lang=lang) | lower -}}">{{ macros_translate::translate(key=name, default=name, language_strings=language_strings) }}:</a></li>
+							{%- for item in taxon -%}
+								<li><a class="p-category tag" href="{{ get_taxonomy_url(kind=name, name=item, lang=lang) }}">{{ item }}</a></li>
+							{%- endfor %}
+						</ul>
+						<br />
+					{%- endif %}
     			{%- endfor -%}
     		{%- endif %}
 		</div>
@@ -159,13 +139,7 @@
 
 	{%- include "partials/statements.html" -%}
 
-	{%- if page.extra.toc_inline -%}
-		{%- include "partials/toc.html" -%}
-	{%- elif config.extra.toc_inline -%}
-		{%- include "partials/toc.html" -%}
-	{%- endif -%}
-
-	{%- if page.extra.rssclub and page.relative_path != "garden/welcome-antechamber.md" -%}
+	{%- if page.extra.rssclub and page.relative_path != "garden/welcome-antechamber.md" %}
 	<blockquote class="markdown-alert-note">
 		<p>
 		{#
@@ -174,16 +148,53 @@
 			This post is an exclusivity for the <a href="{{ get_url(path="@/garden/welcome-antechamber.md") }}">Antechamber</a>
 		</p>
 	</blockquote>
-	{%- endif -%}
+	{%- endif %}
+
+	{%- if page.taxonomies and page.taxonomies.series and page.taxonomies.series | length > 0 %}
+	{%- set serie_term = page.taxonomies.series[0] -%}
+	{%- set serie = get_taxonomy_term(kind="series", term=serie_term, lang=lang) -%}
+	{%- set serie_title = series_meta[serie_term]["title"] | default(value=serie_term) -%}
+	{%- if serie %}
+		{%- set serie_link = '<a class="link" href="' ~ serie.permalink ~ '">' ~ serie_title ~ '</a>' -%}
+		<div id="serie-parts-container">
+			<p>
+				{{ macros_translate::translate(key="part_of_serie", default="This article is part of a series: $SERIE.", language_strings=language_strings) | replace(from="$SERIE", to=serie_link) | safe }}
+				{%- if serie.pages | length > 1 %}
+				{{ macros_translate::translate(key="other_articles_in_series", default="Other articles in the series include:", language_strings=language_strings) }}
+				{%- endif -%}
+			</p>
+			{%- if serie.pages | length > 1 %}
+			<ol id="serie-part-list">
+				{%- for serie_page in serie.pages %}
+				<li>
+					<a href="{{ serie_page.permalink }}">
+						{{ serie_page.title }}
+						{%- if serie_page.permalink == page.permalink %}
+						{%- endif %}
+					</a>
+					{{ macros_translate::translate(key="you_are_here_in_serie", default="(👈 you are here)") }}
+				</li>
+				{%- endfor %}
+			</ol>
+			{%- endif %}
+		</div>
+		{%- endif %}
+	{%- endif %}
+
+	{%- if page.extra.toc_inline %}
+		{%- include "partials/toc.html" -%}
+	{%- elif config.extra.toc_inline %}
+		{%- include "partials/toc.html" -%}
+	{%- endif %}
 
 	<div class="e-content content">
 	    {{ page.content | safe }}
 	</div>
 </article>
 
-{%- if page.extra.comments.id -%}
+{%- if page.extra.comments.id %}
 	{%- include "partials/comments.html" -%}
-{%- endif -%}
+{%- endif %}
 
 {%- include "partials/webmentions.html" -%}
 

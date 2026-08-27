@@ -1,0 +1,12 @@
+#townsquare-shadow-root {
+  margin-top: 2rem;
+  padding: 0 1rem 0;
+
+  @media only screen and (max-width: 600px) {
+    padding: 0;
+  }
+}
+
+#site-footer:has(#townsquare-shadow-root) {
+  margin-block-end: 0rem;
+}

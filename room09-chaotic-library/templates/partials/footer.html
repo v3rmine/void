@@ -95,12 +95,61 @@
 		</ul>
 	{%- endif %}
 
+	{%- if config.extra.townsquare %}
+		<div id="townsquare-shadow-root">
+			<!--<template shadowrootmode="open">-->
+				<div id="townsquare-root"></div>
+				<link class="require-js" rel="stylesheet" href="{{ config.extra.townsquare.base_url }}/widget.css" />
+				<link class="require-js" rel="stylesheet" href="{{ config.extra.townsquare.base_url }}/api/sites/{{ config.extra.townsquare.site_key }}/style.css" />
+				<style>
+					.townsquare {
+						overflow: unset !important;
+					}
+					.townsquare__button--expand,
+					.townsquare__enable-toggle {
+						display: none !important;
+					}
+					.townsquare__action-zone {
+						min-height: calc(var(--ts-zone-action-height) + 2rem);
+					}
+					.townsquare__toolbar {
+						bottom: unset;
+						margin: 0 auto;
+						max-width: 45rem;
+					}
+					#townsquare-root[data-townsquare-theme="dark"] {
+						--surface-2: color-mix(in srgb, var(--surface) 95%, white);
+					}
+				</style>
+			<!--</template>-->
+			<script type="module" async defer>
+				import { mountTownSquare } from "{{ config.extra.townsquare.base_url | safe }}/townsquare.mjs";
+			    //const shadowRoot = document.getElementById('townsquare-shadow-root').shadowRoot;
+				mountTownSquare(document.getElementById("townsquare-root"), {
+					serverOrigin: "{{ config.extra.townsquare.base_url | safe }}",
+					{%- if config.extra.townsquare.reading_url %}readingUrl: "{{ config.extra.townsquare.reading_url | safe }}",{%- endif %}
+					siteKey: "{{ config.extra.townsquare.site_key }}",
+					theme: "host",
+					weatherConfig: {"mode":"automatic","weather":"clear","distribution":{"clear":58,"rain":17,"snow":17,"storm":8}},
+					layout: {
+						columnGap: 10,
+						edgeMargin: 10,
+						nearX: 0.2,
+						farX: 0.29,
+						fadeFloor: 0.4,
+						scaleFloor: 1,
+					},
+				});
+			</script>
+		</div>
+	{%- endif %}
+
 	{%- if config.extra.goatcounter %}
 		<noscript>
 		{%- if config.extra.goatcounter.user -%}
 			<img src="https://{{ config.extra.goatcounter.user }}.{{config.extra.goatcounter.host}}/count?p={{ current_path | default(value='/') }}">
 		{%- else -%}
-			<img src="https://{{config.extra.goatcounter.host}}/count?p={{ current_path | default(value='/') }}">
+			<img src="https://{{ config.extra.goatcounter.host}}/count?p={{ current_path | default(value='/') }}">
 		{%- endif -%}
 		</noscript>
 	{%- endif %}

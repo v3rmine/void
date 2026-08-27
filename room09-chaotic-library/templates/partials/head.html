@@ -113,7 +113,7 @@
 	{%- endif %}
 
 	{%- if config.extra.nav.show_theme_switcher %}
-		{%- set scripts = scripts | concat(with=["theme-switcher.js"]) %}
+		{%- set scripts = scripts | concat(with=["scripts/theme-switcher.js"]) %}
 	{%- endif %}
 
 	{%- if page.extra.comments.id %}

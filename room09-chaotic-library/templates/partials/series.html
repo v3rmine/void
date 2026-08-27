@@ -1,5 +1,28 @@
-{%- set garden = get_section(path="garden/_index.md", lang=lang) -%}
-{%- set pages = garden.pages | filter(attribute="extra.serie", value=page.extra.serie | default(value="")) | sort(attribute="extra.serie_index") -%}
+{%- set for_section = "" -%}
+{%- if section -%}
+    {%- set for_section = section -%}
+{%- endif -%}
+
+{%- if (page and page.extra.list_for_section) or (section and section.extra.list_for_section) -%}
+    {%- if page and page.extra.list_for_section -%}
+        {%- set for_section = get_section(path=page.extra.list_for_section ~ "/_index.md") -%}
+    {%- elif section and section.extra.list_for_section -%}
+        {%- set for_section = get_section(path=section.extra.list_for_section ~ "/_index.md") -%}
+    {%- endif -%}
+    {%- set pages = for_section.pages -%}
+    {%- if for_section.sort_by -%}
+        {%- set pages = pages | sort(attribute=for_section.sort_by) -%}
+    {%- endif -%}
+    {%- set pages = pages | slice(end=section.extra.max_list_size | default(value=5)) -%}
+{%- elif paginator.pages -%}
+	{%- set pages = paginator.pages -%}
+{%- elif section.pages -%}
+	{%- set pages = section.pages -%}
+{%- elif term.pages -%}
+	{%- set pages = term.pages -%}
+{%- else -%}
+    {%- set pages = [] -%}
+{%- endif -%}
 
 <div id="article-list">
 	{%- for page in pages %}
