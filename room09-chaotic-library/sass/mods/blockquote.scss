@@ -8,4 +8,9 @@ blockquote {
   & > p:last-child {
     margin-bottom: 0;
   }
+
+  &[class^="markdown-alert"]::after {
+    inset-block-start: .9rem;
+    inset-inline-start: 1rem;
+  }
 }
