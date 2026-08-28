@@ -22,3 +22,18 @@ command.define {
 }
 ```
 
+# Toggle plain text
+${widgets.commandButton("System: Reload")}
+
+```space-lua
+if editor.isMobile() then
+  editor.invokeCommand("Editor: Toggle Markdown Syntax Rendering")
+end
+
+actionButton.define {
+  icon = "eye",
+  run = function()
+    editor.invokeCommand("Editor: Toggle Markdown Syntax Rendering")
+  end
+}
+```
