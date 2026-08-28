@@ -22,6 +22,10 @@ function parse_inline_shortcode(body)
   local match_url = string.matchRegex(body, 'url\\(link="(?<url>.*?)"\\)')
   if match_url != nil then
     local url = match_url.groups.url
+
+    url = url:gsub("^https://github.com/", "")
+    url = url:gsub("/$", "")
+    
     render = dom.a {
       href = url,
       target = "_blank",
