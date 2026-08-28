@@ -28,6 +28,7 @@ window.wander = {
         'https://j3s.sh/',
         'https://leanrada.com/',
         'https://marighoul.com',
+        'http://keepeuh.fr/'
     ],
     // Websites and consoles to ignore.  My console will never fetch
     // consoles or web pages whose URLs match the following patterns.

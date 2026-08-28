@@ -21,7 +21,12 @@
 {%- else -%}
     {%- set pages = [] -%}
 {%- endif -%}
-{%- set number_of_posts = pages | length -%}
+
+{%- set number_of_posts = 0 -%}
+{%- for page in pages -%}
+	{%- if page.extra.rssclub or page.extra.public_draft -%} {% continue %} {%- endif -%}
+	{%- set_global number_of_posts = number_of_posts + 1 -%}
+{%- endfor -%}
 
 <h1>{{ section.title }}</h1>
 
