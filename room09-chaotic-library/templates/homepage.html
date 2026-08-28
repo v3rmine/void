@@ -8,20 +8,6 @@
 
 {{ section.content | safe }}
 
-<p>
-	<small>
-		{%- if config.taxonomies | length > 0 -%}
-		    {%- for taxon in config.taxonomies -%}
-			    {%- set taxon_name = taxon.name -%}
-			    <a href="{{- get_url(path='$TAXON', lang=lang) | replace(from="$TAXON", to=taxon.name) | lower -}}">
-					{{ macros_translate::translate(key='filter_by_taxon', default='Filter by $TAXON', language_strings=language_strings) | replace(from="$TAXON", to=taxon.name) }}
-			    </a>
-			    <br />
-			{%- endfor %}
-		{%- endif %}
-	</small>
-</p>
-
 {%- set for_section = get_section(path="garden/_index.md") -%}
 {%- set pages = for_section.pages -%}
 {%- set more_target = for_section.permalink -%}
