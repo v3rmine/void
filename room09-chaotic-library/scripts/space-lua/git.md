@@ -10,9 +10,9 @@ command.define {
     print("Error:", result.stderr)
     print("Exit code:", result.code)
     if result.code == 0 then
-      editor.flashNotification "Successfully pulled repo"
+      editor.flashNotification("Successfully pulled repo", "info")
     else
-      editor.flashNotification("Error pulling repo: " .. result.stderr)
+      editor.flashNotification("Error pulling repo: " .. result.stderr, "error")
     end
   end
 }
@@ -30,9 +30,9 @@ command.define {
     print("Error:", result.stderr)
     print("Exit code:", result.code)
     if result.code == 0 then
-      editor.flashNotification "Successfully pushed repo"
+      editor.flashNotification("Successfully pushed repo", "info")
     else
-      editor.flashNotification("Error pushing repo: " .. result.stderr)
+      editor.flashNotification("Error pushing repo: " .. result.stderr, "error")
     end
   end
 }
@@ -52,7 +52,7 @@ command.define {
     if result.code == 0 then
       editor.alert(result.stdout)
     else
-      editor.flashNotification("Error getting repo status: " .. result.stderr)
+      editor.flashNotification("Error getting repo status: " .. result.stderr, "error")
     end
   end
 }
@@ -75,9 +75,9 @@ command.define {
     print("Error:", result.stderr)
     print("Exit code:", result.code)
     if result.code == 0 then
-      editor.flashNotification "Successfully commited repo"
+      editor.flashNotification("Successfully commited repo", "info")
     else
-      editor.flashNotification("Error commiting repo: " .. result.stderr)
+      editor.flashNotification("Error commiting repo: " .. result.stderr, "error")
     end
   end
 }
@@ -95,9 +95,9 @@ command.define {
     print("Error:", result.stderr)
     print("Exit code:", result.code)
     if result.code == 0 then
-      editor.flashNotification "Successfully merged repo"
+      editor.flashNotification("Successfully merged repo", "info")
     else
-      editor.flashNotification("Error merging repo: " .. result.stderr)
+      editor.flashNotification("Error merging repo: " .. result.stderr, "error")
     end
   end
 }
