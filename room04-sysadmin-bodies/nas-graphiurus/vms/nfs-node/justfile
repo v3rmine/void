@@ -18,5 +18,5 @@ destroy:
 deploy:
   nixos-rebuild switch \
     --target-host root@10.0.0.15 \
-    -I nixos-config=./configuration.nix #\
-    # -I nixpkgs=channel:nixos-25.11
+    -I nixos-config=./configuration.nix \
+    -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/release-26.05.tar.gz

@@ -9,6 +9,14 @@ let
     ${pkgs.autorestic}/bin/autorestic -c /tmp/.autorestic.yml --ci cron > /var/log/autorestic.log 2>&1
     rm -f /tmp/.autorestic.yml
   '';
+  prune-autorestic = pkgs.writeShellScriptBin "prune-autorestic.sh" ''
+    # Merge location and backend autorestic confs
+    autorestic_conf="$(${pkgs.yq-go}/bin/yq eval-all '. as $item ireduce ({}; . * $item)' /etc/autorestic.yml /etc/autorestic-backends.yml | sed 's/"<<"/<</')"
+    echo "$autorestic_conf" > /tmp/.autorestic.yml
+
+    ${pkgs.autorestic}/bin/autorestic -c /tmp/.autorestic.yml forget --all > /var/log/autorestic.log 2>&1
+    rm -f /tmp/.autorestic.yml
+  '';
 in {
   system.stateVersion = "25.11";
   system.autoUpgrade.channel = "https://nixos.org/channels/nixos-25.11";
@@ -27,6 +35,7 @@ in {
     autorestic
     yq-go
     run-autorestic
+    prune-autorestic
   ];
 
   boot.kernelModules = [ "dm_crypt" ];
@@ -167,6 +176,7 @@ in {
     "0 5 * * * root journalctl --vacuum-size=256M"
     "0 4 * * * root nix-collect-garbage --delete-older-than 5d"
     "*/5 * * * * root ${run-autorestic}/bin/run-autorestic.sh"
+    "3 1 * * * root ${prune-autorestic}/bin/prune-autorestic.sh"
     # Run short SMART test once a day
     "0 5 * * * root ${pkgs.smartmontools}/bin/smartctl -t short /dev/sdb"
     "0 5 * * * root ${pkgs.smartmontools}/bin/smartctl -t short /dev/sda"
