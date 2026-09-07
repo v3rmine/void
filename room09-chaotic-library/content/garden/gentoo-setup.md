@@ -10,7 +10,7 @@ taxonomies:
     - en
 extra:
   public_draft: true
-  guid: ''
+  guid: 'cb749a1a-c4cb-40d9-8625-a3bd27ac6a70'
   lang: en
   toc: false
 ---

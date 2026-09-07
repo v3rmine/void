@@ -12,6 +12,8 @@
 	<title>{% include "partials/title.html" %}</title>
 	<link rel="canonical" href="{{ current_url | default(value='/') | safe }}" />
 
+	<link rel="human-json" href="/human.json">
+
 	{%- if config.extra.comments %}
 		<link rel="me" href="https://{{ config.extra.comments.host }}/@{{ config.extra.comments.user }}" />
         <meta name="fediverse:creator" content="@{{ config.extra.comments.user }}@{{ config.extra.comments.host }}" />

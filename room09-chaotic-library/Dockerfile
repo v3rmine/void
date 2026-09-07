@@ -3,7 +3,7 @@ COPY . /project
 WORKDIR /project
 ARG REPLACEMENT_DOMAIN=
 RUN if [ ! -z "${REPLACEMENT_DOMAIN}" ]; then \
-    sed -iE 's|^base_url = "https://astriiid.fr"|base_url = "http://kkpos3jxlzmovsxu4tpdj2rgfu5hwprefyyyxbmzmtjh5vcnltxfiiid.onion/"|' config.toml; \
+    sed -iE 's|^base_url = "https://astriiid.fr"|base_url = "'"$REPLACEMENT_DOMAIN"'"|' config.toml; \
     sed -iE 's|^base_url = "https://townsquare.astriiid.fr"|base_url = "blob:void"|' config.toml; \
 fi
 
