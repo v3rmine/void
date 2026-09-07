@@ -73,7 +73,7 @@ services:
       args:
         CACHE_BREAKER: 1213
         CACHE_ID: hidden-blog
-        REPLACEMENT_DOMAIN: kkpos3jxlzmovsxu4tpdj2rgfu5hwprefyyyxbmzmtjh5vcnltxfiiid.onion
+        REPLACEMENT_DOMAIN: http://astridoy2oropabiis37gjxfxrfcp7ig24gb32c6mbwuow3opstrasid.onion
     x-machines:
       - phloeomys
   tor-proxy:
@@ -81,7 +81,19 @@ services:
     # pull_policy: always
     depends_on:
       - hidden-website  
-    command: --RunAsDaemon 0 --HiddenServiceDir /var/lib/tor/onion --HiddenServicePort "80 hidden-website:80"
+    # Can add both of those if server ip doesn't need to be hidded
+    # --HiddenServiceSingleHopMode 1
+    # --HiddenServiceNonAnonymousMode 1
+    command: >
+      --RunAsDaemon 0 
+      --HiddenServiceDir /var/lib/tor/onion 
+      --HiddenServicePort "80 hidden-website:80"
+      --HiddenServiceSingleHopMode 1
+      --HiddenServiceNonAnonymousMode 1
+      --SOCKSPort 0
+      --HiddenServiceMaxStreams 50
+      --HiddenServiceMaxStreamsCloseCircuit 1
+      --HiddenServiceNumIntroductionPoints 6
     volumes:
       - tor-data:/var/lib/tor
     x-machines:
