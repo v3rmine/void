@@ -21,5 +21,7 @@ extra:
 Lu la salope éthique
 {{ image(url="/media/multiamory-book.jpg", alt="Couverture du livre Multiamory - Essential Tools for Modern Relationships", height=400, full_size=true) }}
 
+Sushi VG c'était surprenant mais très bon !
+
 Implémenté un [plugin](https://git.v3rm.in/v3rmine/silverbullet-config-file-editor/) pour éditer les fichiers toml et yaml directement dans SilverBullet et c'était une purge la doc était vraiment pas clair la dessus donc fallait se baser sur les codes sources de {{ url(link="https://github.com/MrMugame/silverbullet-pdf/") }} et {{ url(link="https://github.com/LogeshG5/silverbullet-excalidraw/") }} (1j de taff...)
 
