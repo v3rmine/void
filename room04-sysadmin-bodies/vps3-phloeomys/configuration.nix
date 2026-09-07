@@ -12,6 +12,15 @@ let
     ${pkgs.autorestic}/bin/autorestic -c /tmp/.autorestic.yml --ci cron > /var/log/autorestic.log 2>&1
     rm -f /tmp/.autorestic.yml
   '';
+  
+  prune-autorestic = pkgs.writeShellScriptBin "prune-autorestic.sh" ''
+    # Merge location and backend autorestic confs
+    autorestic_conf="$(${pkgs.yq-go}/bin/yq eval-all '. as $item ireduce ({}; . * $item)' /etc/autorestic.yml /etc/autorestic-backends.yml | sed 's/"<<"/<</')"
+    echo "$autorestic_conf" > /tmp/.autorestic.yml
+
+    ${pkgs.autorestic}/bin/autorestic -c /tmp/.autorestic.yml forget --all > /var/log/autorestic.log 2>&1
+    rm -f /tmp/.autorestic.yml
+  '';
 
   fill-blocklists-fast = pkgs.writeShellScriptBin "fill-blocklists-fast.sh" ''
     # Ensure lists exists
@@ -252,6 +261,7 @@ in {
     restic
     autorestic
     run-autorestic
+    prune-autorestic
     yq-go
     uncloud
     custom-newt
@@ -352,6 +362,12 @@ in {
               exclude-file: /persist/mnt/drive/.backup-ignore
             forget:
               <<: *backup-policy
+        personal-website:
+          <<: *standard
+          from:
+            - /persist/var/lib/docker/volumes/tor-data
+            - /persist/var/lib/docker/volumes/townsquare-data
+          cron: '0 * * * *'
     '';
   };
 
@@ -635,6 +651,7 @@ in {
   services.cron.systemCronJobs = [
     "0 * * * * root journalctl --vacuum-size=512M"
     "*/5 * * * * root ${run-autorestic}/bin/run-autorestic.sh"
+    "3 1 * * * root ${prune-autorestic}/bin/prune-autorestic.sh"
     "*/5 * * * * root ${fill-blocklists-fast}/bin/fill-blocklists-fast.sh"
     "3-59/15 * * * * root ${fill-blocklists-slow}/bin/fill-blocklists-slow.sh"
     "0 0 * * MON root ${flush-blocklists}/bin/flush-blocklists.sh"
