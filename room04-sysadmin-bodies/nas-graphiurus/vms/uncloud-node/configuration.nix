@@ -10,6 +10,15 @@ let
     rm -f /tmp/.autorestic.yml
   '';
 
+  prune-autorestic = pkgs.writeShellScriptBin "prune-autorestic.sh" ''
+    # Merge location and backend autorestic confs
+    autorestic_conf="$(${pkgs.yq-go}/bin/yq eval-all '. as $item ireduce ({}; . * $item)' /etc/autorestic.yml /etc/autorestic-backends.yml | sed 's/"<<"/<</')"
+    echo "$autorestic_conf" > /tmp/.autorestic.yml
+
+    ${pkgs.autorestic}/bin/autorestic -c /tmp/.autorestic.yml forget --all > /var/log/autorestic.log 2>&1
+    rm -f /tmp/.autorestic.yml
+  '';
+
   uncloud = pkgs.stdenv.mkDerivation rec {
     pname = "uncloud";
     version = "0.17.0";
@@ -72,6 +81,7 @@ in {
     autorestic
     yq-go
     run-autorestic
+    prune-autorestic
     uncloud
     iptables
     custom-newt
@@ -264,6 +274,7 @@ in {
   services.cron.systemCronJobs = [
     "0 5 * * * root journalctl --vacuum-size=128M"
     "*/5 * * * * root ${run-autorestic}/bin/run-autorestic.sh"
+    "3 1 * * * root ${prune-autorestic}/bin/prune-autorestic.sh"
   ];
 
   virtualisation = {
