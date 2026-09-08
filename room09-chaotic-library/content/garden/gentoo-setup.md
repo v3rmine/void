@@ -8,12 +8,20 @@ include_in_feeds: false
 taxonomies:
   tags:
     - en
+  series: [gentoo]
 extra:
   public_draft: true
   guid: 'cb749a1a-c4cb-40d9-8625-a3bd27ac6a70'
   lang: en
   toc: false
 ---
+
+> [!NOTE]
+> **this is an experimental post format i'm trying**
+>
+> i wanted to share things i did/problems i encountered without putting any pression in the write-up to keep it more like notes that i write alongside my work
+>
+> the main target is **me** _(in the future)_ when i'll work on the same thing again and ask myself what i did
 
 i have a really flaky USB key so i booted the live image in RAM (cached version). i also had issues because the iso was visually written in like 10s on the USB key but it easily needed 5min do really write it and empty the caches using `sync` command {{ customoji(name="SmileBecauseThisIsFine") }}
 
@@ -75,3 +83,7 @@ it's time for some kernel installation with grub, initramfs and the prebuilt `sy
 we keep it simple for the system logging using `emerge --ask app-admin/sysklogd`
 
 we keep the cron daemon classic with cronie `emerge --ask sys-process/cronie`
+
+for the boot i'll keep what i know with grub without secure-boot
+
+and that's it! i'll try all of that another day because it's already late {{ customoji(name="personas/astrid/Sleep Normal")}}

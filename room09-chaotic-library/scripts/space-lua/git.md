@@ -102,3 +102,23 @@ command.define {
   end
 }
 ```
+
+# Git fix ownership
+${widgets.commandButton("System: Reload")}
+
+```space-lua
+command.define {
+  name = "Git: Fix void ownership",
+  run = function()
+    local result = shell.run('sh', {"-c", 'cd void && git config --global --add safe.directory /space/void && mkdir -p ~/.ssh && ssh-keyscan git.v3rm.in >> ~/.ssh/known_hosts'})
+    print("Output:", result.stdout)
+    print("Error:", result.stderr)
+    print("Exit code:", result.code)
+    if result.code == 0 then
+      editor.flashNotification("Successfully fixed repo", "info")
+    else
+      editor.flashNotification("Error merging repo: " .. result.stderr, "error")
+    end
+  end
+}
+```
