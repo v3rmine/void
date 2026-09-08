@@ -13,5 +13,6 @@ extra:
   public_draft: true
   guid: ''
   lang: en
+  comments: { host: tracto.pl, id: '', type: misskey }
   toc: false
 ---

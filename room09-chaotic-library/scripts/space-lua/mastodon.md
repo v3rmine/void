@@ -1,3 +1,8 @@
+---
+extra:
+  comments: { host: tracto.pl, id: '' }
+---
+
 ```space-lua
 virtualPage.define {
   pattern = "oauth:mastodon:(.+)",
@@ -25,6 +30,52 @@ function get_mastodon_settings()
     config = config.get({ "mastodon", domain })
   }
 end
+
+function upload_file_to_mastodon(file, base_url, access_token)
+  local file_name = file.meta.name:gsub(".*/([^/]+)", "%1")
+
+  local form_border = "------------------------border"
+  local form = js.new(js.window.Blob, {
+    "--"..form_border.."\r\n",
+    "Content-Disposition: form-data; name=\"file\"; filename=\""..file_name.."\"\r\n",
+    "Content-Type: "..file.meta.contentType.."\r\n\r\n",
+    file.data,
+    "\r\n--"..form_border.."--\r\n"
+  })
+  
+  local result = net.proxyFetch(base_url.."/api/v2/media", {
+    method = "POST",
+    headers = {
+      ["Content-Type"] = "multipart/form-data; boundary="..form_border,
+      ["Authorization"] = "Bearer "..access_token,
+    },
+    body = form.bytes()
+  })
+
+  return result
+end
+```
+
+{{ image(url="/media/2026-04-02-sleeping-spritz.jpg") }}
+{{ image(url="/media/88x31/gayweb.gif") }}
+
+```space-lua
+local images = {}
+for image in index.extractFrontmatter(editor.getText(), { removeFrontMatterSection = true }).text:gmatch("{{ ?image%([^)]+%) ?}}") do 
+  local image_path = image:gsub(".*url=\"([^\"]+)\".*", "%1")
+  table.insert(images, image_path)
+end
+
+local file = space.readFileWithMeta("void/room09-chaotic-library/static/media/88x31/gayweb.gif")
+
+local mastodon_settings = get_mastodon_settings()
+local base_url = mastodon_settings.base_url
+local mastodon_domain = mastodon_settings.domain
+local mastodon_config = mastodon_settings.config
+
+local result = upload_file_to_mastodon(file, base_url, mastodon_config.acces_token)
+
+print(result)
 ```
 
 # Mastodon Register app

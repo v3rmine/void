@@ -13,6 +13,6 @@ taxonomies:
 extra:
   guid: ''
   lang: fr
-  comments: { host: tracto.pl, id: '', type: misskey }
+  comments: { host: eldritch.cafe, id: '' }
 ---
 
