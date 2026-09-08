@@ -18,7 +18,7 @@ let
     autorestic_conf="$(${pkgs.yq-go}/bin/yq eval-all '. as $item ireduce ({}; . * $item)' /etc/autorestic.yml /etc/autorestic-backends.yml | sed 's/"<<"/<</')"
     echo "$autorestic_conf" > /tmp/.autorestic.yml
 
-    ${pkgs.autorestic}/bin/autorestic -c /tmp/.autorestic.yml forget --all > /var/log/autorestic.log 2>&1
+    ${pkgs.autorestic}/bin/autorestic -c /tmp/.autorestic.yml forget --all --prune > /var/log/autorestic.log 2>&1
     rm -f /tmp/.autorestic.yml
   '';
 
