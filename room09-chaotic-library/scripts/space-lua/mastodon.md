@@ -1,8 +1,3 @@
----
-extra:
-  comments: { host: tracto.pl, id: '' }
----
-
 ```space-lua
 virtualPage.define {
   pattern = "oauth:mastodon:(.+)",
@@ -31,17 +26,29 @@ function get_mastodon_settings()
   }
 end
 
-function upload_file_to_mastodon(file, base_url, access_token)
+function upload_file_to_mastodon(file, base_url, access_token, alt)
   local file_name = file.meta.name:gsub(".*/([^/]+)", "%1")
 
   local form_border = "------------------------border"
-  local form = js.new(js.window.Blob, {
+  local parts = {
     "--"..form_border.."\r\n",
     "Content-Disposition: form-data; name=\"file\"; filename=\""..file_name.."\"\r\n",
     "Content-Type: "..file.meta.contentType.."\r\n\r\n",
     file.data,
-    "\r\n--"..form_border.."--\r\n"
-  })
+    "\r\n"
+  }
+
+  print(file_name, alt)
+  if alt then
+    table.insert(parts, "--"..form_border.."\r\n")
+    table.insert(parts, "Content-Disposition: form-data; name=\"description\"\r\n\r\n")
+    table.insert(parts, alt)
+    table.insert(parts, "\r\n")
+  end
+  
+  table.insert(parts, "--"..form_border.."--\r\n")
+  
+  local form = js.new(js.window.Blob, parts)
   
   local result = net.proxyFetch(base_url.."/api/v2/media", {
     method = "POST",
@@ -54,28 +61,6 @@ function upload_file_to_mastodon(file, base_url, access_token)
 
   return result
 end
-```
-
-{{ image(url="/media/2026-04-02-sleeping-spritz.jpg") }}
-{{ image(url="/media/88x31/gayweb.gif") }}
-
-```space-lua
-local images = {}
-for image in index.extractFrontmatter(editor.getText(), { removeFrontMatterSection = true }).text:gmatch("{{ ?image%([^)]+%) ?}}") do 
-  local image_path = image:gsub(".*url=\"([^\"]+)\".*", "%1")
-  table.insert(images, image_path)
-end
-
-local file = space.readFileWithMeta("void/room09-chaotic-library/static/media/88x31/gayweb.gif")
-
-local mastodon_settings = get_mastodon_settings()
-local base_url = mastodon_settings.base_url
-local mastodon_domain = mastodon_settings.domain
-local mastodon_config = mastodon_settings.config
-
-local result = upload_file_to_mastodon(file, base_url, mastodon_config.acces_token)
-
-print(result)
 ```
 
 # Mastodon Register app
@@ -103,7 +88,7 @@ command.define {
       body = {
         client_name = "Silverbullet",
         redirect_uris = "https://notes-oauth.astriiid.fr/oauth:mastodon",
-        scopes = "write:statuses"
+        scopes = "write:statuses write:media"
       }
     })
     
@@ -142,7 +127,7 @@ command.define {
       return
     end
     
-    js.window.open(base_url.."/oauth/authorize?client_id="..mastodon_config.client_key.."&scope=write&redirect_uri=https://notes-oauth.astriiid.fr/oauth:mastodon&response_type=code", nil, "popup")
+    js.window.open(base_url.."/oauth/authorize?client_id="..mastodon_config.client_key.."&scope=write:statuses+write:media&redirect_uri=https://notes-oauth.astriiid.fr/oauth:mastodon&response_type=code", nil, "popup")
     local authorization_code = editor.prompt("Authorization Code?")
     
     local result = net.proxyFetch(base_url.."/oauth/token", {
@@ -211,13 +196,14 @@ command.define {
     local status = index.extractFrontmatter(editor.getText(), { 
       removeFrontMatterSection = true 
     }).text
+    status = status:gsub(" *{{ *image%([^)]+%) *}} *", "")
     
     local visibility = editor.filterBox("Status visibility:", {
       { name = "Public", value = "public" },
       { name = "Non listé", value = "unlisted" },
       { name = "Followers seulement", value = "private" },
       { name = "Privé", value = "direct" }
-    })
+    }).value
     if not visibility then
       visibility = "unlisted"
     end
@@ -225,11 +211,74 @@ command.define {
     local lang = editor.filterBox("Language:", {
       { name = "Français", value = "fr" },
       { name = "Anglais", value = "en" }
-    })
+    }).value
+
+    local in_reply_to_id = nil
+    if editor.getCurrentPage().startsWith("void/room09-chaotic-library/content/thoughts/") then
+      local thoughts = query[[
+        from p = index.pages()
+        where 
+          p.name.startsWith("void/room09-chaotic-library/content/thoughts/") 
+          and p.extra 
+          and p.extra.comments 
+          and p.extra.comments.id
+          and string.len(p.extra.comments.id) > 0
+      ]]
+      if thoughts[1] then
+        local options = {}
+        for thought in thoughts do
+          table.insert(options, {
+            name = thought.title,
+            description = thought.name,
+            value = thought.extra.comments.id
+          })
+        end
+        in_reply_to_id = editor.filterBox("In reply to:", options).value
+      end
+    end
 
     if not editor.confirm("Are you sure you want to post:"..status) then
       return
     end
+
+    local images = {}
+    for image in index.extractFrontmatter(editor.getText(), { removeFrontMatterSection = true }).text:gmatch("{{ ?image%([^)]+%) ?}}") do 
+      local match_image = string.matchRegex(image, 'url="(?<url>.*?)"(?:, *alt="(?<alt>.*?)")?')
+    
+      if not match_image then
+        goto continue
+      end
+      
+      local image_path = match_image.groups.url
+      local image_alt = match_image.groups.alt
+      table.insert(images, { path = image_path, alt = image_alt})
+      
+      ::continue::
+    end
+    
+    media_ids = {}
+    for image in images do
+      local file = space.readFileWithMeta("void/room09-chaotic-library/static"..image.path)
+      
+      local result = upload_file_to_mastodon(file, base_url, mastodon_config.access_token, image.alt)
+      print(result)
+      
+      if result.status == 200 then
+          table.insert(media_ids, result.body.id) 
+        elseif result.status > 400 then
+          editor.flashNotification("Shit Happened while uploading image: "..result.body.error, "error")
+        else
+          editor.flashNotification("Unhandled code while uploading image: "..result.status, "warning")
+        end
+    end
+
+    print({
+      status = status,
+      visibility = visibility,
+      language = lang,
+      media_ids = media_ids,
+      in_reply_to_id = in_reply_to_id,
+    })
     
     local result = net.proxyFetch(base_url.."/api/v1/statuses", {
       method = "POST",
@@ -242,6 +291,8 @@ command.define {
         status = status,
         visibility = visibility,
         language = lang,
+        media_ids = media_ids,
+        in_reply_to_id = in_reply_to_id,
       }
     })
     print(result)
@@ -292,7 +343,7 @@ command.define {
       return
     end
     
-    local result = net.proxyFetch(base_url.."/api/v1/statuses/"..comments_id, {
+    local result = net.proxyFetch(base_url.."/api/v1/statuses/"..comments_id.."?delete_media=true", {
       method = "DELETE",
       headers = {
         ["Accept"] = "application/json",
