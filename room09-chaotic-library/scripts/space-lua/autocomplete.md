@@ -45,6 +45,56 @@ event.listen {
 }
 ```
 
+# Complete @ links
+```space-lua
+event.listen {
+  name = "editor:complete",
+  run = function(e)
+    local linePrefix = e.data.linePrefix or ""
+    local pos = e.data.pos or 0
+
+    local match_prefix = "@/"
+    local match = linePrefix:match(match_prefix.."([a-zA-Z0-9_]*)$")
+    if not match then
+      return
+    end
+  
+    local media = query[[ 
+      from p = index.pages()
+      where p.name:startsWith("void/room09-chaotic-library/content/")
+    ]]
+    local opts = {}
+  
+    for _, p in ipairs(media) do
+      local label = p.ref:gsub("^void/room09%-chaotic%-library/content/", "")
+      label = label..".md"
+      local completionText = p.ref:gsub("^void/room09%-chaotic%-library/content/", "")
+      completionText = completionText..".md"
+  
+      table.insert(opts, {
+        label = label,
+        detail = p.ref,
+        apply = function()
+          editor.dispatch({
+            changes = {
+              from = pos - match:len(),
+              to = pos,
+              insert = completionText
+            }
+          })
+        end
+      })
+    end
+
+    return {
+      from = pos - string.len(match),
+      options = opts
+    }
+  end
+}
+```
+
+
 # Complete customoji
 ```space-lua
 event.listen {
