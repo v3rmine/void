@@ -40,6 +40,10 @@ J'ai enfin réglé le problème de mes backups {{ al(k="autorestic") }} qui gros
 > [!TIP]
 >  Avec beaucoup de `locations` dans autorestic, c'est beaucoup plus rapide de faire d'abord un `forget` et ensuite d'utiliser `exec -- prune` (pour appeler le prune de {{ al(k="restic") }}) plutôt que d'utiliser `forget --prune` (l'option d'autorestic va supprimer les données non utilisées à chaque nouvelle `location` plutôt qu'en une fois)
 
+Ajout de [Townsquare](https://townsquare.cauenapier.com/) dans le footer du site !
+
+Ajout d'une [room matrix](https://matrix.to/#/#astriiid.fr:m.v3rm.in) pour le blog c'est une option de plus pour me poser des questions en dehors de mastodon ~
+
 ---
 
 J'ai eu droit à un bug fameux sur le site, qui n'impactait "que" chrome et tout ses dérivés et connu depuis 2018 ! [Background-clip: text does not work with position: relative or absolute](https://issues.chromium.org/issues/41385122), un bug que je ne peux bien sûr pas contourner mais qui bonne nouvelle viens d'être patché ! {{ customoji(name="personas/astrid/Sparkling 1") }} <small>(enfin en Juin dans à partir de la version `150.0.7871.0`)</small>  
