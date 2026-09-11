@@ -24,6 +24,7 @@ function parse_inline_shortcode(body)
     local url = match_url.groups.url
 
     url = url:gsub("^https://github.com/", "")
+    url = url:gsub("^https?://", "")
     url = url:gsub("/$", "")
     
     render = dom.a {

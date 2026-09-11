@@ -25,7 +25,8 @@
 "https://github.com/lxc/lxc" = ["LXC"]
 "https://bhyve.org/" = ["Bhyve"]
 "https://activitypub.rocks/" = ["ActivityPub"]
-"https://github.com/silverbulletmd/silverbullet" = ["SilverBullet"]
+"https://github.com/silverbulletmd/silverbullet" = ["SilverBullet", "SB"]
+"https://activitypub.software/TransFem-org/Sharkey" = ["Sharkey"]
 
 # Services
 "https://kagi.com/" = ["Kagi"]

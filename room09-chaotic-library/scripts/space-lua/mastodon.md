@@ -11,17 +11,20 @@ virtualPage.define {
 
 ```space-lua
 function get_mastodon_settings()
-  local frontmatter = index.extractFrontmatter(editor.getText()).frontmatter
+  local frontmatter = editor.getCurrentPageMeta()
   local domain = config.get("mastodon.domain")
+  local id = nil
   if frontmatter and frontmatter.extra then
     if frontmatter.extra.comments then
       domain = frontmatter.extra.comments.host
+      id = frontmatter.extra.comments.id
     end
   end
 
   return {
     base_url = "https://"..domain,
     domain = domain,
+    id = id,
     config = config.get({ "mastodon", domain })
   }
 end
@@ -175,14 +178,7 @@ command.define {
       return
     end
     
-    local frontmatter = index.extractFrontmatter(editor.getText()).frontmatter
-    local comments_id = nil
-    if frontmatter and frontmatter.extra then
-      if frontmatter.extra.comments then
-        comments_id = frontmatter.extra.comments.id
-      end
-    end
-
+    local comments_id = mastodon_config.id
     if comments_id and string.len(comments_id) > 0 then
       editor.flashNotification("There's already a post linked to this note", "warning")
       return
@@ -325,14 +321,7 @@ command.define {
       return
     end
     
-    local frontmatter = index.extractFrontmatter(editor.getText()).frontmatter
-    local comments_id = nil
-    if frontmatter and frontmatter.extra then
-      if frontmatter.extra.comments then
-        comments_id = frontmatter.extra.comments.id
-      end
-    end
-
+    local comments_id = mastodon_config.id
     if not comments_id or string.len(comments_id) == 0 then
       editor.flashNotification("There's no post linked to this note", "warning")
       return
@@ -382,14 +371,8 @@ command.define {
       return
     end
     
-    local frontmatter = index.extractFrontmatter(editor.getText()).frontmatter
-    local comments_id = nil
-    if frontmatter and frontmatter.extra then
-      if frontmatter.extra.comments then
-        comments_id = frontmatter.extra.comments.id
-      end
-    end
-
+    local frontmatter = editor.getCurrentPageMeta()
+    local comments_id = mastodon_config.id
     if comments_id and string.len(comments_id) > 0 then
       editor.flashNotification("There's already a post linked to this note", "warning")
       return
