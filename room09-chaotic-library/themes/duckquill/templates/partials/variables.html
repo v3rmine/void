@@ -1,47 +1,47 @@
 <style type="text/css">
 	:root {
-		{%- if page.extra.accent_color -%}
-			--accent-color: {{ page.extra.accent_color | safe }};
-		{%- elif section.extra.accent_color -%}
-			--accent-color: {{ section.extra.accent_color | safe }};
+		{%- if page?.extra?.accent_color -%}
+			--accent-color: {{ page?.extra?.accent_color | safe }};
+		{%- elif section?.extra?.accent_color -%}
+			--accent-color: {{ section?.extra?.accent_color | safe }};
 		{%- else -%}
-			--accent-color: {{ config.extra.accent_color | default(value="#6f8396") | safe }};
+			--accent-color: {{ config.extra?.accent_color | default(value="#6f8396") | safe }};
 		{%- endif -%}
 	}
 
-	{%- if page.extra.accent_color_dark -%}
+	{%- if page?.extra?.accent_color_dark -%}
 		[data-theme="dark"] {
-			--accent-color: {{ page.extra.accent_color_dark | safe }};
+			--accent-color: {{ page?.extra?.accent_color_dark | safe }};
 		}
 
 		@media (prefers-color-scheme: dark) {
 			:root:not([data-theme="light"]) {
-				--accent-color: {{ page.extra.accent_color_dark | safe }};
+				--accent-color: {{ page?.extra?.accent_color_dark | safe }};
 			}
 		}
-	{%- elif section.extra.accent_color_dark -%}
+	{%- elif section?.extra?.accent_color_dark -%}
 		[data-theme="dark"] {
-			--accent-color: {{ section.extra.accent_color_dark | safe }};
+			--accent-color: {{ section?.extra?.accent_color_dark | safe }};
 		}
 
 		@media (prefers-color-scheme: dark) {
 			:root:not([data-theme="light"]) {
-				--accent-color: {{ section.extra.accent_color_dark | safe }};
+				--accent-color: {{ section?.extra?.accent_color_dark | safe }};
 			}
 		}
-	{%- elif config.extra.accent_color_dark -%}
+	{%- elif config.extra?.accent_color_dark -%}
 		[data-theme="dark"] {
-			--accent-color: {{ config.extra.accent_color_dark | safe }};
+			--accent-color: {{ config.extra?.accent_color_dark | safe }};
 		}
 
 		@media (prefers-color-scheme: dark) {
 			:root:not([data-theme="light"]) {
-				--accent-color: {{ config.extra.accent_color_dark | safe }};
+				--accent-color: {{ config.extra?.accent_color_dark | safe }};
 			}
 		}
 	{%- endif -%}
 
-	{%- if config.extra.debug.layout -%}
+	{%- if config.extra?.debug?.layout -%}
 		*,
 		*::before,
 		*::after {

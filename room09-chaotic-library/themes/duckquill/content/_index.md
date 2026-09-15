@@ -3,14 +3,14 @@ insert_anchor_links = "left"
 title = "Home"
 +++
 
-{% crt() %}
+{% <crt> %}
 ```
       _          _          _          _          _
     >(')____,  >(')____,  >(')____,  >(')____,  >(') ___,
       (` =~~/    (` =~~/    (` =~~/    (` =~~/    (` =~~/
 jgs~^~^`---'~^~^~^`---'~^~^~^`---'~^~^~^`---'~^~^~^`---'~^~^~
 ```
-{% end %}
+{% </crt> %}
 
 # Duckquill
 
@@ -29,7 +29,7 @@ Some of the features Duckquill has to offer:
 - Everything is tinted with the user-defined accent color for a pleasant look.
 - GitHub-style alerts. Yes, they're pretty, but don't overuse them. 
 - Post banners; they're even used in the social media cards!
-- YouTube/Vimeo shortcodes for easy video embedding.
+- YouTube/Vimeo embeds for easy video embedding.
 - Tiny by default; only ~100kB. Take that, 5MB Medium!
 - Customizable copyright text; you Better Quack Soul!
 - Image styling via URL. Yes, you read that right.
@@ -41,9 +41,8 @@ Some of the features Duckquill has to offer:
 - Copy button for code blocks.
 - Search functionality.
 
-{% alert(tip=true) %}
-If you use Duckquill and enjoy it, or just like my work, please consider [buying me a coffee](https://daudix.one/coffee/), it would mean the world to me ^^.
-{% end %}
+> [!TIP]
+> If you use Duckquill and enjoy it, or just like my work, please consider [buying me a coffee](https://daudix.one/coffee/), it would mean the world to me ^^.
 
 ## Installation
 
@@ -60,9 +59,8 @@ Otherwise, simply clone it to your `themes` directory:
 git clone https://codeberg.org/daudix/duckquill.git themes/duckquill
 ```
 
-{% alert(important=true) %}
-It is highly recommended to switch from the `main` branch to the latest release:
-{% end %}
+> [!IMPORTANT]
+> It is highly recommended to switch from the `main` branch to the latest release:
 
 ```bash
 cd themes/duckquill
@@ -83,9 +81,8 @@ cd themes/duckquill
 git checkout tags/v6.3.0
 ```
 
-{% alert(important=true) %}
-Check the changelog for all versions after the one you are using; there may be breaking changes that require manual involvement.
-{% end %}
+> [!IMPORTANT]
+> Check the changelog for all versions after the one you are using; there may be breaking changes that require manual involvement.
 
 ## Options
 
@@ -219,7 +216,7 @@ Files named `favicon.png` and `apple-touch-icon.png` are used as favicon and App
 - [gregorni.gitlab.io](https://gregorni.gitlab.io)
 - [harrypotterexplained.com](http://harrypotterexplained.com)
 - [hyouteki.github.io](https://hyouteki.github.io)
-- [ikergimenez.neocities.org](https://ikergimenez.neocities.org)
+- [ikergimenez.com](https://ikergimenez.com)
 - [kaipeacock.com](https://kaipeacock.com)
 - [larrabyte.dev](https://larrabyte.dev)
 - [lifailon.github.io](https://lifailon.github.io)

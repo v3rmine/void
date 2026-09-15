@@ -1,18 +1,14 @@
-{%- if page.extra.toc_ordered or section.extra.toc_ordered or config.extra.toc_ordered -%}
+{%- if page?.extra?.toc_ordered or section?.extra?.toc_ordered or config.extra?.toc_ordered -%}
 	{%- set list_element = "ol" -%}
 {%- else -%}
 	{%- set list_element = "ul" -%}
 {%- endif -%}
 
-{%- if page.toc -%}
-    {%- set toc = page.toc -%}
-{%- elif section.toc -%}
-    {%- set toc = section.toc -%}
-{%- endif -%}
+{%- set toc = page?.toc or section?.toc or [] -%}
 
-{%- if page.extra.toc or section.extra.toc -%}
+{%- if page?.extra?.toc or section?.extra?.toc -%}
 	{%- if toc | length > 0 -%}
-		<h2>{{ macros_translate::translate(key="table_of_contents", default="Table of Contents", language_strings=language_strings) }}</h2>
+		<h2>{{ <translate key="table_of_contents" default="Table of Contents" language_strings /> }}</h2>
 		<{{ list_element }}>
 			{%- for h1 in toc -%}
 				<li>

@@ -52,10 +52,9 @@ user = "sungsphinx"
 id = "111789185826519979"
 +++
 
-{% alert(tip=true) %}
-Recommended banner dimensions are 2:1 aspect ratio and 1920x960 resolution.  
+> [!TIP]
+> Recommended banner dimensions are 2:1 aspect ratio and 1920x960 resolution.  
 Other sizes will also work, but will be cut off at the bottom/won't be high enough.
-{% end %}
 
 ## The what?
 

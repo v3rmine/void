@@ -1,2 +1,0 @@
-{% set inline = inline | default(value=false) %}
-{{ content | default(value=body | safe) | markdown(inline=inline) | safe }}

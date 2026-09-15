@@ -1,12 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-{%- set date_format = macros_translate::translate(key="date_format", default="%B %d, %Y", language_strings=language_strings) -%}
-{%- set date_locale = macros_translate::translate(key="date_locale", default="en_US", language_strings=language_strings) -%}
-{%- set rel_attributes = macros_rel_attributes::rel_attributes() | trim -%}
+{%- set date_format = <translate key="date_format" default="%B %d, %Y" language_strings /> -%}
 {%- set series_meta = load_data(path="/series.toml") -%}
 
-{%- if page.extra.toc_ordered or section.extra.toc_ordered or config.extra.toc_ordered -%}
+{%- if page?.extra?.toc_ordered or section?.extra?.toc_ordered or config.extra.toc_ordered -%}
 	{%- set list_element = "ol" -%}
 {%- else -%}
 	{%- set list_element = "ul" -%}
@@ -28,15 +26,15 @@
 		{%- if page.date -%}
 			<p>
 				<small>
-					<time class="dt-published" datetime="{{ page.date | date(format=' %+') }}">
-						{{- macros_translate::translate(key="published", default="Published on", language_strings=language_strings) }}
-						{{ page.date | date(format=date_format, locale=date_locale) -}}
+					<time class="dt-published" datetime="{{ page.date | date(format='%Y-%m-%dT%H:%M:%S') }}">
+						{{- <translate key="published" default="Published on" language_strings /> }}
+						{{ page.date | date(format=date_format) -}}
 					</time>
 					{%- if page.updated -%}
 						<span> {{ config.extra.separator | default(value="•") }} </span>
-						<time class="dt-updated" datetime="{{ page.updated | date(format=' %+') }}">
-							{{- macros_translate::translate(key="updated", default="Updated on", language_strings=language_strings) }}
-							{{ page.updated | date(format=date_format, locale=date_locale) -}}
+						<time class="dt-updated" datetime="{{ page.updated | date(format='%Y-%m-%dT%H:%M:%S') }}">
+							{{- <translate key="updated" default="Updated on" language_strings /> }}
+							{{ page.updated | date(format=date_format) -}}
 						</time>
 					{%- endif -%}
 				</small>
@@ -59,7 +57,7 @@
     					{%- endif -%}
 
     					{%- if config.extra.show_reading_time -%}
-    						<span>{{ macros_translate::translate(key="minutes_read", number=page.reading_time, default="$NUMBER minute read", language_strings=language_strings) }}</span>
+    						<span>{{ <translate key="minutes_read" number={page.reading_time} default="$NUMBER minute read" language_strings /> }}</span>
     						{%- if page.taxonomies -%}
     							<span> {{ config.extra.separator | default(value="•") }} </span>
     						{%- endif -%}
@@ -72,9 +70,11 @@
     			{%- for name, taxon in page.taxonomies %}
 					{%- if name in ["tags"] %}
 						<ul class="tags">
-							<li><a class="tag label" href="{{- get_url(path=name, lang=lang) | lower -}}">{{ macros_translate::translate(key=name, default=name, language_strings=language_strings) }}:</a></li>
+							<li><a class="tag label" href="{{- get_url(path=name, lang=lang) | lower -}}">
+								{{ <translate key={name} default={name} language_strings /> }}:
+							</a></li>
 							{%- for item in taxon -%}
-								<li><a class="p-category tag" href="{{ get_taxonomy_url(kind=name, name=item, lang=lang) }}">{{ item }}</a></li>
+								<li><a class="p-category tag" href="{{ get_taxonomy_url(kind=name, term=item, lang=lang) }}">{{ item }}</a></li>
 							{%- endfor %}
 						</ul>
 						<br />
@@ -87,9 +87,9 @@
 	<div id="buttons-container">
 		{%- if page.extra.toc and page.toc | length > 0 -%}
 			<details id="toc" class="closable">
-				<summary title="{{ macros_translate::translate(key='table_of_contents', default='Table of Contents', language_strings=language_strings) }}"><i class="icon"></i></summary>
+				<summary title="{{ <translate key='table_of_contents' default='Table of Contents' language_strings /> }}"><i class="icon"></i></summary>
 				<div>
-					<strong class="title">{{ macros_translate::translate(key="table_of_contents", default="Table of Contents", language_strings=language_strings) }}</strong>
+					<strong class="title">{{ <translate key="table_of_contents" default="Table of Contents" language_strings /> }}</strong>
 					<div>
 						<{{ list_element }}>
 							{%- for h1 in page.toc -%}
@@ -113,9 +113,9 @@
 		{%- endif -%}
 		{%- if config.extra.show_backlinks and page.backlinks | length > 0 -%}
 			<details id="backlinks" class="closable">
-				<summary title="{{ macros_translate::translate(key='backlinks', default='Backlinks', language_strings=language_strings) }}"><i class="icon"></i></summary>
+				<summary title="{{ <translate key='backlinks' default='Backlinks' language_strings /> }}"><i class="icon"></i></summary>
 				<div>
-					<strong class="title">{{ macros_translate::translate(key="backlinks", default="Backlinks", language_strings=language_strings) }}</strong>
+					<strong class="title">{{ <translate key="backlinks" default="Backlinks" language_strings /> }}</strong>
 					<div>
 						<ul>
 							{%- for backlink in page.backlinks -%}
@@ -128,12 +128,12 @@
 				</div>
 			</details>
 		{%- endif -%}
-		<a id="go-to-top" href="#top" title="{{ macros_translate::translate(key='go_to_top', default='Go to Top', language_strings=language_strings) }}"><i class="icon"></i></a>
+		<a id="go-to-top" href="#top" title="{{ <translate key='go_to_top' default='Go to Top' language_strings /> }}"><i class="icon"></i></a>
 		{%- if config.extra.show_share_button -%}
-			<a id="share" href="https://shareopenly.org/share/?url={{ page.permalink }}{% if page.description %}&text={{ page.description | urlencode }}{% endif %}" rel="{{ rel_attributes }}" title="{{ macros_translate::translate(key='share', default='Share', language_strings=language_strings) }}"><i class="icon"></i></a>
+			<a id="share" href="https://shareopenly.org/share/?url={{ page.permalink }}{% if page.description %}&text={{ page.description | urlencode }}{% endif %}" rel="{{ rel_attributes }}" title="{{ <translate key='share' default='Share' language_strings /> }}"><i class="icon"></i></a>
 		{%- endif -%}
 		{%- if config.extra.issues_url -%}
-			<a id="issue" href="{{ config.extra.issues_url }}" rel="{{ rel_attributes }}" title="{{ macros_translate::translate(key='file_an_issue', default='File an Issue', language_strings=language_strings) }}"><i class="icon"></i></a>
+			<a id="issue" href="{{ config.extra.issues_url }}" rel="{{ rel_attributes }}" title="{{ <translate key='file_an_issue' default='File an Issue' language_strings /> }}"><i class="icon"></i></a>
 		{%- endif -%}
 	</div>
 
@@ -152,15 +152,15 @@
 
 	{%- if page.taxonomies and page.taxonomies.series and page.taxonomies.series | length > 0 %}
 	{%- set serie_term = page.taxonomies.series[0] -%}
-	{%- set serie = get_taxonomy_term(kind="series", term=serie_term, lang=lang) -%}
+	{%- set serie = get_taxonomy_term(kind="series", term=serie_term, lang=lang, required=false) -%}
 	{%- set serie_title = series_meta[serie_term]["title"] | default(value=serie_term) -%}
 	{%- if serie %}
 		{%- set serie_link = '<a class="link" href="' ~ serie.permalink ~ '">' ~ serie_title ~ '</a>' -%}
 		<div id="serie-parts-container">
 			<p>
-				{{ macros_translate::translate(key="part_of_serie", default="This article is part of a series: $SERIE.", language_strings=language_strings) | replace(from="$SERIE", to=serie_link) | safe }}
+				{{ <translate key="part_of_serie" default="This article is part of a series: $SERIE." language_strings /> | replace(from="$SERIE", to=serie_link) | safe }}
 				{%- if serie.pages | length > 1 %}
-				{{ macros_translate::translate(key="other_articles_in_series", default="Other articles in the series include:", language_strings=language_strings) }}
+				{{ <translate key="other_articles_in_series" default="Other articles in the series include:" language_strings /> }}
 				{%- endif -%}
 			</p>
 			{%- if serie.pages | length > 1 %}
@@ -171,7 +171,7 @@
 						{{ serie_page.title }}
 					</a>
 					{%- if serie_page.permalink == page.permalink %}
-					{{ macros_translate::translate(key="you_are_here_in_serie", default="(👈 you are here)") }}
+					{{ <translate key="you_are_here_in_serie" default="(👈 you are here)" /> }}
 					{%- endif %}
 				</li>
 				{%- endfor %}
@@ -194,7 +194,7 @@
 	</div>
 </article>
 
-{%- if page.extra.comments.id %}
+{%- if page.extra.comments?.id %}
 	{%- include "partials/comments.html" -%}
 {%- endif %}
 
@@ -205,13 +205,13 @@
 	<nav id="post-nav">
 		{%- if page.higher -%}
 			<a class="post-nav-item post-nav-prev" href="{{ page.higher.permalink }}">
-				<div class="nav-arrow">{{ macros_translate::translate(key="previous", default="Previous", language_strings=language_strings) }}</div>
+				<div class="nav-arrow">{{ <translate key="previous" default="Previous" language_strings /> }}</div>
 				<span class="post-title">{{ page.higher.title }}</span>
 			</a>
 		{%- endif -%}
 		{%- if page.lower and not page.lower.extra.public_draft -%}
 			<a class="post-nav-item post-nav-next" href="{{ page.lower.permalink }}">
-				<div class="nav-arrow">{{ macros_translate::translate(key="next", default="Next", language_strings=language_strings) }}</div>
+				<div class="nav-arrow">{{ <translate key="next" default="Next" language_strings /> }}</div>
 				<span class="post-title">{{ page.lower.title }}</span>
 			</a>
 		{%- endif -%}

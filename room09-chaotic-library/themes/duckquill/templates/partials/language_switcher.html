@@ -2,7 +2,7 @@
 
 <li id="language-switcher">
 	<details class="closable">
-		<summary class="circle" title="{{ macros_translate::translate(key='language', default='Language', language_strings=language_strings) }}">
+		<summary class="circle" title="{{ <translate key="language" default="Language" language_strings /> }}">
 			<i class="icon"></i>
 		</summary>
 		<ul>
@@ -16,8 +16,9 @@
 				{%- if not other_language_strings -%}
 					{%- set other_language_strings = load_data(path="themes/duckquill/i18n/" ~ lcode ~ ".toml", required=false) -%}
 				{%- endif -%}
+				{%- set other_language_strings = other_language_strings or {} -%}
 				{#- Use the loaded language strings to get the language name -#}
-				{% set language_name = macros_translate::translate(key="language_name", default=lcode, language_strings=other_language_strings) %}
+				{% set language_name = <translate key="language_name" default={lcode} language_strings={other_language_strings} /> %}
 				{#- Check if the language code matches the default language -#}
 				{%- if lcode == config.default_language -%}
 					{#- If it does, link to the root path (no language code in URL) -#}

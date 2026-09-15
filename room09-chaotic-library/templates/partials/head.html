@@ -45,7 +45,7 @@
 				<link rel="alternate" type="application/atom+xml" title="{{ config.title }} - Atom Feed" href="{{ get_url(path=feed) | safe }}">
 			{% elif feed == "rss.xml" %}
 				<link rel="alternate" type="application/rss+xml" title="{{ config.title }} - RSS Feed" href="{{ get_url(path=feed) | safe }}">
-			{% elif feed is ending_with(".json") %}
+			{% elif feed is ending_with(pat=".json") %}
                 <link rel="alternate" type="application/json" title="{{ config.title }} - JSON Feed" href="{{ get_url(path=feed) | safe }}" />
 			{% else %}
 				<link rel="alternate" href="{{ get_url(path=feed) | safe }}">
@@ -58,21 +58,21 @@
 	{%- set styles = [ "style.css", "icons.css" ] %}
 
 	{%- if config.extra.bundled_fonts %}
-		{%- set styles = styles | concat(with=["fonts.css"]) %}
+		{%- set styles = [...styles, "fonts.css"] %}
 	{%- endif %}
 
-	{%- if page.extra.katex or section.extra.katex or config.extra.katex %}
-		{%- set styles = styles | concat(with=["katex.css"]) %}
+	{%- if page?.extra?.katex or section?.extra?.katex or config.extra?.katex %}
+		{%- set styles = [...styles, "katex.css"] %}
 	{%- endif %}
 
-	{%- if config.extra.styles %}
-		{%- set styles = styles | concat(with=config.extra.styles) %}
+	{%- if config.extra?.styles %}
+		{%- set styles = [...styles, ...config.extra.styles] %}
 	{%- endif %}
 
-	{%- if page.extra.styles %}
-		{%- set styles = styles | concat(with=page.extra.styles) %}
-	{%- elif section.extra.styles %}
-		{%- set styles = styles | concat(with=section.extra.styles) %}
+	{%- if page?.extra?.styles %}
+		{%- set styles = [...styles, ...page.extra.styles] %}
+	{%- elif section?.extra?.styles %}
+		{%- set styles = [...styles, ...section.extra.styles] %}
 	{%- endif %}
 
 	{%- if not config.extra.debug.no_styles %}
@@ -95,41 +95,41 @@
 	{%- set scripts = ["closable.js"] %}
 
 	{%- if config.extra.show_copy_button %}
-		{%- set scripts = scripts | concat(with=["scripts/copy-button.js"]) %}
+		{%- set scripts = [...scripts, "scripts/copy-button.js"] %}
 	{%- endif %}
 
 	{%- if config.extra.goatcounter %}
-		{%- set scripts = scripts | concat(with=["count.js"]) %}
+		{%- set scripts = [...scripts, "count.js"] %}
 	{%- endif %}
 
-	{%- if page.extra.katex or section.extra.katex or config.extra.katex %}
-		{%- set scripts = scripts | concat(with=["katex.min.js", "auto-render.min.js", "katex-init.js"]) %}
+	{%- if page?.extra?.katex or section?.extra?.katex or config?.extra?.katex %}
+		{%- set scripts = [...scripts, "katex.min.js", "auto-render.min.js", "katex-init.js"] %}
 	{%- endif %}
 
 	{%- if config.build_search_index %}
 		{%- if config.search.index_format == "elasticlunr_json" -%}
-			{%- set scripts = scripts | concat(with=["elasticlunr.min.js", "search-elasticlunr.js"]) %}
+			{%- set scripts = [...scripts, "elasticlunr.min.js", "search-elasticlunr.js"] %}
 		{%- elif config.search.index_format == "fuse_json" -%}
-			{%- set scripts = scripts | concat(with=["fuse.js", "search-fuse.js"]) %}
+			{%- set scripts = [...scripts, "fuse.js", "search-fuse.js"] %}
 		{%- endif -%}
 	{%- endif %}
 
 	{%- if config.extra.nav.show_theme_switcher %}
-		{%- set scripts = scripts | concat(with=["scripts/theme-switcher.js"]) %}
+		{%- set scripts = [...scripts, "scripts/theme-switcher.js"] %}
 	{%- endif %}
 
-	{%- if page.extra.comments.id %}
-		{%- set scripts = scripts | concat(with=["scripts/comments.js"]) %}
+	{%- if page?.extra?.comments?.id %}
+		{%- set scripts = [...scripts, "scripts/comments.js"] %}
 	{%- endif %}
 
 	{%- if config.extra.scripts %}
-		{%- set scripts = scripts | concat(with=config.extra.scripts) %}
+		{%- set scripts = [...scripts, ...config.extra.scripts] %}
 	{%- endif %}
 
-	{%- if page.extra.scripts %}
-		{%- set scripts = scripts | concat(with=page.extra.scripts) %}
-	{%- elif section.extra.scripts %}
-		{%- set scripts = scripts | concat(with=section.extra.scripts) %}
+	{%- if page?.extra?.scripts %}
+		{%- set scripts = [...scripts, ...page.extra.scripts] %}
+	{%- elif section?.extra?.scripts %}
+		{%- set scripts = [...scripts, ...section.extra.scripts] %}
 	{%- endif %}
 
 	{%- if scripts | length > 0 %}
@@ -158,5 +158,5 @@
 	{%- if config.extra.card is not defined or config.extra.card != false -%}
 		<meta property="og:image" content="{% include 'partials/card.html' %}" />
 	{%- endif -%}
-	<meta property="og:locale" content="{{ macros_translate::translate(key='date_locale', default='en_US', language_strings=language_strings) }}" />
+	<meta property="og:locale" content="{{ <translate key='date_locale' default='en_US' language_strings /> }}" />
 </head>

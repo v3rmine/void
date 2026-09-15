@@ -3,14 +3,14 @@
 {% block content %}
 	{%- set number_of_terms = terms | length -%}
 	{%- set taxon_name = taxonomy.name -%}
-	<h1>{{- macros_translate::translate(key=taxon_name ~ "_title", default=taxonomy.name | capitalize, language_strings=language_strings) -}}</h1>
+	<h1>{{- <translate key={taxon_name ~ "_title"} default={taxonomy.name | capitalize} language_strings /> -}}</h1>
 
 	<p>
 		Series are collections of articles around a common subject.
 	</p>
 
 	<p>
-		<small>{{ macros_translate::translate(key=taxonomy.name, number=number_of_terms, default="$NUMBER " ~ taxonomy.name, language_strings=language_strings) }}</small>
+		<small>{{ <translate key={taxonomy.name} number={number_of_terms} default={"$NUMBER " ~ taxonomy.name} language_strings /> }}</small>
 	</p>
 
 	<ul class="tags">

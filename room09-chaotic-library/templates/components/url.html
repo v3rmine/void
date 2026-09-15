@@ -1,0 +1,4 @@
+{% component url(link: string) %}
+{%- set stripped_url = <prettify_url link /> -%}
+{{- "[" ~ stripped_url ~ "]" ~ "(" ~ link ~ ")" | markdown(inline=true) | safe -}}
+{% endcomponent url %}

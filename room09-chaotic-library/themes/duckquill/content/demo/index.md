@@ -122,16 +122,17 @@ $\relax f(x) = \int_{-\infty}^\infty\hat{f}(\xi)\,e^{2 \pi i \xi x}\,d\xi$
 
 $\relax f(x) = \int_{-\infty}^\infty\hat{f}(\xi)\,e^{2 \pi i \xi x}\,d\xi$
 
-### Shortcodes
+### Components
 
-Duckquill provides a few useful [shortcodes](https://www.getzola.org/documentation/content/shortcodes/) that simplify some tasks. They can be used on all pages.
+Duckquill provides a few useful [Tera components](https://keats.github.io/tera/#components) that simplify some tasks.
+They replaced Zola shortcodes in Zola v0.23, and can be used on all pages.
 
 #### Alerts
 
-[GitHub-style](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#alerts) alerts. Simply wrap the text of desired alert inside the shortcode to get the desired look.
+[GitHub-style](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#alerts) alerts. Simply wrap the text of desired alert inside the component to get the desired look.
 
 > [!NOTE]
-> As of version 0.21.0, Zola supports GitHub flavored alerts natively, without this shortcode. It can be enabled by adding the following to `config.toml`:
+> As of version 0.21.0, Zola supports GitHub flavored alerts natively, without this component. It can be enabled by adding the following to `config.toml`:
 >
 > ```toml
 > [markdown]
@@ -146,35 +147,37 @@ Available alert types:
 - `warning`: Urgent info that needs immediate user attention to avoid problems.
 - `caution`: Advises about risks or negative outcomes of certain actions.
 
-```jinja2
-{%/* alert(note=true) */%}
+```jinja
+{% raw %}
+{% <alert note={true}> %}
 -> Alert text <-
-{%/* end */%}
+{% </alert> %}
+{% endraw %}
 ```
 
-{% alert(note=true) %}
+{% <alert note={true}> %}
 Useful information that users should know, even when skimming content.
-{% end %}
+{% </alert> %}
 
-{% alert(tip=true) %}
+{% <alert tip={true}> %}
 Helpful advice for doing things better or more easily.
-{% end %}
+{% </alert> %}
 
-{% alert(important=true) %}
+{% <alert important={true}> %}
 Key information users need to know to achieve their goal.
-{% end %}
+{% </alert> %}
 
-{% alert(warning=true) %}
+{% <alert warning={true}> %}
 Urgent info that needs immediate user attention to avoid problems.
-{% end %}
+{% </alert> %}
 
-{% alert(caution=true) %}
+{% <alert caution={true}> %}
 Advises about risks or negative outcomes of certain actions.
-{% end %}
+{% </alert> %}
 
 #### Images and Videos
 
-By default images and videos come with some generic styling, such as rounded corners and shadow. To fine-tune these, you can use shortcodes with different variable combinations.
+By default images and videos come with some generic styling, such as rounded corners and shadow. To fine-tune these, you can use components with different variable combinations.
 
 Available variables are:
 
@@ -191,26 +194,28 @@ Available variables are:
 - `spoiler`: Blurs image until hovered over/pressed on, useful for plot rich game screenshots.
 - `spoiler` with `solid`: Ditto, but makes the image completely hidden.
 
-```jinja2
-{{/* image(url="image.png", alt="This is an image", no_hover=true) */}}
+```jinja
+{%- raw %}
+{{<image url="image.png" alt="This is an image" no_hover={true} />}}
+{% endraw -%}
 ```
 
 <figure>
-{{ image(url="https://i1.theportalwiki.net/img/2/23/Ashpd_blueprint.jpg", alt="Portal Gun blueprint", no_hover=true) }}
+{{<image url="https://i1.theportalwiki.net/img/2/23/Ashpd_blueprint.jpg" alt="Portal Gun blueprint" no_hover={true} />}}
 <figcaption>Image with an alt text and without zoom on hover</figcaption>
 </figure>
 
 <figure>
-{{ image(url="https://upload.wikimedia.org/wikipedia/commons/b/b4/JPEG_example_JPG_RIP_100.jpg", url_min="https://upload.wikimedia.org/wikipedia/commons/3/38/JPEG_example_JPG_RIP_010.jpg", alt="The gravestone of J.P.G.", no_hover=true) }}
+{{<image url="https://upload.wikimedia.org/wikipedia/commons/b/b4/JPEG_example_JPG_RIP_100.jpg" url_min="https://upload.wikimedia.org/wikipedia/commons/3/38/JPEG_example_JPG_RIP_010.jpg" alt="The gravestone of J.P.G." no_hover={true} />}}
 <figcaption>Image with compressed version, an alt text, and without zoom on hover</figcaption>
 </figure>
 
 <figure>
-{{ image(url="https://files.catbox.moe/lk7nee.jpg", alt="Portal Gun blueprint", spoiler=true) }}
+{{<image url="https://files.catbox.moe/lk7nee.jpg" alt="Portal Gun blueprint" spoiler={true} />}}
 <figcaption>Image with an alt text, hidden behind a spoiler</figcaption>
 </figure>
 
-Alternatively, you can append the following URL anchors. It can be more handy in some cases, e.g. such images will render normally in any Markdown editor, opposed to the Zola shortcodes.
+Alternatively, you can append the following URL anchors. It can be more handy in some cases, e.g. such images will render normally in any Markdown editor.
 
 - `#full`: Forces image to be full-width.
 - `#full-bleed`: Forces image to fill all the available screen width. Removes shadow, rounded corners and zoom on hover.
@@ -247,17 +252,17 @@ Additionally, the following [attributes](https://developer.mozilla.org/en-US/doc
 - `muted`: Turn off the audio by default.
 - `playsinline`: Prevent the video from playing in fullscreen by default (depends on the browser).
 
-```jinja2
-{{/* video(url="video.webm", alt="This is a video", controls=true) */}}
+```jinja
+{% raw %}{{<video url="video.webm" alt="This is a video" controls={true} />}}{% endraw %}
 ```
 
 <figure>
-{{ video(url="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm", alt="Red flower wakes up", controls=true) }}
+{{<video url="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm" alt="Red flower wakes up" controls={true} />}}
 <figcaption>WebM video example from MDN</figcaption>
 </figure>
 
 <figure>
-{{ video(url="https://upload.wikimedia.org/wikipedia/commons/transcoded/0/0e/Duckling_preening_%2881313%29.webm/Duckling_preening_%2881313%29.webm.720p.vp9.webm", alt="Duckling preening", full_bleed=true, controls=true) }}
+{{<video url="https://upload.wikimedia.org/wikipedia/commons/transcoded/0/0e/Duckling_preening_%2881313%29.webm/Duckling_preening_%2881313%29.webm.720p.vp9.webm" alt="Duckling preening" full_bleed={true} controls={true} />}}
 <figcaption>Duckling preening</figcaption>
 </figure>
 
@@ -265,13 +270,15 @@ Additionally, the following [attributes](https://developer.mozilla.org/en-US/doc
 
 Alright, this one doesn't simplify anything, it just adds a CRT-like effect around Markdown code blocks.
 
-```jinja2
-{%/* crt() */%}
+```jinja
+{%- raw %}
+{% <crt> %}
 -> Markdown code block <-
-{%/* end */%}
+{% </crt> %}
+{% endraw -%}
 ```
 
-{% crt() %}
+{% <crt> %}
 
 ```
  _____________________________________________
@@ -296,7 +303,7 @@ Alright, this one doesn't simplify anything, it just adds a CRT-like effect arou
 |;____________/%%%%%Spicer%%%%%%\____________;|
 ```
 
-{% end %}
+{% </crt> %}
 
 There's also a `cursor` class that you can add to a span with e.g. `█` character to simulate the terminal cursor. It doesn't work from inside Markdown code blocks though.
 
@@ -309,11 +316,11 @@ Available variables are:
 - `autoplay`: Whether the video should autoplay.
 - `start`: On which second video should start.
 
-```jinja2
-{{/* youtube(id="0Da8ZhKcNKQ") */}}
+```jinja
+{% raw %}{{<youtube id="0Da8ZhKcNKQ" />}}{% endraw %}
 ```
 
-{{ youtube(id="0Da8ZhKcNKQ") }}
+{{<youtube id="0Da8ZhKcNKQ" />}}
 
 #### Vimeo
 
@@ -323,11 +330,11 @@ Available variables are:
 
 - `autoplay`: Whether the video should autoplay.
 
-```jinja2
-{{/* vimeo(id="869483483") */}}
+```jinja
+{% raw %}{{<vimeo id="869483483" />}}{% endraw %}
 ```
 
-{{ vimeo(id="869483483") }}
+{{<vimeo id="869483483" />}}
 
 #### Mastodon
 
@@ -339,11 +346,11 @@ Available variables are:
 - `user`: The poster. If not set, it will fallback to the one set in the `[extra.comments]` section of `config.toml`.
 - `id`: The ID of the post, usually at the end of the URL.
 
-```jinja2
-{{/* mastodon(host="toot.community", user="sungsphinx", id="111789185826519979") */}}
+```jinja
+{% raw %}{{<mastodon host="toot.community" user="sungsphinx" id="111789185826519979" />}}{% endraw %}
 ```
 
-{{ mastodon(host="toot.community", user="sungsphinx", id="111789185826519979") }}
+{{<mastodon host="toot.community" user="sungsphinx" id="111789185826519979" />}}
 
 ### Description List (`<dl>`)
 
@@ -661,7 +668,7 @@ You know, <span class="spoiler solid">Duckquill is a pretty dumb name.</span> I 
 
 ### Buttons Dialog
 
-```html.j2
+```html
 <div class="buttons">
   <a href="#top">Go to Top</a>
   <a class="colored external" href="https://example.org">Example</a>
@@ -675,7 +682,7 @@ You know, <span class="spoiler solid">Duckquill is a pretty dumb name.</span> I 
 
 With `centered` and `big` classes:
 
-```html.j2
+```html
 <div class="buttons centered">
   <button class="big colored">Do Something…</button>
 </div>
