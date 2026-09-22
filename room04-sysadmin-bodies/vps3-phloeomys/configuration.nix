@@ -197,29 +197,13 @@ let
 
   uncloud = pkgs.stdenv.mkDerivation rec {
     pname = "uncloud";
-    version = "0.17.0";
+    version = "0.20.0";
     src = builtins.fetchTarball "https://github.com/psviderski/uncloud/releases/download/v${version}/uncloudd_linux_amd64.tar.gz";
 
     installPhase = ''
       runHook preInstall
       mkdir -p $out/bin
       cp uncloudd $out/bin
-      runHook postInstall
-    '';
-  };
-
-  corrosion = pkgs.stdenv.mkDerivation rec {
-    pname = "corrosion";
-    version = "0.2.2";
-    src = builtins.fetchTarball "https://github.com/psviderski/corrosion/releases/download/v${version}/corrosion-x86_64-unknown-linux-gnu.tar.gz";
-
-    nativeBuildInputs = with pkgs; [ autoPatchelfHook ];
-    buildInputs = with pkgs; [ glibc gcc-unwrapped ];
-
-    installPhase = ''
-      runHook preInstall
-      mkdir -p $out/bin
-      cp corrosion $out/bin/uncloud-corrosion
       runHook postInstall
     '';
   };
@@ -249,7 +233,7 @@ in {
     enable = true;
     interfaces = {
       "eth0" = {
-        allowedTCPPorts = [ 22 80 443 3478 5000 5349 6697 8080 22000 51000 ];
+        allowedTCPPorts = [ 22 80 443 3478 5349 6697 8080 22000 51000 ];
         allowedUDPPorts = [ 53 443 3478 5349 21027 21820 22000 51001 51820 51830 ];
         allowedUDPPortRanges = [
           { from = 49160; to = 49170; }
@@ -581,29 +565,6 @@ in {
       PrivateTmp = true;
       RestrictAddressFamilies = "AF_INET AF_INET6 AF_UNIX AF_NETLINK";
       RestrictNamespaces = true;
-    };
-    wantedBy = [ "multi-user.target" ];
-  };
-
-  systemd.services."uncloud-corrosion" = {
-    enable = true;
-    partOf = [ "uncloud.service" ];
-    serviceConfig = {
-      Type = "simple";
-      ExecStart = "${corrosion}/bin/uncloud-corrosion agent -c /var/lib/uncloud/corrosion/config.toml";
-      ExecReload = "${corrosion}/bin/uncloud-corrosion reload -c /var/lib/uncloud/corrosion/config.toml";
-      Restart = "always";
-      RestartSec = 2;
-      User = "uncloud";
-      Group = "uncloud";
-      # Hardening options.
-      NoNewPrivileges = true;
-      ProtectSystem = "full";
-      ProtectControlGroups = true;
-      ProtectHome = true;
-      ProtectKernelTunables = true;
-      PrivateTmp = true;
-      RestrictAddressFamilies = "AF_INET AF_INET6 AF_UNIX";
     };
     wantedBy = [ "multi-user.target" ];
   };
