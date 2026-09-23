@@ -1,18 +1,17 @@
-{% component wildonly(content="", reverse = false, inline = false, as = "div", extra_attrs="") %}
-{%- if content | length == 0 -%}{%- set content = body | safe -%}{%- endif -%}
+{%- component wildonly(content="", reverse = false, inline = false, as = "div", extra_attrs="") %}
+{%- if content | length == 0 -%}{%- set content = body -%}{%- endif -%}
 {%- set as_elem = as -%}
 {%- if inline == true and as == "div" -%}
 	{%- set as_elem = "span" -%}
 {%- endif -%}
 
-{# the replace fix quadruple spaces beeing considered a code block in markdown #}
-{% set wild_content = content | replace(from="    ", to="  ") | safe %}
+{%- set wild_content = content | markdown(inline=true) -%}
 
-{% if reverse -%}
+{%- if reverse -%}
 	<{{ as_elem }} class="not-wild" {{ extra_attrs }}>
 		{{ wild_content | safe }}
 	</{{ as_elem }}>
-{%- else %}
+{%- else -%}
 	<{{ as_elem }} class="wild" hidden data-wild="{{ wild_content | base64_encode }}" {{- extra_attrs -}}></{{ as_elem }}>
-{%- endif %}
-{% endcomponent wildonly %}
+{%- endif -%}
+{%- endcomponent wildonly %}

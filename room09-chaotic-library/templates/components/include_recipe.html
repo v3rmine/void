@@ -1,9 +1,11 @@
-{% component include_recipe(path: string) %}
+{%- component include_recipe(path: string) -%}
 {%- set recipe = load_data(path=path) -%}
 <details>
     <summary><code>{{ path | split(pat="/") | last }}</code></summary>
+	{% <markdown> %}
 {{ "```cooklang
 " ~ recipe ~ "
-```" | markdown() | safe }}
+```" }}
+	{% </markdown> %}
 </details>
-{% endcomponent include_recipe %}
+{%- endcomponent include_recipe -%}

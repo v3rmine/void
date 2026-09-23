@@ -9,14 +9,12 @@ This website is my **space** so it shouldn't be considered as a fully profession
 
 {% <wildonly reverse={true}> %}
 If you want the website to be more personal you can
-<!-- <button class="toggle-wild inline" type="button"> **activate** the  -->
-<!--   {% <rainbow> %}**WILD MODE**{% </rainbow> %} -->
-<!-- </button> -->
+<button class="toggle-wild inline" type="button"> **activate** the
+  {% <rainbow> %}**WILD MODE**{% </rainbow> %}
+</button>
 in this case, some hidden and more personal comments might appear, and maybe some articles that I find too personal to be displayed by default.
 The theme might also change and be less readable, but with a handmade touch, so it's up to you to enable it!
 {% </wildonly> %}
-
-x
 
 {% <wildonly> %}
 {% <rainbow> %}**WILD MODE**{% </rainbow> %} activated! If you want the website to return to a less personal mode you can
@@ -24,8 +22,6 @@ x
   {% <rainbow> %}**WILD MODE**{% </rainbow> %}
 </button>
 {% </wildonly> %}
-
-y
 
 > [!WARNING]
 > I haven't found a way to make it javascript-less for the moment, using only Zola and build-time scripts. So yeah, for the moment, it's javascript only.  

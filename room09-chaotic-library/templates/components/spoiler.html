@@ -1,4 +1,4 @@
-{% component spoiler(content = "", tw = "", block = false, solid = false) %}
+{%- component spoiler(content = "", tw = "", block = false, solid = false) -%}
 {%- if content | length == 0 -%}{%- set content = body | safe -%}{%- endif -%}
 
 {%- if tw -%}
@@ -12,7 +12,6 @@
 {% set tw_elem = "p" %}
 {%- endif -%}
 
-{%- if true -%}
 <{{ spoiler_elem }} class="spoiler {%-if solid %} solid{%- endif -%}">
 	{%- if true -%}
     {%- if tw -%}
@@ -22,5 +21,4 @@
     <span class="spoiler-content">{{- content | markdown(inline=true) | safe -}}</span>
 	{%- endif -%}
 </{{ spoiler_elem }}>
-{%- endif -%}
-{% endcomponent spoiler %}
+{%- endcomponent spoiler %}

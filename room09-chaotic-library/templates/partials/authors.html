@@ -19,4 +19,4 @@
 {%- endif -%}
 
 {%- set by_author = <translate key="by_author" default="By $AUTHOR" language_strings /> -%}
-{{- by_author | replace(from="$AUTHOR", to=author_string) | safe -}}
+{{- by_author | replace(from="$AUTHOR", to=author_string | safe) | safe -}}

@@ -92,7 +92,7 @@
 					{%- endif -%}
 				    {%- set is_reply = status.in_reply_to_id != id -%}
 					{%- set op = status.account.acct == user -%}
-					{%- set emojified_content = <comments_emojify content={status.content} emojis={status.emojis} /> %}
+					{%- set emojified_content = <comments_emojify content={status.content | safe} emojis={status.emojis} /> %}
 				    <article
 						id="comment={{ status.id }}"
 						class="{%- if is_reply -%}comment comment-reply{% else %}comment{%- endif -%}{%- if op %} op{%- endif -%}"

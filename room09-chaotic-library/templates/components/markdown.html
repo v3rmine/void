@@ -1,5 +1,5 @@
 {% component markdown(content = "", inline = false) %}
-{%- if content | length == 0 -%}{%- set content = body | safe -%}{%- endif -%}
+{%- if content | length == 0 -%}{%- set content = body -%}{%- endif -%}
 
-{{ content | default(value=body | safe) | markdown(inline=inline) | safe }}
+{{ content | markdown(inline=inline) | safe }}
 {% endcomponent markdown %}

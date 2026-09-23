@@ -82,8 +82,8 @@
 
 		{%- if config.markdown.highlighting and config.markdown.highlighting.style == "class" %}
 			{%- if config.markdown.highlighting.light_theme or config.highlighting.dark_theme %}
-				<link type="text/css" rel="stylesheet" href="{{ get_url(path='giallo-light.css') }}" media="(prefers-color-scheme: light)" />
-				<link type="text/css" rel="stylesheet" href="{{ get_url(path='giallo-dark.css') }}" media="(prefers-color-scheme: dark)" />
+				<link type="text/css" rel="stylesheet" href="{{ get_url(path='giallo-light.css') }}" />
+				<link type="text/css" rel="stylesheet" href="{{ get_url(path='giallo-dark.css') }}" />
 			{%- else %}
 				<link type="text/css" rel="stylesheet" href="{{ get_url(path='giallo.css') }}" />
 			{%- endif %}

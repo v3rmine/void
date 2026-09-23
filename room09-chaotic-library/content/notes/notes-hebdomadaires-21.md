@@ -22,7 +22,7 @@ extra:
 
 <!--
 Lu la salope éthique
-{{ <image url="/media/la-salope-ethique-book.jpg" alt="Couverture du livre " height={400} full_size={true} /> }}
+{{ <image url="/media/la-salope-ethique-book.jpg" alt="Couverture du livre " height={400} open_onclick={true} /> }}
 -->
 
 [Bloom Sushi](https://bloomsushi.fr/), un sushi VG c'était surprenant mais très bon !

@@ -158,7 +158,7 @@
 		{%- set serie_link = '<a class="link" href="' ~ serie.permalink ~ '">' ~ serie_title ~ '</a>' -%}
 		<div id="serie-parts-container">
 			<p>
-				{{ <translate key="part_of_serie" default="This article is part of a series: $SERIE." language_strings /> | replace(from="$SERIE", to=serie_link) | safe }}
+				{{ <translate key="part_of_serie" default="This article is part of a series: $SERIE." language_strings /> | replace(from="$SERIE", to=serie_link | safe) }}
 				{%- if serie.pages | length > 1 %}
 				{{ <translate key="other_articles_in_series" default="Other articles in the series include:" language_strings /> }}
 				{%- endif -%}

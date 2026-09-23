@@ -66,16 +66,16 @@
 	{%- set video_attributes = [...video_attributes, "playsinline"] -%}
 {%- endif -%}
 {%- if type -%}
-	{%- set video_attributes = [...video_attributes, 'type=' ~ type] -%}
+	{%- set video_attributes = [...video_attributes, 'type="' ~ type ~ '"'] -%}
 {%- endif -%}
 {%- if height -%}
-	{%- set video_attributes = [...video_attributes, 'height=' ~ height] -%}
+	{%- set video_attributes = [...video_attributes, 'height="' ~ height ~ '"'] -%}
 {%- endif -%}
 {%- if width -%}
-	{%- set video_attributes = [...video_attributes, 'width=' ~ width] -%}
+	{%- set video_attributes = [...video_attributes, 'width="' ~ width ~ '"'] -%}
 {%- endif -%}
 
 {%- set video_attributes = video_attributes | join(sep=" ") -%}
 
-<video class="{{ video_classes }}" src="{{ url }}" {%- if alt -%}aria-title="{{ alt }}"{%- endif -%} {{ video_attributes }} {% if config.markdown.lazy_async_image -%}loading="lazy"{%- endif -%}></video>
+<video class="{{ video_classes }}" src="{{ url }}" {%- if alt %} aria-title="{{ alt }}"{%- endif %} {{ video_attributes }} {% if config.markdown.lazy_async_image -%}loading="lazy"{%- endif -%}></video>
 {% endcomponent video %}

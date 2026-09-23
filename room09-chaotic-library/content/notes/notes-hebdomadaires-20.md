@@ -33,20 +33,20 @@ J'ai beaucoup lu ces dernières semaines, c'était un peu la seule chose pour la
 Du coup quelques artbook que j'ai dévoré d'une traite, c'était vraiment intéressant de lire leurs différentes approches, leur façon de mixer digital/traditionnel et leur point de vue sur leur travail.
 
 <div class="grid grid-2">
-{{ <image url="/media/the-art-of-heikala-book.png" alt="Couverture du livre The Art Of Heikala" height={400} full_size={true} /> }}
-{{ <image url="/media/the-art-of-feefal-book.png" alt="Couverture du livre The Art Of Feefal" height={400} full_size={true} /> }}
-{{ <image url="/media/the-art-of-simz-book.png" alt="Couverture du livre The Art Of Simz" height={400} full_size={true} /> }}
+{{ <image url="/media/the-art-of-heikala-book.png" alt="Couverture du livre The Art Of Heikala" height={400} open_onclick={true} /> }}
+{{ <image url="/media/the-art-of-feefal-book.png" alt="Couverture du livre The Art Of Feefal" height={400} open_onclick={true} /> }}
+{{ <image url="/media/the-art-of-simz-book.png" alt="Couverture du livre The Art Of Simz" height={400} open_onclick={true} /> }}
 </div>
 
 J'ai aussi lu Multiamory, il était dans ma liste de lecture depuis un moment après l'avoir vu dans les notes de Benjamin et c'était une super reco' {{ <customoji name="CoolThumbsUp" /> }} j'ai noté plein de parties sur lesquelles il faut que je repasse, mais c'est vraiment plein d'outils qui pourront m'être utiles je pense !
 
-{{ <image url="/media/multiamory-book.jpg" alt="Couverture du livre Multiamory - Essential Tools for Modern Relationships" height={400} full_size={true} /> }}
+{{ <image url="/media/multiamory-book.jpg" alt="Couverture du livre Multiamory - Essential Tools for Modern Relationships" height={400} open_onclick={true} /> }}
 
 Aimer sans posséder, un livre que j'ai vu recommandé dans [la librairie à soi.e](https://www.librairieasoie.com/) à Lyon (la librairie était une super découverte) et je suis partagée dessus. Je l'ai lu juste après Multiamory et je m'attendais à y trouver des outils, à la place, c'est vraiment ce qui est noté sur la couverture "Une critique féministe de la fidélité" (oui, il faudrait juste que je fasse plus attention aux sous-titres... je sais {{ <customoji name="personas/astrid/Dum Sticker 3" /> }})
 
 J'ai vraiment pas adhéré au début du livre en particulier, mais je me suis accrochée jusqu'au bout <small>(j'aime pas laisser des livres en suspend sinon je me connais je n'y reviendrai jamais)</small> et je regrette pas. J'ai trouvé qu'il soulevait plein de réflexions intéressantes, même si je suis pas d'accord sur plein de points soulevé. J'pense qu'il faudra que je le relise plus tard maintenant que je sais de quoi il parle ou que j'en parle avec des amies, histoire d'affiner mon avis dessus !
 
-{{ <image url="/media/aimer-sans-posseder-book.jpg" alt="Couverture du livre Aimer sans posséder - Une critique féministe de la fidélité" height={400} full_size={true} /> }}
+{{ <image url="/media/aimer-sans-posseder-book.jpg" alt="Couverture du livre Aimer sans posséder - Une critique féministe de la fidélité" height={400} open_onclick={true} /> }}
 
 En petite news tech j'ai pas lu grand chose d'intéressant, uniquement le portage pour Linux des cracks via hyperviseur pour les jeux protégé par Denuvo : [A Hypervisor(-less) Denuvo bypass for Linux](https://cs.rin.ru/forum/viewtopic.php?f=10&t=159989)
 
