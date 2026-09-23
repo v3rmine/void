@@ -3,7 +3,7 @@
     <script src="/rss/atom-style.rss-style.js" xmlns="http://www.w3.org/1999/xhtml"></script>
     <title>{{ config.title }}
     {%- if term %} - {{ term.name }}
-    {%- elif section.title %} - {{ section.title }}
+    {%- elif section?.title %} - {{ section.title }}
     {%- endif -%}
     </title>
     {%- if config.description %}
@@ -18,7 +18,7 @@
       {%- endif -%}
     "/>
     <generator uri="https://www.getzola.org/">Zola</generator>
-    {% if last_updated is defined %}<updated>{{ last_updated | date(format="%+") }}</updated>{% endif %}
+    {% if last_updated is defined %}<updated>{{ last_updated | date(format="%Y-%m-%dT%H:%M:%S") }}</updated>{% endif %}
     <id>{{ feed_url | safe }}</id>
     {%- for page in pages %}
     {%- if page.ancestors | last in ["garden/_index.md", "notes/_index.md"] %}
@@ -27,8 +27,11 @@
     {%- if not page.extra.ongoing or page.extra.ongoing != true %}
     <entry xml:lang="{{ page.extra.lang | default(value=page.lang) }}">
         <title>{{ page.title }}</title>
-        <published>{{ page.date | date(format="%+") }}</published>
-        <updated>{{ page.updated | default(value=page.date) | date(format="%+") }}</updated>
+        <published>{{ page.date | date(format='%Y-%m-%dT%H:%M:%S') }}</published>
+        {%- set updated = page.updated | default(value=page.date) -%}
+        {%- if updated %}<updated>
+        {{ updated | date(format='%Y-%m-%dT%H:%M:%S') }}
+        </updated>{%- endif %}
         {% for author in page.authors %}
         <author>
           <name>

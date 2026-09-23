@@ -1,23 +1,21 @@
-{%- set rel_attributes = macros_rel_attributes::rel_attributes() | trim -%}
-
 {%- if config.extra.nav.auto_hide %}
 	<div id="handle"></div>
 {%- endif %}
 <header id="site-nav">
 	<nav>
 		<a href="#main-content" tabindex="0">
-			{{ macros_translate::translate(key="skip_to_content", default="Skip to Main Content", language_strings=language_strings) }}
+			{{ <translate key="skip_to_content" default="Skip to Main Content" language_strings /> }}
 		</a>
 		<ul>
 			<li id="home">
 				<a href="{{ get_url(path='/', lang=lang) }}"
-					{%- if current_url | default(value="/") | trim_end_matches(pat="/") | safe == get_url(path="/", lang=lang) | trim_end_matches(pat='/') | safe -%}
+					{%- if current_url | default(value="/") | trim_end(pat="/") | safe == get_url(path="/", lang=lang) | trim_end(pat='/') | safe -%}
 						class="active"
 						 {%- endif -%}>
-					{{ macros_partials::wild_only(content='<i class="icon"></i>' ~ config.title, reverse=true, inline=true, as_elem="span") }}
+					{{ <wildonly content={'<i class="icon"></i>' ~ config.title} reverse={true} inline={true} as="span" /> }}
 					{%- set home_wild_logo = '<img class="inline no-hover pixels" src="/media/emojis/personas/astrid/default-flip.gif" />' -%}
-					{%- set home_wild_title = macros_partials::rainbow(content=config.title) -%}
-					{{ macros_partials::wild_only(content=home_wild_logo ~ home_wild_title, inline=true, as_elem="span") }}
+					{%- set home_wild_title = <rainbow content={config.title} /> -%}
+					{{ <wildonly content={home_wild_logo ~ home_wild_title} inline={true} as="span" /> }}
 				</a>
 			</li>
 			<li class="divider"></li>
@@ -25,22 +23,22 @@
 				{%- if link.menu and link.menu | length > 0 -%}
 					<li>
 						<details class="closable">
-							<summary>{{- macros_translate::translate(key=link.name, default=link.name, language_strings=language_strings) -}}</summary>
+							<summary>{{- <translate key={link.name} default={link.name} language_strings /> -}}</summary>
 							<ul>
 								{%- for link in link.menu -%}
-									{%- if link.url is matching('^https?://') %}
+									{%- if link.url is matching(pat='^https?://') %}
 										<li>
 											<a href="{{ link.url }}" rel="{{ rel_attributes }}" class="external">
-												{{- macros_translate::translate(key=link.name, default=link.name, language_strings=language_strings) -}}
+												{{- <translate key={link.name} default={link.name} language_strings /> -}}
 											</a>
 										</li>
 									{%- else %}
 										<li>
 											<a href="{{ get_url(path=link.url, lang=lang)}}"
-												{%- if current_url | default(value='/') | trim_end_matches(pat='/') | safe == get_url(path=link.url, lang=lang) | trim_end_matches(pat='/') | safe -%}
+												{%- if current_url | default(value='/') | trim_end(pat='/') | safe == get_url(path=link.url, lang=lang) | trim_end(pat='/') | safe -%}
 													class="active"
 												{%- endif -%}>
-												{{- macros_translate::translate(key=link.name, default=link.name, language_strings=language_strings) -}}
+												{{- <translate key={link.name} default={link.name} language_strings /> -}}
 											</a>
 										</li>
 									{%- endif %}
@@ -48,26 +46,26 @@
 							</ul>
 						</details>
 			 		 </li>
-				{%- elif link.url is matching('^https?://') %}
+				{%- elif link.url is matching(pat='^https?://') %}
 					<li>
 						<a href="{{ link.url }}" rel="{{ rel_attributes }}" class="external">
-							{{- macros_translate::translate(key=link.name, default=link.name, language_strings=language_strings) -}}
+							{{- <translate key={link.name} default={link.name} language_strings /> -}}
 						</a>
 					</li>
 				{%- else %}
 					<li>
 						<a href="{{ get_url(path=link.url, lang=lang)}}"
-							{%- if current_url | default(value='/') | trim_end_matches(pat='/') | safe == get_url(path=link.url, lang=lang) | trim_end_matches(pat='/') | safe -%}
+							{%- if current_url | default(value='/') | trim_end(pat='/') | safe == get_url(path=link.url, lang=lang) | trim_end(pat='/') | safe -%}
 								class="active"
 							{%- endif -%}>
-							{{- macros_translate::translate(key=link.name, default=link.name, language_strings=language_strings) -}}
+							{{- <translate key={link.name} default={link.name} language_strings /> -}}
 						</a>
 					</li>
 				{%- endif %}
 			{%- endfor -%}
 			{%- if config.build_search_index %}
 				<li id="search" class="require-js">
-					<button id="search-toggle" class="circle" title="{{ macros_translate::translate(key='search', default='Search', language_strings=language_strings) }}">
+					<button id="search-toggle" class="circle" title="{{ <translate key='search' default='Search' language_strings /> }}">
 						<i class="icon"></i>
 					</button>
 				</li>
@@ -78,30 +76,30 @@
 			{%- if config.extra.default_theme and config.extra.nav.show_theme_switcher != false or config.extra.nav.show_theme_switcher %}
 				<li id="theme-switcher" class="require-js">
 					<details class="closable">
-						<summary class="circle" title="{{ macros_translate::translate(key='theme', default='Theme', language_strings=language_strings) }}">
+						<summary class="circle" title="{{ <translate key='theme' default='Theme' language_strings /> }}">
 							<i class="icon"></i>
 						</summary>
 						<ul>
 							<li>
-								<button class="circle" id="theme-light" title="{{ macros_translate::translate(key='theme_light', default='Switch to Light Theme', language_strings=language_strings) }}">
+								<button class="circle" id="theme-light" title="{{ <translate key='theme_light' default='Switch to Light Theme' language_strings /> }}">
 									<i class="icon"></i>
 								</button>
 							</li>
 							<li>
-								<button class="circle" id="theme-dark" title="{{ macros_translate::translate(key='theme_dark', default='Switch to Dark Theme', language_strings=language_strings) }}">
+								<button class="circle" id="theme-dark" title="{{ <translate key='theme_dark' default='Switch to Dark Theme' language_strings /> }}">
 									<i class="icon"></i>
 								</button>
 							</li>
 							<li>
-								<button class="circle" id="theme-system" title="{{ macros_translate::translate(key='theme_system', default='Use System Theme', language_strings=language_strings) }}">
+								<button class="circle" id="theme-system" title="{{ <translate key='theme_system' default='Use System Theme' language_strings /> }}">
 									<i class="icon"></i>
 								</button>
 							</li>
 							{# <li>
-    							<button class="toggle-wild" title="{{ macros_translate::translate(key='enter_wild_mode', default='Enter Wild Mode (personal mode)', language_strings=language_strings) }}">
-                                    {%- set button_content = macros_translate::translate(key='go_wild', default='GO WILD', language_strings=language_strings) -%}
-    							    {%- set button_content = macros_partials::wavy(content=button_content) -%}
-    								{{ macros_partials::rainbow(content="**" ~ button_content ~ "**") }}
+    							<button class="toggle-wild" title="{{ <translate key='enter_wild_mode' default='Enter Wild Mode (personal mode)' language_strings /> }}">
+                                    {%- set button_content = <translate key='go_wild' default='GO WILD' language_strings /> -%}
+    							    {%- set button_content = <wavy content={button_content} /> -%}
+    								{{ <rainbow content={"**" ~ button_content ~ "**"} /> }}
     							</button>
 							</li> #}
 						</ul>
@@ -111,7 +109,7 @@
 			{%- if config.feed_filenames | length > 1 and config.extra.nav.show_feed -%}
 				<li id="feed">
 					<details class="closable">
-						<summary class="circle" title="{{ macros_translate::translate(key='feed', default='Feed', language_strings=language_strings) }}">
+						<summary class="circle" title="{{ <translate key='feed' default='Feed' language_strings /> }}">
 							<i class="icon"></i>
 						</summary>
 						<ul>
@@ -119,34 +117,34 @@
 							{%- set wild_feeds = "" %}
 							{%- for feed in config.feed_filenames %}
 								{% set feed_name = "RSS" -%}
-								{% if feed is ending_with("atom.xml") -%}
+								{% if feed is ending_with(pat="atom.xml") -%}
 									{% set feed_name = "Atom" -%}
-								{% elif feed is ending_with("feed.json") -%}
+								{% elif feed is ending_with(pat="feed.json") -%}
 									{% set feed_name = "JSON" -%}
 								{% endif -%}
 
-								{%- if not feed is starting_with("wild/") %}
+								{%- if not feed is starting_with(pat="wild/") %}
 										{%- set_global normal_feeds = normal_feeds ~ '<li><a href="' ~ get_url(path=feed, lang=lang) ~ '" rel="' ~ rel_attributes ~ '">' ~ feed_name ~ '</a></li>' %}
 								{%- else %}
 										{%- set_global wild_feeds = wild_feeds ~ '<li><a href="' ~ get_url(path=feed, lang=lang) ~ '" rel="' ~ rel_attributes ~ '">' ~ feed_name ~ '</a></li>' %}
 								{%- endif %}
 							{%- endfor %}
 							{{ normal_feeds | safe }}
-							{#{{ macros_partials::wild_only(content=normal_feeds, reverse=true) }}
-							{{ macros_partials::wild_only(content=wild_feeds) }}#}
+							{#{{ <wildonly content={normal_feeds} reverse=true /> }}
+							{{ <wildonly content={wild_feeds} /> }}#}
 						</ul>
 					</details>
 				</li>
 			{%- elif config.generate_feeds and config.extra.nav.show_feed %}
 				<li id="feed">
-					<a class="circle" href="{{ get_url(path=config.feed_filenames[0], lang=lang) }}" title="{{ macros_translate::translate(key='feed', default='Feed', language_strings=language_strings) }}">
+					<a class="circle" href="{{ get_url(path=config.feed_filenames[0], lang=lang) }}" title="{{ <translate key='feed' default='Feed' language_strings /> }}">
 						<i class="icon"></i>
 					</a>
 				</li>
 			{%- endif %}
 			{%- if config.extra.source_url and config.extra.nav.show_repo %}
 				<li id="repo">
-					<a class="circle" href="{{ config.extra.source_url }}" title="{{ macros_translate::translate(key='repo', default='Repository', language_strings=language_strings) }}">
+					<a class="circle" href="{{ config.extra.source_url }}" title="{{ <translate key='repo' default='Repository' language_strings /> }}">
 						<i class="icon"></i>
 					</a>
 				</li>
@@ -156,9 +154,9 @@
 	{%- if config.build_search_index %}
 		<div id="search-container">
 			<label for="search-bar" class="visually-hidden">
-				{{- macros_translate::translate(key="search", default="Search", language_strings=language_strings) -}}
+				{{- <translate key="search" default="Search" language_strings /> -}}
 			</label>
-			<input id="search-bar" placeholder="{{ macros_translate::translate(key='search_for', default='Search for', language_strings=language_strings) }}…" autocomplete="off" type="search" disabled>
+			<input id="search-bar" placeholder="{{ <translate key='search_for' default='Search for' language_strings /> }}…" autocomplete="off" type="search" disabled>
 			<div id="search-results-container">
 				<div id="search-results"></div>
 			</div>

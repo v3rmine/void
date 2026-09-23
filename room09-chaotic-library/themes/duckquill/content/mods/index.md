@@ -67,9 +67,8 @@ You can make navbar have more traditional look by using the `classic-nav` mod:
 
 Or you can make it sticked to top but not full-width with the `sticked-nav` mod:
 
-{% alert(note=true) %}
-Not compatible with the `classic-nav` mod.
-{% end %}
+> [!NOTE]
+> Not compatible with the `classic-nav` mod.
 
 ![sticked navabr](https://files.catbox.moe/bfu3p7.png)
 

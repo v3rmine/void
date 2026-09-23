@@ -13,37 +13,26 @@ let
   prune-autorestic = pkgs.writeShellScriptBin "prune-autorestic.sh" ''
     # Merge location and backend autorestic confs
     autorestic_conf="$(${pkgs.yq-go}/bin/yq eval-all '. as $item ireduce ({}; . * $item)' /etc/autorestic.yml /etc/autorestic-backends.yml | sed 's/"<<"/<</')"
-    echo "$autorestic_conf" > /tmp/.autorestic.yml
+    echo "$autorestic_conf" > /tmp/.autorestic-prune.yml
 
-    ${pkgs.autorestic}/bin/autorestic -c /tmp/.autorestic.yml forget --all --prune > /var/log/autorestic.log 2>&1
-    rm -f /tmp/.autorestic.yml
+    sed -i -E 's/(^.*run-autorestic.*$)/#\1/' /etc/crontab
+
+    ${pkgs.autorestic}/bin/autorestic -v -c /tmp/.autorestic-prune.yml forget --all > /var/log/autorestic-prune.log 2>&1
+    ${pkgs.autorestic}/bin/autorestic -v -c /tmp/.autorestic-prune.yml exec --all -- prune >> /var/log/autorestic-prune.log 2>&1
+
+    rm -f /tmp/.autorestic-prune.yml
+    sed -i -E 's/^#(.*run-autorestic.*$)/\1/' /etc/crontab
   '';
 
   uncloud = pkgs.stdenv.mkDerivation rec {
     pname = "uncloud";
-    version = "0.17.0";
+    version = "0.20.0";
     src = builtins.fetchTarball "https://github.com/psviderski/uncloud/releases/download/v${version}/uncloudd_linux_amd64.tar.gz";
 
     installPhase = ''
       runHook preInstall
       mkdir -p $out/bin
       cp uncloudd $out/bin
-      runHook postInstall
-    '';
-  };
-
-  corrosion = pkgs.stdenv.mkDerivation rec {
-    pname = "corrosion";
-    version = "0.2.2";
-    src = builtins.fetchTarball "https://github.com/psviderski/corrosion/releases/download/v${version}/corrosion-x86_64-unknown-linux-gnu.tar.gz";
-
-    nativeBuildInputs = with pkgs; [ autoPatchelfHook ];
-    buildInputs = with pkgs; [ glibc gcc-unwrapped ];
-
-    installPhase = ''
-      runHook preInstall
-      mkdir -p $out/bin
-      cp corrosion $out/bin/uncloud-corrosion
       runHook postInstall
     '';
   };
@@ -210,29 +199,6 @@ in {
       PrivateTmp = true;
       RestrictAddressFamilies = "AF_INET AF_INET6 AF_UNIX AF_NETLINK";
       RestrictNamespaces = true;
-    };
-    wantedBy = [ "multi-user.target" ];
-  };
-
-  systemd.services."uncloud-corrosion" = {
-    enable = true;
-    partOf = [ "uncloud.service" ];
-    serviceConfig = {
-      Type = "simple";
-      ExecStart = "${corrosion}/bin/uncloud-corrosion agent -c /var/lib/uncloud/corrosion/config.toml";
-      ExecReload = "${corrosion}/bin/uncloud-corrosion reload -c /var/lib/uncloud/corrosion/config.toml";
-      Restart = "always";
-      RestartSec = 2;
-      User = "uncloud";
-      Group = "uncloud";
-      # Hardening options.
-      NoNewPrivileges = true;
-      ProtectSystem = "full";
-      ProtectControlGroups = true;
-      ProtectHome = true;
-      ProtectKernelTunables = true;
-      PrivateTmp = true;
-      RestrictAddressFamilies = "AF_INET AF_INET6 AF_UNIX";
     };
     wantedBy = [ "multi-user.target" ];
   };

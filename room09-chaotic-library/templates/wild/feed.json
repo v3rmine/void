@@ -1,7 +1,7 @@
 {%- set title = config.title -%}
 {%- if term -%}
   {%- set title = title ~ " - " ~ term.name -%}
-{%- elif section.title -%}
+{%- elif section?.title -%}
   {%- set title = title ~ " - " ~ section.title -%}
 {%- endif -%}
 {%- set title = title ~ " but WILD" | json_encode() -%}
@@ -23,9 +23,9 @@
     {
       "id": "{{ page.extra.guid | default(value=page.path) | safe }}",
       "title": {{ page.title | json_encode() }},
-      "date_published": "{{ page.date | date(format='%+') }}",
+      "date_published": "{{ page.date | date(format='%Y-%m-%dT%H:%M:%S') }}",
       {%- if page.updated %}
-      "date_modified": "{{ page.updated | date(format='%+') }}",
+      "date_modified": "{{ page.updated | date(format='%Y-%m-%dT%H:%M:%S') }}",
       {%- endif %}
       "url": "{{ page.permalink | safe }}?wild=true",
       "content_html": {{ page.content | json_encode() }},

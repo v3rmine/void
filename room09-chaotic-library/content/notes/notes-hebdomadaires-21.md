@@ -18,24 +18,24 @@ extra:
   comments: { host: tracto.pl, id: '', type: misskey }
 ---
 
-4 semaines depuis la dernières notes hebdo alors que j'ai dit que je serais certainement plus régulière sur la publication de notes hebdo, mais j'ai pas réussi a résister à l'attrait de bosser sur le blog ou ma configuration {{ al(k="SilverBullet") }} plutôt que d'écrire
+4 semaines depuis la dernières notes hebdo alors que j'ai dit que je serais certainement plus régulière sur la publication de notes hebdo, mais j'ai pas réussi a résister à l'attrait de bosser sur le blog ou ma configuration {{ <al k="SilverBullet" /> }} plutôt que d'écrire
 
 <!--
 Lu la salope éthique
-{{ image(url="/media/la-salope-ethique-book.jpg", alt="Couverture du livre Multiamory - Essential Tools for Modern Relationships", height=400, full_size=true) }}
+{{ <image url="/media/la-salope-ethique-book.jpg" alt="Couverture du livre " height={400} open_onclick={true} /> }}
 -->
 
 [Bloom Sushi](https://bloomsushi.fr/), un sushi VG c'était surprenant mais très bon !
 
-Implémenté un [plugin](https://git.v3rm.in/v3rmine/silverbullet-config-file-editor/) pour éditer les fichiers toml et yaml directement dans {{ al(k="SB") }} et c'était une purge la doc était vraiment pas clair la dessus donc fallait se baser sur les codes sources de {{ url(link="https://github.com/MrMugame/silverbullet-pdf/") }} et {{ url(link="https://github.com/LogeshG5/silverbullet-excalidraw/") }} (1j de taff...)
+Implémenté un [plugin](https://git.v3rm.in/v3rmine/silverbullet-config-file-editor/) pour éditer les fichiers toml et yaml directement dans {{ <al k="SB" /> }} et c'était une purge la doc était vraiment pas clair la dessus donc fallait se baser sur les codes sources de {{ <url link="https://github.com/MrMugame/silverbullet-pdf/" /> }} et {{ <url link="https://github.com/LogeshG5/silverbullet-excalidraw/" /> }} (1j de taff...)
 
-J'ai aussi ajouté la publication sur Mastodon directement depuis SB (SilverBullet) et le pire c'était certainement l'oauth, {{ al(k="Sharkey") }} (utilisé par {{ url(link="https://tracto.pl") }}) ne supporte que l'auth avec redirect donc la solution c'est de rediriger vers un domaine `https://<oauth>.astriiid.fr?code=<oauth-code>` qui lui redirige vers une page virtuelle `oauth:mastodon:<oauth-code>` dans SB, ça permet de récupérer le code et finir l'authentification !
+J'ai aussi ajouté la publication sur Mastodon directement depuis SB (SilverBullet) et le pire c'était certainement l'oauth, {{ <al k="Sharkey" /> }} (utilisé par {{ <url link="https://tracto.pl" /> }}) ne supporte que l'auth avec redirect donc la solution c'est de rediriger vers un domaine `https://<oauth>.astriiid.fr?code=<oauth-code>` qui lui redirige vers une page virtuelle `oauth:mastodon:<oauth-code>` dans SB, ça permet de récupérer le code et finir l'authentification !
 
 Comme par exemple le partage de [notes courtes](@/content/thoughts/_index.md) 
 
 Avec l'upload de photos, quelle purge de faire du `form-data` manuellement pour générer un blob binaire que je peux envoyer via SB.
 
-J'ai enfin réglé le problème de mes backups {{ al(k="autorestic") }} qui grossissaient à l'infini, il me manquait de passer par une étape `forget` pour les supprimer et `prune` pour supprimer les données qui ne sont plus utilisées.
+J'ai enfin réglé le problème de mes backups {{ <al k="autorestic" /> }} qui grossissaient à l'infini, il me manquait de passer par une étape `forget` pour les supprimer et `prune` pour supprimer les données qui ne sont plus utilisées.
 
 > [!TIP]
 >  Avec beaucoup de `locations` dans autorestic, c'est beaucoup plus rapide de faire d'abord un `forget` et ensuite d'utiliser `exec -- prune` (pour appeler le prune de {{ al(k="restic") }}) plutôt que d'utiliser `forget --prune` (l'option d'autorestic va supprimer les données non utilisées à chaque nouvelle `location` plutôt qu'en une fois)
@@ -46,10 +46,10 @@ Ajout d'une [room matrix](https://matrix.to/#/#astriiid.fr:m.v3rm.in) pour le bl
 
 ---
 
-J'ai eu droit à un bug fameux sur le site, qui n'impactait "que" chrome et tout ses dérivés et connu depuis 2018 ! [Background-clip: text does not work with position: relative or absolute](https://issues.chromium.org/issues/41385122), un bug que je ne peux bien sûr pas contourner mais qui bonne nouvelle viens d'être patché ! {{ customoji(name="personas/astrid/Sparkling 1") }} <small>(enfin en Juin dans à partir de la version `150.0.7871.0`)</small>  
-En bref et non technique, je ne pouvais pas avoir l'effet arc-en-ciel et l'effet de vague sur mon texte ! Exemple: {% wavy_text() %}{{ rainbow(content="Ceci sera transparent sur chrome") }}{% end %}
+J'ai eu droit à un bug fameux sur le site, qui n'impactait "que" chrome et tout ses dérivés et connu depuis 2018 ! [Background-clip: text does not work with position: relative or absolute](https://issues.chromium.org/issues/41385122), un bug que je ne peux bien sûr pas contourner mais qui bonne nouvelle viens d'être patché ! {{ <customoji name="personas/astrid/Sparkling 1" /> }} <small>(enfin en Juin dans à partir de la version `150.0.7871.0`)</small>  
+En bref et non technique, je ne pouvais pas avoir l'effet arc-en-ciel et l'effet de vague sur mon texte ! Exemple: {% <wavy> %}{{ <rainbow content="Ceci sera transparent sur chrome" /> }}{% </wavy> %}
 
-J'ai découvert l'outil [Doodle Scan](https://rknight.me/blog/doodle-scan/) qui permet de retirer le fond d'un dessin dans un carnet, le tout directement dans le navigateur sans pub et sans IA. Je le garde dans un coin ça me sera utile un de ces 4 ! {{ customoji(name="personas/astrid/Noted 1") }} 
+J'ai découvert l'outil [Doodle Scan](https://rknight.me/blog/doodle-scan/) qui permet de retirer le fond d'un dessin dans un carnet, le tout directement dans le navigateur sans pub et sans IA. Je le garde dans un coin ça me sera utile un de ces 4 ! {{ <customoji name="personas/astrid/Noted 1" /> }} 
 [thinking about friendships](https://blog.avas.space/friendships/) : It’s okay, I guess.
 
 

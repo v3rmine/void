@@ -3,17 +3,17 @@
 	<meta charset="UTF-8" />
 	<meta name="description" content="{{ config.description }}" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<meta name="theme-color" content="{{ config.extra.accent_color | default(value='#9a9996') | safe }}" />
-	{%- if config.extra.accent_color_dark %}
+	<meta name="theme-color" content="{{ config.extra?.accent_color | default(value='#9a9996') | safe }}" />
+	{%- if config.extra?.accent_color_dark %}
 		<meta name="theme-color" content="{{ config.extra.accent_color_dark | safe }}" media="(prefers-color-scheme:dark)" />
 	{%- endif %}
-	{%- if config.extra.csp %}
+	{%- if config.extra?.csp %}
 		{%- include "partials/csp.html" %}
 	{%- endif %}
 	<title>{% include "partials/title.html" %}</title>
 	<link rel="canonical" href="{{ current_url | default(value='/') | safe }}" />
 
-	{%- if config.extra.comments %}
+	{%- if config.extra?.comments %}
 		<link rel="me" href="https://{{ config.extra.comments.host }}/@{{ config.extra.comments.user }}" />
         <meta name="fediverse:creator" content="@{{ config.extra.comments.user }}@{{ config.extra.comments.host }}" />
 	{%- endif %}
@@ -36,91 +36,80 @@
 
 	{%- set styles = [ "style.css", "icons.css" ] %}
 
-	{%- if config.extra.bundled_fonts %}
-		{%- set styles = styles | concat(with=["fonts.css"]) %}
+	{%- if config.extra?.bundled_fonts %}
+		{%- set styles = [...styles, "fonts.css"] %}
 	{%- endif %}
 
-	{%- if page.extra.katex or section.extra.katex or config.extra.katex %}
-		{%- set styles = styles | concat(with=["katex.css"]) %}
+	{%- if page?.extra?.katex or section?.extra?.katex or config.extra?.katex %}
+		{%- set styles = [...styles, "katex.css"] %}
 	{%- endif %}
 
-	{%- if config.extra.styles %}
-		{%- set styles = styles | concat(with=config.extra.styles) %}
+	{%- if config.extra?.styles %}
+		{%- set styles = [...styles, ...config.extra.styles] %}
 	{%- endif %}
 
-	{%- if page.extra.styles %}
-		{%- set styles = styles | concat(with=page.extra.styles) %}
-	{%- elif section.extra.styles %}
-		{%- set styles = styles | concat(with=section.extra.styles) %}
+	{%- if page?.extra?.styles %}
+		{%- set styles = [...styles, ...page.extra.styles] %}
+	{%- elif section?.extra?.styles %}
+		{%- set styles = [...styles, ...section.extra.styles] %}
 	{%- endif %}
 
-	{%- if not config.extra.debug.no_styles %}
+	{%- if not config.extra?.debug?.no_styles %}
 		{%- for style in styles %}
 			<link type="text/css" rel="stylesheet" href="{{ get_url(path=style) | safe }}" />
 		{%- endfor %}
 
-		{%- if config.markdown.highlighting and config.markdown.highlighting.style == "class" %}
-			{%- if config.markdown.highlighting.light_theme or config.highlighting.dark_theme %}
-				<link type="text/css" rel="stylesheet" href="{{ get_url(path='giallo-light.css') }}" media="(prefers-color-scheme: light)" />
-				<link type="text/css" rel="stylesheet" href="{{ get_url(path='giallo-dark.css') }}" media="(prefers-color-scheme: dark)" />
-			{%- else %}
-				<link type="text/css" rel="stylesheet" href="{{ get_url(path='giallo.css') }}" />
-			{%- endif %}
+		{%- if config.markdown?.highlighting and config.markdown.highlighting.light_theme and config.markdown.highlighting.dark_theme %}
+			<link type="text/css" rel="stylesheet" href="{{ get_url(path='giallo-light.css') }}" media="(prefers-color-scheme: light)" />
+			<link type="text/css" rel="stylesheet" href="{{ get_url(path='giallo-dark.css') }}" media="(prefers-color-scheme: dark)" />
+		{%- elif config.markdown?.highlighting and config.markdown.highlighting.theme %}
+			<link type="text/css" rel="stylesheet" href="{{ get_url(path='giallo.css') }}" />
 		{%- endif %}
 	{%- endif %}
 
 	{%- set scripts = ["closable.js"] %}
 
-	{%- if config.extra.show_copy_button %}
-		{%- set scripts = scripts | concat(with=["copy-button.js"]) %}
+	{%- if config.extra?.show_copy_button %}
+		{%- set scripts = [...scripts, "copy-button.js"] %}
 	{%- endif %}
 
-	{%- if config.extra.goatcounter %}
-		{%- set scripts = scripts | concat(with=["count.js"]) %}
+	{%- if config.extra?.goatcounter %}
+		{%- set scripts = [...scripts, "count.js"] %}
 	{%- endif %}
 
-	{%- if page.extra.katex or section.extra.katex or config.extra.katex %}
-		{%- set scripts = scripts | concat(with=["katex.min.js", "auto-render.min.js", "katex-init.js"]) %}
+	{%- if page?.extra?.katex or section?.extra?.katex or config.extra?.katex %}
+		{%- set scripts = [...scripts, "katex.min.js", "auto-render.min.js", "katex-init.js"] %}
 	{%- endif %}
 
 	{%- if config.build_search_index %}
 		{%- if config.search.index_format == "elasticlunr_json" -%}
-			{%- set scripts = scripts | concat(with=["elasticlunr.min.js", "search-elasticlunr.js"]) %}
+			{%- set scripts = [...scripts, "elasticlunr.min.js", "search-elasticlunr.js"] %}
 		{%- elif config.search.index_format == "fuse_json" -%}
-			{%- set scripts = scripts | concat(with=["fuse.js", "search-fuse.js"]) %}
+			{%- set scripts = [...scripts, "fuse.js", "search-fuse.js"] %}
 		{%- endif -%}
 	{%- endif %}
 
-	{%- if config.extra.nav.show_theme_switcher %}
-		{%- set scripts = scripts | concat(with=["theme-switcher.js"]) %}
+	{%- if config.extra.nav?.show_theme_switcher %}
+		{%- set scripts = [...scripts, "theme-switcher.js"] %}
 	{%- endif %}
 
-	{%- if page.extra.comments.id %}
-		{%- set scripts = scripts | concat(with=["comments.js"]) %}
+	{%- if page?.extra?.comments?.id %}
+		{%- set scripts = [...scripts, "comments.js"] %}
 	{%- endif %}
 
-	{%- if config.extra.scripts %}
-		{%- set scripts = scripts | concat(with=config.extra.scripts) %}
+	{%- if config.extra?.scripts %}
+		{%- set scripts = [...scripts, ...config.extra.scripts] %}
 	{%- endif %}
 
-	{%- if page.extra.scripts %}
-		{%- set scripts = scripts | concat(with=page.extra.scripts) %}
-	{%- elif section.extra.scripts %}
-		{%- set scripts = scripts | concat(with=section.extra.scripts) %}
+	{%- if page?.extra?.scripts %}
+		{%- set scripts = [...scripts, ...page.extra.scripts] %}
+	{%- elif section?.extra?.scripts %}
+		{%- set scripts = [...scripts, ...section.extra.scripts] %}
 	{%- endif %}
 
 	{%- if scripts | length > 0 %}
 		{%- for script in scripts %}
-			<script
-				type="text/javascript"
-				defer
-				{% if script == "count.js" and config.extra.goatcounter.user %}
-					data-goatcounter="https://{{ config.extra.goatcounter.user }}.{{ config.extra.goatcounter.host | default(value='goatcounter.com') }}/count"
-				{% else %}
-					data-goatcounter="https://{{ config.extra.goatcounter.host | default(value='goatcounter.com') }}/count"
-				{% endif %}
-				src="{{ get_url(path=script) | safe }}">
-			</script>
+			<script type="text/javascript" defer {% if script == "count.js" %}data-goatcounter="https://{{ config.extra.goatcounter.user }}.{{ config.extra.goatcounter?.host | default(value='goatcounter.com') }}/count"{% endif %} src="{{ get_url(path=script) | safe }}"></script>
 		{%- endfor %}
 	{%- endif %}
 
@@ -128,8 +117,8 @@
 	<meta property="og:title" content="{% include 'partials/title.html' %}" />
 	<meta property="og:url" content="{{ current_url | default(value='/') | safe }}" />
 	<meta property="og:description" content="{% include 'partials/description.html' %}" />
-	{%- if config.extra.card is not defined or config.extra.card != false -%}
+	{%- if config.extra?.card is not defined or config.extra?.card != false -%}
 		<meta property="og:image" content="{% include 'partials/card.html' %}" />
 	{%- endif -%}
-	<meta property="og:locale" content="{{ macros_translate::translate(key='date_locale', default='en_US', language_strings=language_strings) }}" />
+	<meta property="og:locale" content="{{ <translate key="date_locale" default="en_US" language_strings /> }}" />
 </head>

@@ -18,25 +18,25 @@
 	{%- set post_url = "https://" ~ host ~ "/@" ~ user ~ "/" ~ id -%}
 {%- endif -%}
 
-{%- set time_format = macros_translate::translate(key="time_format", default="%B %d, %Y", language_strings=language_strings) -%}
-{%- set js_date_locale = macros_translate::translate(key="date_locale", default="en-US", language_strings=language_strings) | replace(from="_", to="-") -%}
+{%- set time_format = <translate key="time_format" default="%B %d, %Y" language_strings /> -%}
+{%- set date_locale = <translate key="date_locale" default="en-US" language_strings /> | replace(from="_", to="-") -%}
 
 {%- set cached_comments = load_data(path=page.relative_path ~ "-comments.json", required=false) -%}
 
-<span id="blog-post-author-text" class="hidden">{{ macros_translate::translate(key="blog_post_author", default="Blog post author", language_strings=language_strings) }}</span>
-<span id="boosts-from-text" class="hidden">{{ macros_translate::translate(key="boosts_from", default="Boosts from $INSTANCE", language_strings=language_strings) }}</span>
-<span id="date-locale" class="hidden">{{ js_date_locale }}</span>
-<span id="faves-from-text" class="hidden">{{ macros_translate::translate(key="faves_from", default="Favorites from $INSTANCE", language_strings=language_strings) }}</span>
+<span id="blog-post-author-text" class="hidden">{{ <translate key="blog_post_author" default="Blog post author" language_strings /> }}</span>
+<span id="boosts-from-text" class="hidden">{{ <translate key="boosts_from" default="Boosts from $INSTANCE" language_strings /> }}</span>
+<span id="date-locale" class="hidden">{{ date_locale }}</span>
+<span id="faves-from-text" class="hidden">{{ <translate key="faves_from" default="Favorites from $INSTANCE" language_strings /> }}</span>
 <span id="host" class="hidden">{{ host }}</span>
 <span id="id" class="hidden">{{ id }}</span>
-<span id="loading-text" class="hidden">{{ macros_translate::translate(key="loading", default="Loading", language_strings=language_strings) }}…</span>
-<span id="no-comments-text" class="hidden">{{ macros_translate::translate(key="no_comments", default="No Comments yet :/", language_strings=language_strings) }}</span>
+<span id="loading-text" class="hidden">{{ <translate key="loading" default="Loading" language_strings /> }}…</span>
+<span id="no-comments-text" class="hidden">{{ <translate key="no_comments" default="No Comments yet :/" language_strings /> }}</span>
 <span id="rel-attributes" class="hidden">{{ rel_attributes }}</span>
-<span id="reload-text" class="hidden">{{ macros_translate::translate(key="reload", default="Reload", language_strings=language_strings) }}</span>
-<span id="sensitive-text" class="hidden">{{ macros_translate::translate(key="sensitive", default="Sensitive Content", language_strings=language_strings) }}</span>
+<span id="reload-text" class="hidden">{{ <translate key="reload" default="Reload" language_strings /> }}</span>
+<span id="sensitive-text" class="hidden">{{ <translate key="sensitive" default="Sensitive Content" language_strings /> }}</span>
 <span id="user" class="hidden">{{ user }}</span>
-<span id="view-comment-text" class="hidden">{{ macros_translate::translate(key="view_comment", default="View Comment At", language_strings=language_strings) }}</span>
-<span id="view-profile-text" class="hidden">{{ macros_translate::translate(key="view_profile", default="View Profile At", language_strings=language_strings) }}</span>
+<span id="view-comment-text" class="hidden">{{ <translate key="view_comment" default="View Comment At" language_strings /> }}</span>
+<span id="view-profile-text" class="hidden">{{ <translate key="view_profile" default="View Profile At" language_strings /> }}</span>
 
 {%- if config.markdown.lazy_async_image %}
 	<span id="lazy-async-image" class="hidden">true</span>
@@ -49,50 +49,50 @@
 		<img
 			id="qrcode"
 			class="pixels no-hover"
-			title="{{ macros_translate::translate(key='comments_qr', default='QR code to a Mastodon post', language_strings=language_strings) }}"
+			title="{{ <translate key='comments_qr' default='QR code to a Mastodon post' language_strings /> }}"
 			{%- if config.markdown.lazy_async_image -%}decoding="async" loading="lazy"{%- endif -%}
 			src="https://qr.astriiid.fr/v1/create-qr-code/?data={{ post_url }}"
 		/>
 	{%- endif -%}
-	<h2>{{ macros_translate::translate(key="comments", default="Comments", language_strings=language_strings) }}</h2>
-	<p>{{ macros_translate::translate(key="comments_description", default="You can comment on this blog post by publicly replying to this post using a Mastodon or other ActivityPub/Fediverse account. Known non-private replies are displayed below.", language_strings=language_strings) }}</p>
+	<h2>{{ <translate key="comments" default="Comments" language_strings /> }}</h2>
+	<p>{{ <translate key="comments_description" default="You can comment on this blog post by publicly replying to this post using a Mastodon or other ActivityPub/Fediverse account. Known non-private replies are displayed below." language_strings /> }}</p>
 	{%- if cached_comments and cached_comments.descendants | length > 0 -%}
 	    {%- set last_cached_time = "" -%}
 	    {%- if config.extra.comments.last_cached_time -%}
-			{% set last_cached_time = config.extra.comments.last_cached_time | date(format=time_format, locale=date_locale) %}
+			{% set last_cached_time = config.extra.comments.last_cached_time | date(format=time_format) %}
 			{% set last_cached_time = " on " ~ last_cached_time %}
 		{%- endif -%}
-    	<small>{{ macros_translate::translate(key="comments_cached_description", default='These comments are cached and may have changed or been deleted since they were last fetched$DATE. Click on "Load New Comments" to use Javascript to fetch the newest ones.', language_strings=language_strings) | replace(from="$DATE", to=last_cached_time) | safe }}</small>
+    	<small>{{ <translate key="comments_cached_description" default='These comments are cached and may have changed or been deleted since they were last fetched$DATE. Click on "Load New Comments" to use Javascript to fetch the newest ones.' language_strings /> | replace(from="$DATE", to=last_cached_time) | safe }}</small>
 	{%- endif -%}
 	<div class="buttons">
 		<button id="load-comments">
-			{{- macros_translate::translate(key="load_comments", default="Load Comments", language_strings=language_strings) -}}
+			{{- <translate key="load_comments" default="Load Comments" language_strings /> -}}
 		</button>
 		<a class="colored external" href="{{ post_url }}" rel="{{ rel_attributes }}">
-			{{- macros_translate::translate(key="open_post", default="Open Post", language_strings=language_strings) -}}
+			{{- <translate key="open_post" default="Open Post" language_strings /> -}}
 		</a>
 	</div>
 	<div id="comments-wrapper">
 		<noscript>
-			<p>{{ macros_translate::translate(key="comments_noscript", default="Loading comments relies on JavaScript. Try enabling JavaScript and reloading, or visit the original post on Mastodon.", language_strings=language_strings) }}</p>
+			<p>{{ <translate key="comments_noscript" default="Loading comments relies on JavaScript. Try enabling JavaScript and reloading, or visit the original post on Mastodon." language_strings /> }}</p>
 		</noscript>
 
 		{%- if cached_comments -%}
 		    {%- if cached_comments.descendants | length > 0 -%}
 				{%- for status in cached_comments.descendants -%}
 					{%- if status.account.display_name | length > 0 -%}
-					    {%- set display_name = macros_comments::emojify(content=status.account.display_name, emojis=status.emojis) -%}
+					    {%- set display_name = <comments_emojify content={status.account.display_name} emojis={status.emojis} /> -%}
 					{%- else -%}
 					    {%- set display_name = status.account.username -%}
 					{%- endif -%}
-				    {%- if status.account.acct is containing("@") -%}
+				    {%- if status.account.acct is containing(pat="@") -%}
 						{%- set instance = status.account.acct | split(pat="@") | nth(n=1) -%}
 					{%- else -%}
 					    {%- set instance = host -%}
 					{%- endif -%}
 				    {%- set is_reply = status.in_reply_to_id != id -%}
 					{%- set op = status.account.acct == user -%}
-					{%- set emojified_content = macros_comments::emojify(content=status.content, emojis=status.emojis) %}
+					{%- set emojified_content = <comments_emojify content={status.content | safe} emojis={status.emojis} /> %}
 				    <article
 						id="comment={{ status.id }}"
 						class="{%- if is_reply -%}comment comment-reply{% else %}comment{%- endif -%}{%- if op %} op{%- endif -%}"
@@ -103,7 +103,7 @@
                             class="avatar-link {%- if op %} op{%- endif -%}"
                             href="{{ status.account.url }}"
                             rel="{{ rel_attributes }}"
-                            title="{%- if op -%}{{ macros_translate::translate(key="blog_post_author", default="Blog post author", language_strings=language_strings) }}: {% endif -%}{{ macros_translate::translate(key="view_profile", default="View Profile At", language_strings=language_strings) }} @{{ status.account.username}}@{{ instance }}"
+                            title="{%- if op -%}{{ <translate key="blog_post_author" default="Blog post author" language_strings /> }} : {% endif -%}{{ <translate key="view_profile" default="View Profile At" language_strings /> }} @{{ status.account.username}}@{{ instance }}"
                         >
                             <picture
                                 {% if config.markdown.lazy_async_image -%}
@@ -132,7 +132,7 @@
                             <a
                                 class="instance {%- if op %} op{%- endif -%}"
                                 href="{{ status.account.url }}"
-                                title="{%- if op -%}{{ macros_translate::translate(key="blog_post_author", default="Blog post author", language_strings=language_strings) }}: {% endif -%}@{{ status.account.username }}@{{ instance }}"
+                                title="{%- if op -%}{{ <translate key="blog_post_author" default="Blog post author" language_strings /> }}: {% endif -%}@{{ status.account.username }}@{{ instance }}"
                                 rel="{{ rel_attributes }}"
                             >{{ instance }}</a>
                         </header>
@@ -142,10 +142,10 @@
                                 class="external"
                                 href="{{ status.url }}"
                                 itemprop="url"
-                                title="{{ macros_translate::translate(key="view_comment", default="View Comment At", language_strings=language_strings) }} {{ instance }}"
+                                title="{{ <translate key="view_comment" default="View Comment At" language_strings /> }} {{ instance }}"
                                 rel="{{ rel_attributes }}"
                             >
-                                {{- status.created_at | date(format=time_format, timezone="Europe/Paris", locale=date_locale) -}}
+                                {{- status.created_at | date(format=time_format, timezone="Europe/Paris") -}}
                             </a>
                         </time>
 
@@ -156,7 +156,7 @@
                                         {%- if status.spoiler_text | length > 0 -%}
                                             {{ status.spoiler_text }}
                                         {%- else -%}
-                                            {{ macros_translate::translate(key="sensitive", default="Sensitive Content", language_strings=language_strings) }}
+                                            {{ <translate key="sensitive" default="Sensitive Content" language_strings /> }}
                                         {%- endif -%}
                                     </summary>
                                     {{ emojified_content | safe }}
@@ -168,7 +168,7 @@
 
                         {%- set supported_media = ["image", "video", "gifv", "audio"] -%}
                         {%- for attachment in status.media_attachments -%}
-                        {%- if supported_media is containing(attachment.type) -%}
+                        {%- if supported_media is containing(pat=attachment.type) -%}
                             <div class="attachments">
                             {%- if attachment.type == "image" -%}
                                 <img
@@ -223,7 +223,7 @@
                             <a
                                 class="boosts"
                                 href="{{ status.url }}/reblogs"
-                                title="{{ macros_translate::translate(key="boosts_from", default="Boosts from $INSTANCE", language_strings=language_strings) | replace(from="$INSTANCE", to=instance) }}"
+                                title="{{ <translate key="boosts_from" default="Boosts from $INSTANCE" language_strings /> | replace(from="$INSTANCE", to=instance) }}"
                             >
                                 <i class="icon"></i>
                                 {{ status.reblogs_count }}
@@ -231,7 +231,7 @@
                             <a
                                 class="faves"
                                 href="{{ status.url }}/favourites"
-                                title="{{ macros_translate::translate(key="faves_from", default="Favorites from $INSTANCE", language_strings=language_strings) | replace(from="$INSTANCE", to=instance) }}"
+                                title="{{ <translate key="faves_from" default="Favorites from $INSTANCE" language_strings /> | replace(from="$INSTANCE", to=instance) }}"
                             >
                                 <i class="icon"></i>
                                 {{ status.favourites_count }}
@@ -268,7 +268,7 @@
 				{%- endfor -%}
 			{%- else -%}
 				<p id="comments-status">
-    				<span id="no-comments-text">{{ macros_translate::translate(key="no_comments", default="No Comments yet :/", language_strings=language_strings) }}</span>
+    				<span id="no-comments-text">{{ <translate key="no_comments" default="No C:omments yet :/" language_strings /> }}</span>
 				</p>
 			{%- endif -%}
 		{%- endif -%}

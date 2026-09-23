@@ -7,7 +7,7 @@ RUN if [ ! -z "${REPLACEMENT_DOMAIN}" ]; then \
     sed -iE 's|^base_url = "https://townsquare.astriiid.fr"|base_url = "blob:void"|' config.toml; \
 fi
 
-FROM ghcr.io/getzola/zola:v0.22.1 AS zola
+FROM ghcr.io/getzola/zola:v0.23.6 AS zola
 COPY --from=patcher /project /project
 WORKDIR /project
 RUN ["zola", "build"]

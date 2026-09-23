@@ -1,0 +1,12 @@
+{% component prettify_url(link: string) %}
+{%- set stripped_url = link |
+	trim_start(pat="https://") |
+	trim_start(pat="http://") |
+	trim_end(pat="/") |
+	trim_end(pat=".html")
+-%}
+{%- if stripped_url is matching(pat="^github.com/[^/]+/[^/]+/?$") -%}
+	{%- set stripped_url = stripped_url | trim_start(pat="github.com/") -%}
+{%- endif -%}
+{{- stripped_url -}}
+{% endcomponent prettify_url %}

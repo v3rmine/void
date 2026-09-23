@@ -12,7 +12,8 @@
 		border-radius: var(--rounded-corner);
 		border-start-end-radius: 2.125rem;
 		border-end-end-radius: 1.8125rem;
-		background-image: linear-gradient(var(--bg-overlay), var(--bg-overlay)),
+		background-image:
+			linear-gradient(var(--bg-overlay), var(--bg-overlay)),
 			linear-gradient(var(--glass-bg), var(--glass-bg)), var(--blurnail);
 		background-position: center;
 		background-size: cover;
@@ -63,6 +64,11 @@
 			font-weight: bold;
 			line-height: 1;
 			font-family: var(--font-system-ui);
+
+			a {
+				color: inherit;
+				text-decoration: none;
+			}
 
 			&::after {
 				-webkit-mask-image: var(--icon-right);

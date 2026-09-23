@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
-{%- set date_format = macros_translate::translate(key="date_format", default="%B %d, %Y", language_strings=language_strings) -%}
-{%- set date_locale = macros_translate::translate(key="date_locale", default="en_US", language_strings=language_strings) -%}
+{%- set date_format = <translate key="date_format" default="%B %d, %Y" language_strings /> -%}
+{%- set date_locale = <translate key="date_locale" default="en_US" language_strings /> -%}
 
 <h1>{{ section.title }}</h1>
 
@@ -17,14 +17,14 @@
 		{%- if more_target and pages | length > 5 -%}
 			<div class="buttons m-s">
 				<a href="{{ more_target }}">
-					{{ macros_translate::translate(key='more_posts', default='Older posts...', language_strings=language_strings) }}
+					{{ <translate key='more_posts' default='Older posts...' language_strings /> }}
 				</a>
 			</div>
 		{%- endif -%}
 	</div>
 </div>
 
-{{ macros_articles::articles(max_count=5, pages=pages, date_format=date_format, date_locale=date_locale, language_strings=language_strings) }}
+{{ <articles_list max_count={5} pages={pages} date_format date_locale language_strings /> }}
 
 {%- set for_section = get_section(path="notes/_index.md") -%}
 {%- set pages = for_section.pages -%}
@@ -35,13 +35,13 @@
 		{%- if more_target and pages | length > 3 -%}
 			<div class="buttons m-s">
 				<a href="{{ more_target }}">
-					{{ macros_translate::translate(key='more_notes', default='Older notes...', language_strings=language_strings) }}
+					{{ <translate key='more_notes' default='Older notes...' language_strings /> }}
 				</a>
 			</div>
 		{%- endif -%}
 	</div>
 </div>
 
-{{ macros_articles::articles(max_count=3, pages=pages, date_format=date_format, date_locale=date_locale, language_strings=language_strings) }}
+{{ <articles_list max_count={3} pages={pages} date_format date_locale language_strings /> }}
 
 {% endblock content %}

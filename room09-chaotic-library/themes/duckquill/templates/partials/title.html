@@ -6,7 +6,7 @@
 {%- else -%}
 	{{- throw(message='Title has not been set in config.toml, Please set one.') -}}
 {%- endif -%}
-{%- set custom_separator = config.extra.title_separator | default(value="-") -%}
+{%- set custom_separator = config.extra?.title_separator | default(value="-") -%}
 {%- set separator = " " ~ custom_separator ~ " " -%}
 
 {#- Get the base path for the current language -#}
@@ -21,16 +21,16 @@
 	{%- set separator = "" -%}
 {% elif title %}
 	{%- set prefix =  title -%}
-{% elif section.title -%}
+{% elif section?.title -%}
 	{%- set prefix = section.title -%}
-{% elif page.title %}
+{% elif page?.title %}
 	{%- set prefix = page.title -%}
-{% elif term.name %}
+{% elif term?.name %}
 	{#- Individual tags -#}
 	{%- set prefix = term.name -%}
-{% elif taxonomy.name %}
+{% elif taxonomy?.name %}
 	{#- List of tags -#}
-	{%- set prefix = macros_translate::translate(key=taxonomy.name, language_strings=language_strings) | capitalize -%}
+	{%- set prefix = <translate key={taxonomy.name} language_strings /> | capitalize -%}
 {% else %}
 	{%- set prefix = "404" %}
 {%- endif -%}
