@@ -18,8 +18,8 @@ local autolink = js.tolua(toml.parse(autolink_content))
 function parse_inline_shortcode(body)
   local render = dom.i { body }
 
-  -- Parse shortcode {{ url(link="") }}
-  local match_url = string.matchRegex(body, 'url\\(link="(?<url>.*?)"\\)')
+  -- Parse shortcode {{ <url link="" ... /> }}
+  local match_url = string.matchRegex(body, 'url +link="(?<url>.*?)"[^/>]*')
   if match_url != nil then
     local url = match_url.groups.url
 
@@ -34,8 +34,8 @@ function parse_inline_shortcode(body)
     }
   end
 
-  -- Parse shortcode {{ customoji(name="") }}
-  local match_customoji = string.matchRegex(body, 'customoji\\(name="(?<name>.*?)"[^)]*\\)')
+  -- Parse shortcode {{ <customoji name="" ... /> }}
+  local match_customoji = string.matchRegex(body, 'customoji +name="(?<name>.*?)"[^/>]*')
   if match_customoji != nil then
     local name = match_customoji.groups.name
 
@@ -57,8 +57,8 @@ function parse_inline_shortcode(body)
     end
   end
 
-  -- Parse shortcode {{ image(url="") }}
-  local match_image = string.matchRegex(body, 'image\\(url="(?<url>.*?)"[^)]*\\)')
+  -- Parse shortcode {{ <image url="" ... /> }}
+  local match_image = string.matchRegex(body, 'image +url="(?<url>.*?)"[^/>]*')
   if match_image != nil then
     local url = match_image.groups.url
 
@@ -73,8 +73,8 @@ function parse_inline_shortcode(body)
     end
   end
   
-  -- Parse shortcode {{ al(k="") }}
-  local match_al = string.matchRegex(body, 'al\\(k="(?<key>.*?)"[^)]*\\)')
+  -- Parse shortcode {{ <al k="" ... /> }}
+  local match_al = string.matchRegex(body, 'al +k="(?<key>.*?)"[^/>]*')
   if match_al != nil then
     local key = match_al.groups.key
 
@@ -90,8 +90,8 @@ function parse_inline_shortcode(body)
     end
   end
 
-  -- Parse shortcode {{ youtube(id="") }}
-  local match_youtube = string.matchRegex(body, 'youtube\\(id="(?<id>.*?)"[^)]*\\)')
+  -- Parse shortcode {{ <youtube id="" /> }}
+  local match_youtube = string.matchRegex(body, 'youtube +id="(?<id>.*?)"[^/>]*')
   if match_youtube != nil then
     local id = match_youtube.groups.id
     
@@ -110,8 +110,8 @@ end
 
 syntax.define {
   name = "ZolaShortcodeInline",
-  startMarker = "\\{\\{\\s*",
-  endMarker = "\\s*\\}\\}",
+  startMarker = "\\{\\{\\s*<",
+  endMarker = "/>\\s*\\}\\}",
   mode = "inline",
   startMarkerClass = "sb-zola-shortcode-marker",
   --bodyClass = "",
@@ -189,12 +189,12 @@ syntax.define {
 }
 ```
 
-{% say(who="astrid", what="Sweat", rev=1) %}
-{% xxx %}
+{% <say who="astrid" what="Sweat" rev=1> %}
+{% <xxx> %}
 Bon ça allait pas super fort non plus.  
 Toujours pas de bonne piste de taff et le changement de prénom toujours au point mort... Mais après une bonne pause lecture et **loin de l'ordi** ça a l'air d'aller un peu mieux
-{% end %}
-{% end %}
+{% </xxx> %}
+{% </say> %}
 
 ## Workaround block shortcodes
 ${widgets.commandButton("System: Reload")}
@@ -215,7 +215,7 @@ function parse_block_shortcode(body)
   end
 
   -- Parse wild only
-  local match_end = string.matchRegex(body, '^wild_only\\(\\)$')
+  local match_end = string.matchRegex(body, '^</?wild_only>$')
   if match_end != nil then
     render = dom.span {
       class = "sb-zola-shortcode-marker",
@@ -224,7 +224,7 @@ function parse_block_shortcode(body)
   end
 
   -- Parse say
-  local match_say = string.matchRegex(body, 'say\\(who="(?<who>.*?)"(?:,\\s*what="(?<what>.*?)")?[^)]*\\)')
+  local match_say = string.matchRegex(body, '<say +who="(?<who>.*?)"(?:\\s+what="(?<what>.*?)")?[^>]*>')
   if match_say != nil then
     local who = match_say.groups.who
     local what = match_say.groups.what

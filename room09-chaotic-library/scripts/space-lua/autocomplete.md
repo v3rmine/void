@@ -103,7 +103,7 @@ event.listen {
     local linePrefix = e.data.linePrefix or ""
     local pos = e.data.pos or 0
 
-    local match = linePrefix:match("customoji%(name=\"([a-zA-Z0-9_]*)$")
+    local match = linePrefix:match("<customoji +name=\"([a-zA-Z0-9_]*)$")
     if not match then
       return
     end
@@ -152,7 +152,7 @@ event.listen {
     local linePrefix = e.data.linePrefix or ""
     local pos = e.data.pos or 0
 
-    local match = linePrefix:match("say%([^)]*who=\"([a-zA-Z0-9_]*)$")
+    local match = linePrefix:match("<say +[^)]*who=\"([a-zA-Z0-9_]*)$")
     if not match then
       return
     end
@@ -199,7 +199,7 @@ event.listen {
     local linePrefix = e.data.linePrefix or ""
     local pos = e.data.pos or 0
 
-    local match = linePrefix:match("say%([^)]*what=\"([a-zA-Z0-9_]*)$")
+    local match = linePrefix:match("say +[^)]*what=\"([a-zA-Z0-9_]*)$")
     if not match then
       return
     end
@@ -258,7 +258,7 @@ event.listen {
     local linePrefix = e.data.linePrefix or ""
     local pos = e.data.pos or 0
 
-    local match = linePrefix:match("al%(k=\"([a-zA-Z0-9_]*)$")
+    local match = linePrefix:match("<al +k=\"([a-zA-Z0-9_]*)$")
     if not match then
       return
     end
