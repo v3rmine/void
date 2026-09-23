@@ -3,8 +3,8 @@ COPY . /project
 WORKDIR /project
 ARG REPLACEMENT_DOMAIN=
 RUN if [ ! -z "${REPLACEMENT_DOMAIN}" ]; then \
-    sed -iE 's|^base_url = "https://astriiid.fr"|base_url = "'"$REPLACEMENT_DOMAIN"'"|' config.toml; \
-    sed -iE 's|^base_url = "https://townsquare.astriiid.fr"|base_url = "blob:void"|' config.toml; \
+    sed -iE 's|^base_url = "https://astriiid.fr"|base_url = "'"$REPLACEMENT_DOMAIN"'"|' zola.toml; \
+    sed -iE 's|^base_url = "https://townsquare.astriiid.fr"|base_url = "blob:void"|' zola.toml; \
 fi
 
 FROM ghcr.io/getzola/zola:v0.23.6 AS zola
