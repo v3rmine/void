@@ -74,5 +74,8 @@ J'ai découvert l'outil [Doodle Scan](https://rknight.me/blog/doodle-scan/) qui 
 - [Autistici/Inventati annonce sa dissolution, et la fermeture prochaine de ses services - Next](https://next.ink/255087/autistici-inventati-annonce-sa-dissolution-et-la-fermeture-prochaine-de-ses-services/) : Onze jours après avoir été désigné comme organisation terroriste par l’administration Trump, le collectif hacktiviste d’origine italienne…
 - [robida/human.json: A lightweight protocol for humans to assert authorship of their website content and vouch for the humanity of others. - Codeberg.org](https://codeberg.org/robida/human.json) : human.json - A lightweight protocol for humans to assert authorship of their website content and vouch for the humanity of others.
 - [Jim Queen : la révolution queer ne sera pas bourgeoise](https://frustrationmagazine.fr/jim-queen/) : Frustration Magazine, média indépendant et offensif qui relate la guerre des classes.
+- [What do Visa and Mastercard do? An intro to card networks @ tautology.town](https://tautology.town/2026/06/01/card-networks.html) : tautology.town is a blog that contains tautologies.
+- [Autistici/Inventati and the Reach of U.S. Sanctions](https://thelibre.news/autistici-inventati-us-sanctions/) : The U.S. designated Autistici/Inventati under EO 13224. The collective lost access to its bank account and domain and had to shut down.
+
 
 
