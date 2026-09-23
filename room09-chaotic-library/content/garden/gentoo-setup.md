@@ -23,11 +23,11 @@ extra:
 >
 > the main target is **me** _(in the future)_ when i'll work on the same thing again and ask myself what i did
 
-i have a really flaky USB key so i booted the live image in RAM (cached version). i also had issues because the iso was visually written in like 10s on the USB key but it easily needed 5min do really write it and empty the caches using `sync` command {{ customoji(name="SmileBecauseThisIsFine") }}
+i have a really flaky USB key so i booted the live image in RAM (cached version). i also had issues because the iso was visually written in like 10s on the USB key but it easily needed 5min do really write it and empty the caches using `sync` command {{ <customoji name="SmileBecauseThisIsFine" /> }}
 
 Gentoo doesn't have a graphical setup so i'll keep the [handbook](https://wiki.gentoo.org/wiki/Handbook:AMD64) open on my phone and on a tab in the browser!
 
-it's a trial setup on a [framework storage expansion card](https://frame.work/fr/en/products/storage-expansion-card-2nd-gen) (i really like them to try new systems {{ customoji(name="CatBlush") }}) so we keep it simple with only 3 partitions and nothing out of the ordinary
+it's a trial setup on a [framework storage expansion card](https://frame.work/fr/en/products/storage-expansion-card-2nd-gen) (i really like them to try new systems {{ <customoji name="CatBlush" /> }}) so we keep it simple with only 3 partitions and nothing out of the ordinary
 - `/dev/sda1`: EFI 1GiB `vfat`
 - `/dev/sda2`: swap 16GiB `linux-swap`
 - `/dev/sda3`: root 100GiB `ext4`
@@ -57,15 +57,15 @@ RUSTFLAGS="${RUSTFLAGS} -C target-cpu=native"
 LC_MESSAGES=C.UTF-8
 ```
 
-i didn't touch `MAKEOPTS` to limit the number of parallel compilation because my laptop has 16 threads and 32GiB of ram (so i'm fine with the max RAM/2 rule) {{ customoji(name="FemFingerGun") }}
+i didn't touch `MAKEOPTS` to limit the number of parallel compilation because my laptop has 16 threads and 32GiB of ram (so i'm fine with the max RAM/2 rule) {{ <customoji name="FemFingerGun" /> }}
 
 ---
 
-we are now chrooted in the new system {{ customoji(name="personas/astrid/Sparkling 1") }}
+we are now chrooted in the new system {{ <customoji name="personas/astrid/Sparkling 1" /> }}
 
 i'm adding `ACCEPT\_LICENSE\="-\* @FREE @BINARY-REDISTRIBUTABLE"` to `/etc/portage/make.conf` to allow binary distributed softwares
 
-and it's now time for a looooooong `emerge --ask --verbose --update --deep --changed-use @world` {{ customoji(name="CatLoading") }}
+and it's now time for a looooooong `emerge --ask --verbose --update --deep --changed-use @world` {{ <customoji name="CatLoading" /> }}
 
 finiiiished i'm sidetracking a bit because i want to also try niri so:
 - i need to setup [GURU](https://wiki.gentoo.org/wiki/Project:GURU/Information_for_End_Users)
@@ -86,4 +86,4 @@ we keep the cron daemon classic with cronie `emerge --ask sys-process/cronie`
 
 for the boot i'll keep what i know with grub without secure-boot
 
-and that's it! i'll try all of that another day because it's already late {{ customoji(name="personas/astrid/Sleep Normal")}}
+and that's it! i'll try all of that another day because it's already late {{ <customoji name="personas/astrid/Sleep Normal" /> }}

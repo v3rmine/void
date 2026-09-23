@@ -13,20 +13,20 @@
     {%- if for_section.sort_by -%}
         {%- set pages = pages | sort(attribute=for_section.sort_by) -%}
     {%- endif -%}
-    {%- set pages = pages | slice(end=section.extra.max_list_size | default(value=5)) -%}
-{%- elif paginator.pages -%}
+    {%- set pages = pages[:section.extra.max_list_size | default(value=5)] -%}
+{%- elif paginator?.pages -%}
 	{%- set pages = paginator.pages -%}
 {%- elif section.pages -%}
 	{%- set pages = section.pages -%}
-{%- elif term.pages -%}
+{%- elif term?.pages -%}
 	{%- set pages = term.pages -%}
 {%- else -%}
     {%- set pages = [] -%}
 {%- endif -%}
 
-{{ macros_thoughts::thoughts(
-	pages=pages,
-	date_format="%d %h %Y @ %H:%M",
-	date_locale=date_locale,
-	language_strings=language_strings
-) }}
+{{ <thoughts_list
+	pages
+	date_format="%d %h %Y @ %H:%M"
+	date_locale
+	language_strings
+/> }}

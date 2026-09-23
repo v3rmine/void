@@ -1,6 +1,6 @@
-{%- if page.description -%}
+{%- if page?.description -%}
 	{{- page.description }}
-{%- elif section.description -%}
+{%- elif section?.description -%}
 	{{- section.description }}
 {%- else -%}
 	{{- config.description -}}

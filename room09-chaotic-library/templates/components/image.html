@@ -1,0 +1,97 @@
+{% component image(
+	@config = {},
+	@lang = "en",
+	url,
+	url_min="",
+	alt="",
+	full=false,
+	full_bleed=false,
+	start=false,
+	end=false,
+	pixels=false,
+	transparent=false,
+	no_hover=false,
+	spoiler=false,
+	solid=false,
+	lazy=false,
+	inline=false,
+	open_onclick=false,
+	format = "avif",
+	quality = 80,
+	speed = 4,
+	...attrs
+) %}
+{%- set language_strings = load_data(path="i18n/" ~ lang ~ '.toml', required=false) -%}
+
+{%- set image_classes = [] -%}
+{%- if full -%}
+	{%- set image_classes = [...image_classes, "full"] -%}
+{%- endif -%}
+{%- if full_bleed -%}
+	{%- set image_classes = [...image_classes, "full-bleed"] -%}
+{%- endif -%}
+{%- if start -%}
+	{%- set image_classes = [...image_classes, "start"] -%}
+{%- endif -%}
+{%- if end -%}
+	{%- set image_classes = [...image_classes, "end"] -%}
+{%- endif -%}
+{%- if pixels -%}
+	{%- set image_classes = [...image_classes, "pixels"] -%}
+{%- endif -%}
+{%- if transparent -%}
+	{%- set image_classes = [...image_classes, "transparent"] -%}
+{%- endif -%}
+{%- if not hover -%}
+	{%- set image_classes = [...image_classes, "no-hover"] -%}
+{%- endif -%}
+{%- if spoiler -%}
+	{%- set image_classes = [...image_classes, "spoiler"] -%}
+{%- endif -%}
+{%- if spoiler and solid -%}
+	{%- set image_classes = [...image_classes, "solid"] -%}
+{%- endif -%}
+{%- if inline -%}
+	{%- set image_classes = [...image_classes, "inline"] -%}
+{%- endif -%}
+
+{%- set image_classes = image_classes | join(sep=" ") -%}
+{%- if attrs.width or attrs.height -%}
+    {%- set format = format | default(value="avif") -%}
+    {%- set quality = quality | default(value=80) -%}
+    {# Between 1 and 10, 1 is slowest and 10 is fastest #}
+    {%- set speed = speed | default(value=4) -%}
+
+    {%- if attrs.width and attrs.height -%}
+        {%- set image = resize_image(path=url, op="fit", width=attrs.width, height=attrs.height, format=format, quality=quality, speed=speed) -%}
+    {%- elif attrs.width -%}
+        {%- set image = resize_image(path=url, op="fit_width", width=attrs.width, format=format, quality=quality, speed=speed) -%}
+    {%- elif attrs.height -%}
+        {%- set image = resize_image(path=url, op="fit_height", height=attrs.height, format=format, quality=quality, speed=speed) -%}
+    {%- endif -%}
+    {%- set url_min = image.url -%}
+{%- endif -%}
+
+{%- if not open_onclick and url_min -%}
+    {%- set url = url_min -%}
+{%- else -%}
+    {%- set url = get_url(path=url) -%}
+{%- endif -%}
+
+{%- if url_min and open_onclick -%}
+	<button popovertarget="{{ url }}" class="center-img">
+        <img class="{{ image_classes }}" alt="{{ alt }}" src="{{ url_min }}" {%- if config.markdown.lazy_async_image %} decoding="async" loading="lazy"{%- endif -%} {%- if attrs.height %} height="{{ attrs.height }}"{%- endif %} />
+	</button>
+	<dialog id="{{ url }}" popover>
+		<button class="button" popovertarget="{{ url }}" popovertargetaction="hide">
+			{{ <translate key='dialog_back' default='Back' language_strings /> }}
+		</button>
+		<figure>
+			<img class="no-hover full" alt="{{ alt }}" src="{{ url }}" {%- if config.markdown.lazy_async_image %} decoding="async" loading="lazy"{%- endif -%} />
+			<figcaption>{{ alt }}</figcaption>
+		</figure>
+	</dialog>
+{% else -%}
+    <img class="{{ image_classes }}" alt="{{ alt }}" src="{{ url }}" {%- if config.markdown.lazy_async_image %} decoding="async" loading="lazy"{%- endif -%} {%- if attrs.height %} height="{{ attrs.height }}"{%- endif %} />
+{% endif %}
+{% endcomponent image %}

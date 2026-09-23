@@ -1,0 +1,30 @@
+{%- component customoji(@config = {}, name: string, size = 48, quality = 90, rev = false) %}
+{%- set png_path = "/media/emojis/" ~ name ~ ".png" -%}
+{%- set png = get_image_metadata(path=png_path, allow_missing=true) -%}
+{%- if not png -%}
+	{%- set png_path = "/media/emojis/personas/" ~ name ~ ".png" -%}
+	{%- set png = get_image_metadata(path=png_path, allow_missing=true) -%}
+{%- endif -%}
+
+{%- set gif_path = "/media/emojis/" ~ name ~ ".gif" -%}
+{%- set gif = get_image_metadata(path=gif_path, allow_missing=true) -%}
+{%- if not gif %}
+	{%- set gif_path = "/media/emojis/personas/" ~ name ~ ".gif" -%}
+	{%- set gif = get_image_metadata(path=gif_path, allow_missing=true) -%}
+{%- endif -%}
+
+{%- if png -%}
+    {%- set image = resize_image(path=png_path, op="fit_height", height=size, quality=quality, format="avif", speed=1) -%}
+    {%- set image = image.url -%}
+{%- elif gif -%}
+    {%- set image = gif_path -%}
+{%- else -%}
+    {{ throw(message="Emoji " ~ name ~ " not found") }}
+{%- endif -%}
+
+
+{# Small hack to remove spacing around #}
+{%- if true -%}
+<img class="inline no-hover pixels{% if rev or reverse %} flip{% endif %}" alt=":{{ name }}:" src="{{ image }}" {%- if config.markdown.lazy_async_image %} decoding="async" loading="lazy"{%- endif -%} />
+{%- endif -%}
+{% endcomponent customoji -%}

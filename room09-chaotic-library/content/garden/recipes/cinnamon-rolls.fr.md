@@ -93,4 +93,4 @@ souhaitée (onctueuse, mais pas trop liquide).
 4. Verser sur les **rolls** après qu'ils soient sortis du four depuis au moins _5 min_.
 
 <!-- https://cooklang.github.io/cooklang-rs/ -->
-{{ include_recipe(path="/garden/recipes/Cinnamon rolls fr.cook") }}
+{{ <include_recipe path="/garden/recipes/Cinnamon rolls fr.cook" /> }}

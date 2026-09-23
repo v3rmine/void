@@ -1,0 +1,15 @@
+{% component wavy(content="") %}
+{%- if content | length == 0 -%}{%- set content = body | safe -%}{%- endif -%}
+
+<span class="wavy-text">
+	{%- for char in content | default(value=body) -%}
+		<span style="--nth: {{ loop.index }};">
+			{%- if char == " " -%}
+			&nbsp;
+			{%- else -%}
+				{{ char }}
+			{%- endif -%}
+		</span>
+	{%- endfor -%}
+</span>
+{% endcomponent wavy %}

@@ -1,0 +1,24 @@
+{%- component spoiler(content = "", tw = "", block = false, solid = false) -%}
+{%- if content | length == 0 -%}{%- set content = body | safe -%}{%- endif -%}
+
+{%- if tw -%}
+{% set solid = true %}
+{%- endif -%}
+
+{%- set spoiler_elem = "span" -%}
+{%- set tw_elem = "span" -%}
+{%- if block -%}
+{% set spoiler_elem = "div" %}
+{% set tw_elem = "p" %}
+{%- endif -%}
+
+<{{ spoiler_elem }} class="spoiler {%-if solid %} solid{%- endif -%}">
+	{%- if true -%}
+    {%- if tw -%}
+        <{{ tw_elem }} class="tw"><strong>TW:</strong> {{ tw }}&nbsp;</{{ tw_elem }}>
+    {%- endif -%}
+    {%- set content = content | default(value=body) | default(value="") -%}
+    <span class="spoiler-content">{{- content | markdown(inline=true) | safe -}}</span>
+	{%- endif -%}
+</{{ spoiler_elem }}>
+{%- endcomponent spoiler %}

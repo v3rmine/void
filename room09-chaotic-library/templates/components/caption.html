@@ -1,0 +1,6 @@
+{% component caption(content: string) -%}
+<figure>
+    {{- body -}}
+    <figcaption>{{- content | markdown(inline=true) -}}</figcaption>
+</figure>
+{%- endcomponent caption %}

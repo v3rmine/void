@@ -1,0 +1,6 @@
+{%- component rainbow(content="") %}
+{%- if content | length == 0 -%}{%- set content = body | safe -%}{%- endif -%}
+<span class="rainbow-text">
+	{{- body | default(value=content) | markdown(inline=true) | safe -}}
+</span>
+{%- endcomponent rainbow -%}

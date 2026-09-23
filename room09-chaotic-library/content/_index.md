@@ -4,7 +4,7 @@ template: "homepage.html"
 insert_anchor_links: "none"
 ---
 
-{% crt(extra_classes="reverse-scroll") %}
+{% <crt extra_classes="reverse-scroll"> %}
 ```
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠀⠀⠀⠀⠀⢄⣆⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣏⣉⣶⠴⠖⣤⠤⠽⠶⠦⣄
@@ -20,4 +20,4 @@ insert_anchor_links: "none"
 ⠈⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠿⣆⡻⢤⣀⣉⠓⠒⠒⠎⠙⠀⠀⠀⠀⠀⠈⢣⡀⠀⢀⡴⠁
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⠶⠾⠿⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠒⠋⠀⠀
 ```
-{% end %}
+{% </crt> %}

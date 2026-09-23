@@ -25,15 +25,15 @@ default_language = "en"
 taxonomies = [{ name = "tags", feed = true }]
 
 [markdown]
-highlight_code = true
-highlight_theme = "css"
-highlight_themes_css = [
-	{ theme = "solarized-dark", filename = "syntax-theme-dark.css" },
-	{ theme = "solarized-light", filename = "syntax-theme-light.css" }
-]
 smart_punctuation = true
 bottom_footnotes = true
 github_alerts = true
+
+[markdown.highlighting]
+light_theme = "solarized-light"
+dark_theme = "solarized-dark"
+style = "class"
+error_on_missing_language = true
 
 [search]
 # index_format = "elasticlunr_json"
@@ -43,6 +43,7 @@ index_format = "fuse_json"
 title = "Duckquill"
 description = "سمة زولا العصرية والحديثة والجميلة والنظيفة."
 generate_feeds = true
+build_search_index = true
 
 taxonomies = [{ name = "tags", feed = true }]
 
@@ -50,6 +51,7 @@ taxonomies = [{ name = "tags", feed = true }]
 title = "Duckquill"
 description = "Tema Zola de opinión, moderno, bonito y limpio."
 generate_feeds = true
+build_search_index = true
 
 taxonomies = [{ name = "tags", feed = true }]
 
@@ -57,6 +59,7 @@ taxonomies = [{ name = "tags", feed = true }]
 title = "Duckquill"
 description = "Un thème affirmé, moderne, beau et clair pour Zola."
 generate_feeds = true
+build_search_index = true
 
 taxonomies = [{ name = "tags", feed = true }]
 
@@ -65,6 +68,7 @@ taxonomies = [{ name = "tags", feed = true }]
 title = "Duckquill"
 description = "Tema Zola yang berpandangan, moden, cantik dan bersih."
 generate_feeds = true
+build_search_index = true
 
 taxonomies = [{ name = "tags", feed = true }]
 
@@ -72,6 +76,7 @@ taxonomies = [{ name = "tags", feed = true }]
 title = "Duckquill"
 description = "Мнимая, современная, симпатичная, и аккуратная тема Zola."
 generate_feeds = true
+build_search_index = true
 
 taxonomies = [{ name = "tags", feed = true }]
 
@@ -79,6 +84,7 @@ taxonomies = [{ name = "tags", feed = true }]
 title = "Duckquill"
 description = "پوسته ای صاحب نظر، به‌روز، زیبا و تمیز برای Zola."
 generate_feeds = true
+build_search_index = true
 
 taxonomies = [{ name = "tags", feed = true }]
 
@@ -86,6 +92,7 @@ taxonomies = [{ name = "tags", feed = true }]
 title = "Duckquill"
 description = "有主见、现代、漂亮、简洁的 Zola 主题。"
 generate_feeds = true
+build_search_index = true
 
 taxonomies = [{ name = "tags", feed = true }]
 
