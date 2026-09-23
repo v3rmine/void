@@ -7,10 +7,11 @@ RUN if [ ! -z "${REPLACEMENT_DOMAIN}" ]; then \
     sed -iE 's|^base_url = "https://townsquare.astriiid.fr"|base_url = "blob:void"|' zola.toml; \
 fi
 
-FROM ghcr.io/getzola/zola:v0.23.6 AS zola
+FROM ghcr.io/getzola/zola:v0.23.6-alpine AS zola
 COPY --from=patcher /project /project
 WORKDIR /project
-RUN ["zola", "build"]
+RUN apk add --no-cache tzdata
+RUN zola build 
 
 FROM golang:1.22-alpine AS compressor
 RUN apk add --no-cache build-base
