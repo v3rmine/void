@@ -1,233 +1,21 @@
-{ modulesPath, pkgs, lib, ... }:
+{ modulesPath, pkgs, lib, ... }: 
 let
-  impermanence = builtins.fetchTarball
-    "https://github.com/nix-community/impermanence/archive/master.tar.gz";
-
-  run-autorestic = pkgs.writeShellScriptBin "run-autorestic.sh" ''
-    # Merge location and backend autorestic confs
-    autorestic_conf="$(${pkgs.yq-go}/bin/yq eval-all '. as $item ireduce ({}; . * $item)' /etc/autorestic.yml /etc/autorestic-backends.yml | sed 's/"<<"/<</')"
-    echo "$autorestic_conf" > /tmp/.autorestic.yml
-
-    # Run the cron task of autorestic
-    ${pkgs.autorestic}/bin/autorestic -c /tmp/.autorestic.yml --ci cron > /var/log/autorestic.log 2>&1
-    rm -f /tmp/.autorestic.yml
-  '';
-  
-  prune-autorestic = pkgs.writeShellScriptBin "prune-autorestic.sh" ''
-    # Merge location and backend autorestic confs
-    autorestic_conf="$(${pkgs.yq-go}/bin/yq eval-all '. as $item ireduce ({}; . * $item)' /etc/autorestic.yml /etc/autorestic-backends.yml | sed 's/"<<"/<</')"
-    echo "$autorestic_conf" > /tmp/.autorestic-prune.yml
-
-    sed -i -E 's/(^.*run-autorestic.*$)/#\1/' /etc/crontab
-
-    ${pkgs.autorestic}/bin/autorestic -v -c /tmp/.autorestic-prune.yml forget --all > /var/log/autorestic-prune.log 2>&1
-    ${pkgs.autorestic}/bin/autorestic -v -c /tmp/.autorestic-prune.yml exec --all -- prune >> /var/log/autorestic-prune.log 2>&1
-
-    rm -f /tmp/.autorestic-prune.yml
-    sed -i -E 's/^#(.*run-autorestic.*$)/\1/' /etc/crontab
-  '';
-
-  fill-blocklists-fast = pkgs.writeShellScriptBin "fill-blocklists-fast.sh" ''
-    # Ensure lists exists
-    ${pkgs.ipset}/bin/ipset list scanners-ipv4 >/dev/null 2>&1 \
-    || ${pkgs.ipset}/bin/ipset create scanners-ipv4 hash:ip hashsize 4096 counters family inet
-    ${pkgs.ipset}/bin/ipset list scanners-ipv6 >/dev/null 2>&1 \
-    || ${pkgs.ipset}/bin/ipset create scanners-ipv6 hash:ip hashsize 4096 counters family inet6
-
-    # I don't host any wordpress so ban ip that scans for it
-    wp_scanners_ips=$(for file in /var/log/logs/traefik/*; do
-      grep -E 'RequestPath":"/(wp-admin|wp-content|wp-includes)[^"]+"' $file \
-      | awk 'match($0, /"ClientHost"[[:space:]]*:[[:space:]]*"([^"]+)"/, a) { print a[1] }';
-    done \
-      | sort \
-      | uniq)
-
-    echo "$wp_scanners_ips" | grep -F '.' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv4 -exist
-    echo "$wp_scanners_ips" | grep -F ':' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv6 -exist
-
-    # IPs that make >100 http request get banned:
-    http_requester_ips=$(for file in /var/log/logs/traefik/*; do
-      grep 'RequestScheme":"http"' $file \
-      | awk 'match($0, /"ClientHost"[[:space:]]*:[[:space:]]*"([^"]+)"/, a) { print a[1] }';
-    done \
-      | sort \
-      | uniq -c \
-      | awk '{if ($1 >= 100) print $2}')
-
-    echo "$http_requester_ips" | grep -F '.' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv4 -exist
-    echo "$http_requester_ips" | grep -F ':' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv6 -exist
-
-    # Auto ban sshd scanners
-    sshd_ips=$(journalctl -u sshd -o json -r \
-      | grep -E "(invalid format|invalid user|Closed.*preauth)" \
-      | yq -p=json '.MESSAGE' \
-      | grep -oE "([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+|[0-9]+(:[0-9]+)+)" \
-      | sort \
-      | uniq)
-
-    echo "$sshd_ips" | grep -F '.' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv4 -exist
-    echo "$sshd_ips" | grep -F ':' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv6 -exist
-
-    # Make banned IP list persistent
-    ${pkgs.ipset}/bin/ipset save > /etc/iptables/ipsets
-  '';
-
-  fill-blocklists-slow = pkgs.writeShellScriptBin "fill-blocklists-slow.sh" ''
-    # Ensure lists exists
-    ${pkgs.ipset}/bin/ipset list scanners-ipv4 >/dev/null 2>&1 \
-      || ${pkgs.ipset}/bin/ipset create scanners-ipv4 hash:ip hashsize 4096 counters family inet
-    ${pkgs.ipset}/bin/ipset list scanners-ipv6 >/dev/null 2>&1 \
-      || ${pkgs.ipset}/bin/ipset create scanners-ipv6 hash:ip hashsize 4096 counters family inet6
-
-    # IPs that have been rejected more than 10k times by iocaine
-    iocaine_rejected_ips=$(journalctl CONTAINER_NAME=pangolin-iocaine-1 -o json -r \
-      | grep '\\"verdict.type\\":\\"accept\\"' \
-      | yq -p=json '.MESSAGE | from_json | select(."verdict.type" == "accept") | .request.header.x-forwarded-for' \
-      | grep -v "\---" \
-      | sort \
-      | uniq -c \
-      | awk '{if ($1 >= 10000) print $2}')
-
-    echo "$iocaine_rejected_ips" | grep -F '.' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv4 -exist
-    echo "$iocaine_rejected_ips" | grep -F ':' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv6 -exist
-
-    # Facebook IPs (fuck them changing IPv6s constantly)
-    # Claude do the same fucking thing but on ipv4
-    iocaine_fuckers_ips=$(journalctl CONTAINER_NAME=pangolin-iocaine-1 -o json -r \
-      | grep '\\"verdict.type\\":\\"accept\\"' \
-      | grep -E '\\"classification\\":\\"(Facebook|Claude)\\"' \
-      | yq -p=json '.MESSAGE | from_json | select(."verdict.type" == "accept" and (."classification" == "Facebook" or ."classification" == "Claude")) | .request.header.x-forwarded-for' \
-      | grep -v "\---" \
-      | sort \
-      | uniq)
-
-    echo "$iocaine_fuckers_ips" | grep -F '.' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv4 -exist
-    echo "$iocaine_fuckers_ips" | grep -F ':' | xargs --no-run-if-empty -n1 ${pkgs.ipset}/bin/ipset add scanners-ipv6 -exist
-
-    # Make banned IP list persistent
-    ${pkgs.ipset}/bin/ipset save > /etc/iptables/ipsets
-  '';
-
-  flush-blocklists = pkgs.writeShellScriptBin "flush-blocklists.sh" ''
-      # Ensure lists exists
-      ${pkgs.ipset}/bin/ipset list scanners-ipv4 >/dev/null 2>&1 \
-        || ${pkgs.ipset}/bin/ipset create scanners-ipv4 hash:ip hashsize 4096 counters family inet
-      ${pkgs.ipset}/bin/ipset list scanners-ipv6 >/dev/null 2>&1 \
-        || ${pkgs.ipset}/bin/ipset create scanners-ipv6 hash:ip hashsize 4096 counters family inet6
-
-      # Flush lists from previous values
-      ${pkgs.ipset}/bin/ipset flush scanners-ipv4
-      ${pkgs.ipset}/bin/ipset flush scanners-ipv6
-
-      # Make banned IP list persistent
-      ${pkgs.ipset}/bin/ipset save > /etc/iptables/ipsets
-  '';
-
-  record-rss-readers = pkgs.writeShellScriptBin "record-rss-readers.sh" ''
-    previous_readers=$(cat /var/log/logs/astriiid-fr-rss-readers.log 2>/dev/null || printf "")
-    new_readers=$(for file in /var/log/logs/traefik/*; do
-      grep '"RequestHost":"astriiid.fr"' $file | \
-        grep -E '"RequestPath":"[^"]+(rss|atom)\.xml"';
-    done |
-      yq -p=json '[.request_User-Agent, .ClientHost, .RequestPath, .time]' -o=csv --csv-separator='|' | \
-      grep -v 'null|null' | \
-      awk 'BEGIN { FS="|"; OFS=FS } {cmd="echo "$2" | sha256sum"; cmd|getline sha; close(cmd); sub(/ .*/,"",sha); $2=sha; print}')
-
-    printf '%s\n%s' "$previous_readers" "$new_readers" | \
-      grep -Ev "^$" | \
-      sort -t'|' -k3 | \
-      uniq > /var/log/logs/astriiid-fr-rss-readers.log
-  '';
-
-  firewall-block-scrapers-rules = pkgs.writeShellScriptBin "add-firewall-block-scrapers-rules.sh" ''
-    tmpdir=$(mktemp -d)
-    trap exiting exit
-    function exiting() { rm -r "$tmpdir"; exit; }
-    # Clean iptables of previous rules
-    iptables-save | \
-      sed -E 's/^.*scanners-ipv4.*//m' | \
-      sed -E 's/^.*Alibaba-crawler.*//m' | \
-      grep -vE '^$' > "$tmpdir/iptables"
-    iptables-restore "$tmpdir/iptables"
-    ip6tables-save | \
-      sed -E 's/^.*scanners-ipv6.*//m' | \
-      grep -vE '^$' > "$tmpdir/ip6tables"
-    ip6tables-restore "$tmpdir/ip6tables"
-    # Insert new rules
-    iptables -I INPUT 1 -m set --match-set scanners-ipv4 src -j DROP
-    iptables -I FORWARD 1 -m set --match-set scanners-ipv4 src -j DROP
-    ip6tables -I INPUT 1 -m set --match-set scanners-ipv6 src -j DROP
-    ip6tables -I FORWARD 1 -m set --match-set scanners-ipv6 src -j DROP
-    # Ban Alibaba crawlers subnet
-    iptables -I INPUT 1 -m comment --comment Alibaba-crawler -s 8.219.128.0/17 -j DROP
-    iptables -I FORWARD 1 -m comment --comment Alibaba-crawler -s 8.219.128.0/17 -j DROP
-    iptables -I INPUT 1 -m comment --comment Alibaba-crawler -s 47.79.192.0/19 -j DROP
-    iptables -I FORWARD 1 -m comment --comment Alibaba-crawler -s 47.79.192.0/19 -j DROP
-  '';
-
-  log-network-traffic = pkgs.writeShellScriptBin "log-network-traffic.sh" ''
-    ${pkgs.tshark}/bin/tshark -l \
-      -i eth0 \
-      -T fields \
-      -E header=y -E separator=, -E quote=d -E occurrence=f \
-      -e _ws.col.protocol \
-      -e ip.proto \
-      -e ip.geoip.dst_asnum \
-      -e ip.geoip.dst_org \
-      -e ip.geoip.dst_country \
-      -e ip.geoip.dst_city \
-      -e ip.src \
-      -e ip.dst \
-      -e ipv6.geoip.dst_asnum \
-      -e ipv6.geoip.dst_org \
-      -e ipv6.geoip.dst_country \
-      -e ipv6.geoip.dst_city \
-      -e ipv6.src \
-      -e ipv6.dst \
-      -e tcp.ack \
-      -e tcp.srcport \
-      -e tcp.dstport \
-      -e udp.srcport \
-      -e udp.dstport \
-      -e http.host \
-      -e tls.handshake.extensions_server_name \
-      -f '(src net 46.225.11.44/32) or (src net 2a01:4f8:1c19:cc7a::/64)' \
-      -Y '(tls.handshake.extensions_server_name || http.host || (tcp.flags.syn==1 && tcp.flags.ack==0) || udp) && !wg && !ssdp && !stun && !nat-pmp && !(pcp || ip.proto==17)' 2>/dev/null
-  '';
-
-  uncloud = pkgs.stdenv.mkDerivation rec {
-    pname = "uncloud";
-    version = "0.20.0";
-    src = builtins.fetchTarball "https://github.com/psviderski/uncloud/releases/download/v${version}/uncloudd_linux_amd64.tar.gz";
-
-    installPhase = ''
-      runHook preInstall
-      mkdir -p $out/bin
-      cp uncloudd $out/bin
-      runHook postInstall
-    '';
-  };
-
-  custom-newt = pkgs.stdenv.mkDerivation rec {
-    pname = "newt";
-    version = "1.13.0";
-    src = builtins.fetchurl "https://github.com/fosrl/newt/releases/download/${version}/newt_linux_amd64";
-    dontUnpack = true;
-
-    installPhase = ''
-      runHook preInstall
-      mkdir -p $out/bin
-      cp $src $out/bin/newt
-      chmod +x $out/bin/newt
-      runHook postInstall
-    '';
-  };
+  get_import_dir =
+    dir:
+    lib.flatten (
+      lib.pipe dir [
+        builtins.readDir
+        (lib.filterAttrs (name: type: type == "directory" || lib.hasSuffix ".nix" name))
+        (lib.mapAttrsToList (
+          name: type: if type == "directory" then get_import_dir (dir + ("/" + name)) else dir + ("/" + name)
+        ))
+      ]
+    );
 in {
-  imports =
-    [ (modulesPath + "/profiles/qemu-guest.nix") "${impermanence}/nixos.nix" ];
-
   system.stateVersion = "25.11";
-  # system.autoUpgrade.channel = "https://nixos.org/channels/nixos-25.11";
+  imports = [
+    ./hardware-configuration.nix
+  ] ++ (get_import_dir ./nixos-modules/.);
 
   networking.firewall = {
     enable = true;
@@ -247,23 +35,10 @@ in {
     git
     vim
     htop
-    restic
-    autorestic
-    run-autorestic
-    prune-autorestic
     yq-go
-    uncloud
-    custom-newt
-    fill-blocklists-fast
-    fill-blocklists-slow
-    flush-blocklists
-    iptables
-    ipset
     cifs-utils
-    record-rss-readers
-    firewall-block-scrapers-rules
   ];
-
+  
   environment.etc."autorestic.yml" = {
     text = ''
       version: 2
@@ -332,7 +107,6 @@ in {
           from:
             - /persist/var/lib/docker/volumes/sharkey-files
             - /persist/var/lib/docker/volumes/sharkey-db
-            - /persist/var/lib/docker/volumes/sharkey-meilisearch
           cron: '0 * * * *'
         vaultwarden:
           <<: *standard
@@ -360,281 +134,9 @@ in {
     '';
   };
 
-  services.logrotate = {
-    enable = true;
-    settings = {
-      "/var/log/logs/traefik/access.log" = {
-        frequency = "daily";
-        maxsize = "50M"; # Rotate when size reach 50MB
-        rotate = 5; # Keep the last 5 version for ipset
-        missingok = true; # Ignore if file is missing
-        postrotate = ''
-          ${pkgs.systemd}/bin/systemctl start traefik-logrotate
-        '';
-        nocompress = true; # Do not compress for postprocess by ipset
-        notifempty = true; # Do not rotate if empty
-      };
-      "/var/log/logs/tshark/traffic.log" = {
-        frequency = "daily";
-        maxsize = "50M"; # Rotate when size reach 50MB
-        rotate = 1; # Keep the last version
-        missingok = true; # Ignore if file is missing
-        postrotate = ''
-          ${pkgs.systemd}/bin/systemctl restart tshark-monitoring
-        '';
-        nocompress = true; # Do not compress for postprocess by ipset
-        notifempty = true; # Do not rotate if empty
-      };
-    };
-  };
-
-  services.vector = {
-    enable = true;
-    journaldAccess = true;
-    settings = {
-      api.enabled = true;
-      data_dir = "/var/lib/private/vector";
-      sources = {
-        journald.type = "journald";
-        traefik = {
-          type = "file";
-          include = [ "/var/log/logs/traefik/access.log" ];
-          fingerprint.strategy = "device_and_inode";
-          rotate_wait_secs = 30;
-        };
-      };
-
-      transforms = {
-        traefik_json = {
-          type = "remap";
-          inputs = [ "traefik" ];
-          source = ''
-            .source = "phloeomys_traefik"
-            result, err = parse_json(string!(.message))
-            if err == null {
-              .data = result
-              request_method = string!(result.RequestMethod)
-              request_host, err = to_string(result.RequestHost)
-              downstream_status = to_string(int!(result.DownstreamStatus))
-              request_path = string!(result.RequestPath)
-              .message = "{{ request_method }} {{ request_host }} - {{ downstream_status }} {{ request_path }}"
-            } else {
-              .vector_err = err
-            }
-          '';
-        };
-        journald_json = {
-          type = "remap";
-          inputs = [ "journald" ];
-          source = ''
-            .source = "phloeomys_journald"
-            result, err = parse_json(string!(.message))
-            if err == null {
-              .data = result
-              .message = result._msg
-            } else {
-              .vector_err = err
-            }
-          '';
-        };
-      };
-
-      sinks = {
-        victorialogs_journald = {
-          type = "http";
-          inputs = [ "journald_json" ];
-          uri = "http://nas-uncloud:9428/insert/jsonline?_stream_fields=host,source_type,CONTAINER_NAME,source&_msg_field=message&_time_field=timestamp";
-          request.headers = {
-            VL-Extra-Fields = "source=phloeomys_journald";
-          };
-          encoding = { codec = "json"; };
-          compression = "gzip";
-          framing = { method = "newline_delimited"; };
-          healthcheck = { enabled = false; };
-          buffer = { type = "disk"; max_size = 512 * 1024 * 1024; when_full = "drop_newest"; };
-        };
-        victorialogs_traefik = {
-          type = "http";
-          inputs = [ "traefik_json" ];
-          uri = "http://nas-uncloud:9428/insert/jsonline?_stream_fields=host,source_type,source&_msg_field=message&_time_field=timestamp";
-          request.headers = {
-            VL-Extra-Fields = "source=phloeomys_traefik";
-          };
-          encoding = { codec = "json"; };
-          compression = "gzip";
-          framing = { method = "newline_delimited"; };
-          healthcheck = { enabled = false; };
-          buffer = { type = "disk"; max_size = 512 * 1024 * 1024; when_full = "drop_newest"; };
-        };
-      };
-    };
-  };
-  systemd.services."vector".serviceConfig = {
-    AmbientCapabilities =
-      lib.mkForce "CAP_NET_BIND_SERVICE CAP_DAC_READ_SEARCH";
-    CapabilityBoundingSet = "CAP_DAC_READ_SEARCH";
-  };
-  systemd.services."logrotate".serviceConfig = {
-    PrivateNetwork = lib.mkForce false;
-    RestrictAddressFamilies = lib.mkForce "AF_UNIX";
-    BindPaths = "/run/systemd/private /run/dbus/system_bus_socket";
-  };
-  systemd.services."traefik-logrotate" = {
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart = "${pkgs.docker}/bin/docker kill -s USR1 traefik";
-    };
-  };
-  systemd.services."tshark-monitoring" = {
-    enable = false;
-    after = [ "network-online.target" ];
-    wants = [ "network-online.target" ];
-    serviceConfig = {
-      Type = "simple";
-      ExecStart = "${log-network-traffic}/bin/log-network-traffic.sh";
-      StandardOutput = "file:/var/log/logs/tshark/traffic.log";
-    };
-    wantedBy = [ "multi-user.target" ];
-  };
-
-  services.prometheus.exporters.node = {
-    enable = true;
-    port = 9000;
-    enabledCollectors = [
-      "diskstats"
-      "filesystem"
-      "loadavg"
-      "meminfo"
-      "netdev"
-      "netstat"
-      "processes"
-      "tcpstat"
-    ];
-    extraFlags = [ "--collector.disable-defaults" "--collector.textfile.directory='/persist/etc/node-exporter/textfile'" ];
-  };
-
   users.users = {
     root = {
       hashedPasswordFile = "/persist/etc/shadowRoot";
-    };
-    uncloud = {
-      isSystemUser = true;
-      createHome = false;
-      home = "/var/empty";
-      shell = pkgs.shadow;
-      group = "uncloud";
-    };
-  };
-  users.groups = {
-    uncloud = {};
-  };
-
-  systemd.services."ipset-persistent" = {
-    enable = true;
-    before = [ "network.target" "firewall.service" "uncloud.service" ];
-    unitConfig = {
-      ConditionFileNotEmpty = "/etc/iptables/ipsets";
-    };
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart = "${pkgs.ipset}/bin/ipset restore -exist -file /etc/iptables/ipsets";
-      # ExecStop = "${pkgs.ipset}/bin/ipset flush";
-      # ExecStopPost = "${pkgs.ipset}/bin/ipset destroy";
-    };
-    wantedBy = [ "multi-user.target" ];
-    requiredBy = [ "firewall.service" "uncloud.service" ];
-  };
-
-  systemd.services."uncloud" = {
-    enable = true;
-    after = [ "network-online.target" "docker.service" ];
-    wants = [ "network-online.target" "docker.service" "firewall.service" "tailscaled.service" ];
-    path = [ pkgs.iptables ];
-    serviceConfig = {
-      Type = "notify";
-      ExecStart = "${uncloud}/bin/uncloudd";
-      TimeoutStartSec = 15;
-      Restart = "always";
-      RestartSec = 2;
-      # Hardening options.
-      NoNewPrivileges = true;
-      ProtectSystem = "full";
-      ProtectControlGroups = true;
-      ProtectHome = "read-only";
-      ProtectKernelTunables = true;
-      PrivateTmp = true;
-      RestrictAddressFamilies = "AF_INET AF_INET6 AF_UNIX AF_NETLINK";
-      RestrictNamespaces = true;
-    };
-    wantedBy = [ "multi-user.target" ];
-  };
-
-  systemd.services."newt" = {
-    enable = true;
-    after = [ "network-online.target" ];
-    wants = [ "network-online.target" ];
-    serviceConfig = {
-      Type = "simple";
-      Restart = "always";
-      RestartSec = 2;
-      # Hardening options.
-      NoNewPrivileges = true;
-      PrivateTmp = true;
-      ProtectControlGroups = true;
-      ProtectHome = true;
-      ProtectKernelTunables = true;
-      ProtectSystem = "full";
-      RestrictAddressFamilies = "AF_INET AF_INET6 AF_UNIX AF_NETLINK";
-      RestrictNamespaces = true;
-    };
-    wantedBy = [ "multi-user.target" ];
-  };
-
-  systemd.services."ipset-filters-setup" = {
-    enable = true;
-    wants = [ "firewall.service" "uncloud.service" "docker.service" "tailscaled.service" ];
-    after = [ "uncloud.service" "docker.service" "tailscaled.service" ];
-    path = [ pkgs.iptables ];
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart = "${firewall-block-scrapers-rules}/bin/add-firewall-block-scrapers-rules.sh";
-    };
-    wantedBy = [ "multi-user.target" ];
-  };
-
-  systemd.services."reload-daemon-after-boot" = {
-    enable = true;
-    after = [ "persist.mount" ];
-    path = [ pkgs.systemd ];
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart = "/bin/sh -c 'systemctl daemon-reload && systemctl start newt'";
-    };
-    wantedBy = [ "multi-user.target" ];
-  };
- 
-  # System
-  services.cron.systemCronJobs = [
-    "0 * * * * root journalctl --vacuum-size=512M"
-    "*/5 * * * * root ${run-autorestic}/bin/run-autorestic.sh"
-    "3 1 * * * root ${prune-autorestic}/bin/prune-autorestic.sh"
-    "*/5 * * * * root ${fill-blocklists-fast}/bin/fill-blocklists-fast.sh"
-    "3-59/15 * * * * root ${fill-blocklists-slow}/bin/fill-blocklists-slow.sh"
-    "0 0 * * MON root ${flush-blocklists}/bin/flush-blocklists.sh"
-    "*/15 * * * * root ${record-rss-readers}/bin/record-rss-readers.sh"
-  ];
-
-  virtualisation = {
-    containerd.enable = true;
-    docker = {
-      enable = true;
-      daemon.settings = {
-        features = {
-          containerd-snapshotter = true;
-        };
-        storage-driver = "overlayfs";
-        live-restore = true;
-      };
     };
   };
 
@@ -647,32 +149,10 @@ in {
 
   # Impermanence
   environment.persistence."/persist" = {
-    files = [
-      "/etc/machine-id"
-      "/etc/ssh/ssh_host_ed25519_key"
-      "/etc/ssh/ssh_host_ed25519_key.pub"
-      "/etc/ssh/ssh_host_rsa_key"
-      "/etc/ssh/ssh_host_rsa_key.pub"
-      "/etc/autorestic-backends.yml"
-      "/etc/iptables/ipsets"
-    ];
     directories = [
-      "/boot"
-      "/nix"
-      "/tmp"
-      "/var/tmp"
-      "/var/lib/nixos"
       "/var/lib/tailscale"
-      "/var/lib/docker"
-      "/var/lib/containerd"
-      "/var/lib/uncloud"
-      "/var/lib/systemd/system"
-      "/var/lib/private/vector"
-      "/var/lib/GeoIP"
       "/root/pangolin"
       "/root/.ssh"
-      "/var/log"
-      "/root/.cache/restic"
     ];
   };
 
@@ -704,9 +184,6 @@ in {
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHt8EvWzOBZxA7JEQCnknW+hjEi8Id6dfMtb1ONw1xbw astrid@astrid-lux"
   ];
 
-  # Systemd
-  boot.extraSystemdUnitPaths = [ "/var/lib/systemd/system/" ];
-
   # Secure settings
   users.mutableUsers = false;
   services.lvm.enable = false;
@@ -719,76 +196,15 @@ in {
 
   # Remote updates and flakes
   nix.settings.trusted-users = [ "root" "@wheel" ]; # Allow remote updates
-  nix.settings.experimental-features =
-    [ "nix-command" "flakes" ]; # Enable flakes
 
-  # VM guest additions
-  services.qemuGuest.enable = true;
-
-  # Hardware configuration
-  boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.tmp.cleanOnBoot = true;
-  boot.loader.grub.device = "/dev/sda";
-  boot.loader.grub.storePath = "/persist//nix/store";
-  boot.initrd.availableKernelModules = [ "ata_piix" "uhci_hcd" "xen_blkfront" "vmw_pvscsi" ];
-  boot.initrd.kernelModules = [ "nvme" ];
-  fileSystems = {
-    "/" = {
-      device = "none";
-      fsType = "tmpfs";
-      options = [ "defaults" "size=512M" "mode=755" ];
-      neededForBoot = true;
-    };
-    "/persist" = {
-      device = "/dev/sda1";
-      fsType = "ext4";
-      neededForBoot = true;
-    };
-    "/persist/mnt/drive" = {
-      device = "//u264248-sub2.your-storagebox.de/u264248-sub2";
-      fsType = "cifs";
-      options = let
-        # this line prevents hanging on network split
-        automount_opts = "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
-      in ["ro,${automount_opts},credentials=/persist/etc/cifs-drive-credentials"];
-      neededForBoot = false;
-    };
-  };
 
   swapDevices = [{
     device = "/persist/var/lib/swapfile";
     size = 8 * 1024; # 8 GiB
   }];
 
-  # Networking
   networking = {
     nameservers = [ "8.8.8.8" "1.1.1.1" ];
-    defaultGateway = {
-      address = "172.31.1.1";
-      interface = "eth0";
-    };
-    defaultGateway6 = {
-      address = "fe80::1";
-      interface = "eth0";
-    };
-    dhcpcd.enable = false;
-    usePredictableInterfaceNames = lib.mkForce false;
-    interfaces = {
-      eth0 = {
-        ipv4.addresses = [
-          { address="46.225.11.44"; prefixLength=32; }
-        ];
-        ipv6.addresses = [
-          { address="2a01:4f8:1c19:cc7a::1"; prefixLength=64; }
-          { address="fe80::9000:7ff:fe08:d36a"; prefixLength=64; }
-        ];
-        ipv4.routes = [ { address = "172.31.1.1"; prefixLength = 32; } ];
-        ipv6.routes = [ { address = "fe80::1"; prefixLength = 128; } ];
-      };
-    };
   };
-
-  services.udev.extraRules = ''
-    ATTR{address}=="92:00:07:08:d3:6a", NAME="eth0"
-  '';
 }
