@@ -1,6 +1,5 @@
+name: addy
 services:
   addy-smtp-proxy:
     build: .
     env_file: .env
-    x-machines:
-      - phloeomys

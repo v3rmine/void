@@ -1,0 +1,27 @@
+services:
+  searxng:
+    image: ghcr.io/searxng/searxng:latest
+    pull_policy: always
+    user: 977:977
+    restart: unless-stopped
+    volumes:
+      - searx-data:/var/cache/searxng
+      - searx-config:/etc/searxng
+    x-ports:
+      - search.reta.re:8080/http
+    x-machines:
+      - phloeomys
+  valkey:
+    image: docker.io/valkey/valkey:9-alpine
+    user: 1001:1001
+    restart: unless-stopped
+    command: valkey-server --save 30 1 --loglevel warning
+    volumes:
+      - searx-valkey-data:/data/
+    x-machines:
+      - phloeomys
+
+volumes:
+  searx-data:
+  searx-config:
+  searx-valkey-data:

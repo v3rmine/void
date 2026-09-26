@@ -38,11 +38,13 @@ in {
           live-restore = true;
         };
       };
+
+      oci-containers.backend = "docker";
     };
 
-    environment.systemPackages = with pkgs; [
-      uncloud
-    ];
+    #environment.systemPackages = with pkgs; [
+    #  uncloud
+    #];
 
     users.users.uncloud = {
       isSystemUser = true;
@@ -55,7 +57,7 @@ in {
     users.groups.uncloud = {};
 
     systemd.services."uncloud" = {
-      enable = true;
+      enable = false;
       after = [ "network-online.target" "docker.service" ];
       wants = [ "network-online.target" "docker.service" "firewall.service" "tailscaled.service" ];
       path = [ pkgs.iptables ];

@@ -1,0 +1,39 @@
+name: blog
+services:
+  personal-website:
+    build:
+      context: .
+      args:
+        CACHE_BREAKER: 1312131
+    ports:
+      - 63001:80
+  hidden-website:
+    build:
+      context: .
+      args:
+        CACHE_BREAKER: 1213
+        CACHE_ID: hidden-blog
+        REPLACEMENT_DOMAIN: http://astridoy2oropabiis37gjxfxrfcp7ig24gb32c6mbwuow3opstrasid.onion
+  tor-proxy:
+    image: containers.torproject.org/tpo/onion-services/onimages/tor:alpine
+    # pull_policy: always
+    depends_on:
+      - hidden-website  
+    # Can add both of those if server ip doesn't need to be hidded
+    # --HiddenServiceSingleHopMode 1
+    # --HiddenServiceNonAnonymousMode 1
+    command: >
+      --RunAsDaemon 0 
+      --HiddenServiceDir /var/lib/tor/onion 
+      --HiddenServicePort "80 hidden-website:80"
+      --HiddenServiceSingleHopMode 1
+      --HiddenServiceNonAnonymousMode 1
+      --SOCKSPort 0
+      --HiddenServiceMaxStreams 50
+      --HiddenServiceMaxStreamsCloseCircuit 1
+      --HiddenServiceNumIntroductionPoints 6
+    volumes:
+      - tor-data:/var/lib/tor
+
+volumes:
+  tor-data:

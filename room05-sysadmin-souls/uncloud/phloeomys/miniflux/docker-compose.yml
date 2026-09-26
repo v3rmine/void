@@ -1,3 +1,4 @@
+name: miniflux
 services:
   miniflux-db:
     image: postgres:14
@@ -13,8 +14,6 @@ services:
       POSTGRES_USER: miniflux
       ROOT_URL: https://rss.reta.re
       POSTGRES_PASSWORD: secret
-    x-machines:
-      - phloeomys
 
   miniflux:
     image: miniflux/miniflux:2.2.19
@@ -27,10 +26,8 @@ services:
     environment:
       RUN_MIGRATIONS: 1
       DATABASE_URL: postgres://miniflux:secret@miniflux-db/miniflux?sslmode=disable
-    x-ports:
-      - rss.reta.re:8080/http
-    x-machines:
-      - phloeomys
+    ports:
+      - 63005:8080
 
 volumes:
   miniflux-data:

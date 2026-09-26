@@ -1,3 +1,4 @@
+name: dokuwiki
 services:
   dokuwiki:
     image: dokuwiki/dokuwiki:stable
@@ -6,10 +7,8 @@ services:
     restart: unless-stopped
     volumes:
       - dokuwiki-data:/storage
-    x-ports:
-      - dokuwiki.serv4.reta.re:8080/http
-    x-machines:
-      - phloeomys
+    ports:
+      - 63003:8080
 
 volumes:
   dokuwiki-data:

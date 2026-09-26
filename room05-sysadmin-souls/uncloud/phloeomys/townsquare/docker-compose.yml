@@ -1,3 +1,4 @@
+name: townsquare
 services:
   townsquare:
     build: TownSquare
@@ -36,10 +37,8 @@ services:
       #LANDING_ORIGIN: https://townsquare.astriiid.fr
     volumes:
       - townsquare-data:/data
-    x-ports:
-      - townsquare.astriiid.fr:8787/http
-    x-machines:
-      - phloeomys
+    ports:
+      - 63007:8787
 
 volumes:
   townsquare-data:

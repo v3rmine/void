@@ -1,0 +1,203 @@
+
+{ pkgs, lib, ... }:
+
+{
+
+
+  # Containers
+  virtualisation.oci-containers.containers."gerbil" = {
+    image = "fosrl/gerbil:1.3.1";
+    volumes = [
+      "/root/pangolin/config:/var/config:rw"
+    ];
+    ports = [
+      "51830:51830/udp"
+      "22:22/tcp"
+      "22000:22000/tcp"
+      "22000:22000/udp"
+      "21027:21027/udp"
+      "443:443/tcp"
+      "443:443/udp"
+      "80:80/tcp"
+    ];
+    cmd = [ "--reachableAt=http://gerbil:3003" "--generateAndSaveKeyTo=/var/config/key" "--remoteConfig=http://pangolin:3001/api/v1/" ];
+    dependsOn = [
+      "pangolin"
+    ];
+    log-driver = "journald";
+    extraOptions = [
+      "--cap-add=NET_ADMIN"
+      "--cap-add=SYS_MODULE"
+      "--network-alias=gerbil"
+      "--network=pangolin"
+    ];
+  };
+  systemd.services."docker-gerbil" = {
+    serviceConfig = {
+      Restart = lib.mkOverride 90 "always";
+      RestartMaxDelaySec = lib.mkOverride 90 "1m";
+      RestartSec = lib.mkOverride 90 "100ms";
+      RestartSteps = lib.mkOverride 90 9;
+    };
+    after = [
+      "docker-network-pangolin.service"
+    ];
+    requires = [
+      "docker-network-pangolin.service"
+    ];
+    partOf = [
+      "docker-compose-pangolin-root.target"
+    ];
+    wantedBy = [
+      "docker-compose-pangolin-root.target"
+    ];
+  };
+  virtualisation.oci-containers.containers."pangolin" = {
+    image = "fosrl/pangolin:1.17.1";
+    volumes = [
+      "/root/pangolin/config:/app/config:rw"
+    ];
+    log-driver = "journald";
+    extraOptions = [
+      "--health-cmd=[\"curl\", \"-f\", \"http://localhost:3001/api/v1/\"]"
+      "--health-interval=3s"
+      "--health-retries=15"
+      "--health-timeout=3s"
+      "--hostname=pangolin"
+      "--network-alias=pangolin"
+      "--network=pangolin"
+    ];
+  };
+  systemd.services."docker-pangolin" = {
+    serviceConfig = {
+      Restart = lib.mkOverride 90 "always";
+      RestartMaxDelaySec = lib.mkOverride 90 "1m";
+      RestartSec = lib.mkOverride 90 "100ms";
+      RestartSteps = lib.mkOverride 90 9;
+    };
+    after = [
+      "docker-network-pangolin.service"
+    ];
+    requires = [
+      "docker-network-pangolin.service"
+    ];
+    partOf = [
+      "docker-compose-pangolin-root.target"
+    ];
+    wantedBy = [
+      "docker-compose-pangolin-root.target"
+    ];
+  };
+  virtualisation.oci-containers.containers."pangolin-iocaine" = {
+    image = "git.madhouse-project.org/iocaine/iocaine:3";
+    environment = {
+      "RUST_LOG" = "iocaine=error";
+    };
+    volumes = [
+      "/root/pangolin/iocaine-data:/data:rw"
+      "pangolin_iocaine-state:/run/iocaine:rw"
+    ];
+    cmd = [ "--config-path" "/data/etc/config.d" ];
+    log-driver = "journald";
+    extraOptions = [
+      "--hostname=iocaine"
+      "--network-alias=iocaine"
+      "--network=pangolin"
+    ];
+  };
+  systemd.services."docker-pangolin-iocaine" = {
+    serviceConfig = {
+      Restart = lib.mkOverride 90 "always";
+      RestartMaxDelaySec = lib.mkOverride 90 "1m";
+      RestartSec = lib.mkOverride 90 "100ms";
+      RestartSteps = lib.mkOverride 90 9;
+    };
+    after = [
+      "docker-network-pangolin.service"
+      "docker-volume-pangolin_iocaine-state.service"
+    ];
+    requires = [
+      "docker-network-pangolin.service"
+      "docker-volume-pangolin_iocaine-state.service"
+    ];
+    partOf = [
+      "docker-compose-pangolin-root.target"
+    ];
+    wantedBy = [
+      "docker-compose-pangolin-root.target"
+    ];
+  };
+  virtualisation.oci-containers.containers."traefik" = {
+    image = "traefik:v3.6";
+    volumes = [
+      "/root/pangolin/config/letsencrypt:/letsencrypt:rw"
+      "/root/pangolin/config/traefik:/etc/traefik:ro"
+      "/root/pangolin/plugins-local:/plugins-local:rw"
+      "/var/log/logs/traefik:/logs:rw"
+    ];
+    cmd = [ "--configFile=/etc/traefik/traefik_config.yml" ];
+    dependsOn = [
+      "gerbil"
+      "pangolin"
+    ];
+    log-driver = "journald";
+    extraOptions = [
+      "--cpus=2"
+      "--memory=2147483648b"
+      "--network=container:gerbil"
+    ];
+  };
+  systemd.services."docker-traefik" = {
+    serviceConfig = {
+      Restart = lib.mkOverride 90 "always";
+      RestartMaxDelaySec = lib.mkOverride 90 "1m";
+      RestartSec = lib.mkOverride 90 "100ms";
+      RestartSteps = lib.mkOverride 90 9;
+    };
+    partOf = [
+      "docker-compose-pangolin-root.target"
+    ];
+    wantedBy = [
+      "docker-compose-pangolin-root.target"
+    ];
+  };
+
+  # Networks
+  systemd.services."docker-network-pangolin" = {
+    path = [ pkgs.docker ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStop = "docker network rm -f pangolin";
+    };
+    script = ''
+      docker network inspect pangolin || docker network create pangolin --driver=bridge --ipv6
+    '';
+    partOf = [ "docker-compose-pangolin-root.target" ];
+    wantedBy = [ "docker-compose-pangolin-root.target" ];
+  };
+
+  # Volumes
+  systemd.services."docker-volume-pangolin_iocaine-state" = {
+    path = [ pkgs.docker ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
+    script = ''
+      docker volume inspect pangolin_iocaine-state || docker volume create pangolin_iocaine-state
+    '';
+    partOf = [ "docker-compose-pangolin-root.target" ];
+    wantedBy = [ "docker-compose-pangolin-root.target" ];
+  };
+
+  # Root service
+  # When started, this will automatically create all resources and start
+  # the containers. When stopped, this will teardown all resources.
+  systemd.targets."docker-compose-pangolin-root" = {
+    unitConfig = {
+      Description = "Root target generated by compose2nix.";
+    };
+    wantedBy = [ "multi-user.target" ];
+  };
+}

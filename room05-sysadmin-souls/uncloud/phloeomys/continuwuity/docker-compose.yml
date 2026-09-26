@@ -1,3 +1,4 @@
+name: continuwuity
 services:
     continuwuity:
         ### If you already built the Continuwuity image with 'docker build' or want to use a registry image,
@@ -36,10 +37,8 @@ services:
               client=https://m.v3rm.in,
               server=m.v3rm.in:443
             }
-        x-ports:
-          - m.v3rm.in:6167/http
-        x-machines:
-          - phloeomys
+        ports:
+          - 63002:6167
 
 volumes:
   continuwuity-data:

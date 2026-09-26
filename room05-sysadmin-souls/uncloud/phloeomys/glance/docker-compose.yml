@@ -1,0 +1,16 @@
+name: glance
+services:
+  glance:
+    container_name: glance
+    image: glanceapp/glance:latest
+    pull_policy: always
+    restart: unless-stopped
+    user: 1002:1002
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - glance_config:/app/config
+    ports:
+      - 63009:8080
+
+volumes:
+  glance_config:

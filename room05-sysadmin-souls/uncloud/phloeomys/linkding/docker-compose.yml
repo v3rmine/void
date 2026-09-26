@@ -1,3 +1,4 @@
+name: linkding
 services:
   linkding:
     image: ghcr.io/sissbruecker/linkding:latest-alpine
@@ -8,10 +9,8 @@ services:
       LD_CSRF_TRUSTED_ORIGINS: "https://links.astriiid.fr"
     volumes:
       - linkding-data:/etc/linkding/data
-    x-ports:
-      - links.astriiid.fr:9090/http
-    x-machines:
-      - phloeomys
+    ports:
+      - 63010:9090
 
 volumes:
   linkding-data:

@@ -15,7 +15,11 @@ in {
   system.stateVersion = "25.11";
   imports = [
     ./hardware-configuration.nix
-  ] ++ (get_import_dir ./nixos-modules/.);
+    ../../room09-chaotic-library/caddy-config.nix
+    ../../room09-chaotic-library/docker-compose.nix
+    ../../room02-trash-pile-of-tools/quick-but-mostly-dirty/addy-smtp-proxy/docker-compose.nix
+  ] ++ (get_import_dir ./nixos-modules/.) 
+    ++ (get_import_dir ../../room05-sysadmin-souls/uncloud/phloeomys/.);
 
   networking.firewall = {
     enable = true;
@@ -138,6 +142,19 @@ in {
     root = {
       hashedPasswordFile = "/persist/etc/shadowRoot";
     };
+  };
+
+  services.caddy = {
+    enable = true;
+    httpPort = 8000;
+    httpsPort = 0;
+    package = pkgs.caddy.withPlugins {
+      plugins = [ "github.com/caddyserver/cache-handler@v0.16.0" ];
+      hash = "sha256-41uiGaunQpwi2vpK+Kuy4eGpbTqjSdRhekPT1UeT9AY=";
+    };
+    globalConfig = ''
+      auto_https off
+    '';
   };
 
   services.tailscale = {

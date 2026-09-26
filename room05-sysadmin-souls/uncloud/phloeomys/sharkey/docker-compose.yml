@@ -1,3 +1,4 @@
+name: sharkey
 services:
   sharkey:
     image: registry.activitypub.software/transfem-org/sharkey:2025.4.7
@@ -17,20 +18,15 @@ services:
       - .config/docker.env
     environment:
       - NODE_OPTIONS="--max-old-space-size=4096"
-    configs:
-      - source: sharkey-config
-        mode: 0600
-        target: /sharkey/.config/default.yml
     volumes:
       - sharkey-files:/sharkey/files
+      - sharkey-config:/sharkey/.config
     deploy:
       resources:
         limits:
           memory: 4G
-    x-ports:
-      - tracto.pl:3000/http
-    x-machines:
-      - phloeomys
+    ports:
+      - 63012:3000
 
   sharkey-redis:
     restart: always
@@ -41,8 +37,6 @@ services:
       test: "redis-cli ping"
       interval: 5s
       retries: 20
-    x-machines:
-      - phloeomys
 
   sharkey-db:
     restart: always
@@ -55,8 +49,6 @@ services:
       test: "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"
       interval: 5s
       retries: 20
-    x-machines:
-      - phloeomys
 
   sharkey-meilisearch:
     restart: always
@@ -68,14 +60,9 @@ services:
       - MEILI_ENV=production
     volumes:
       - sharkey-meilisearch:/meili_data
-    x-machines:
-      - phloeomys
-
-configs:
-  sharkey-config:
-    file: .config/default.yml
 
 volumes:
+  sharkey-config:
   sharkey-files:
   sharkey-redis:
   sharkey-db:
