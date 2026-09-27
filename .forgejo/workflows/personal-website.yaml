@@ -30,6 +30,7 @@ jobs:
         if: inputs.only-clearnet == true
         run: |
           cd room09-chaotic-library
+          apk add --no-cache docker
           docker info
           ./scripts/build-personal-library.sh
           ../room08-gist-fleeting-notes/oci-pussh.sh compose2nix/blog-personal-website:latest phloeomys
