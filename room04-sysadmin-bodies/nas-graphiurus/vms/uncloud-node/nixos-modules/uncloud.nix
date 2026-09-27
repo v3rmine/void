@@ -20,39 +20,41 @@ in {
   options = {};
 
   config = {
-    environment.persistence."/persist".directories = [
-      #"/var/lib/uncloud"
-      "/var/lib/docker"
-      #"/var/lib/containerd"
-      "/var/lib/rootless-podman"
-    ];
+    environment.persistence."/persist" = {
+      directories = [
+        #"/var/lib/uncloud"
+        "/var/lib/docker"
+        #"/var/lib/containerd"
+        "/var/lib/rootless-podman/.local/share/docker"
+      ];
+    };
 
     virtualisation = {
       containerd.enable = false;
-      podman = {
-        enable = true;
-        # Required for containers under podman-compose to be able to talk to each other.
-        defaultNetwork.settings.dns_enabled = true;
-      };
       docker = {
-        enable = false;
-        daemon.settings = {
-          features = {
-            containerd-snapshotter = true;
-          };
-          storage-driver = "overlayfs";
-          live-restore = true;
+        enable = true;
+        #daemon.settings = {
+        #  features = {
+        #    containerd-snapshotter = true;
+        #  };
+        #  storage-driver = "overlayfs";
+        #  live-restore = true;
+        #};
+
+        rootless = {
+          enable = true;
+          setSocketVariable = true;
         };
       };
 
-      oci-containers.backend = "podman";
+      oci-containers.backend = "docker";
     };
 
     users.users.podman = {
       isSystemUser = true;
       createHome = true;
       home = "/var/lib/rootless-podman";
-      shell = pkgs.shadow;
+      shell = pkgs.bash;
       group = "nogroup";
       linger = true;
 

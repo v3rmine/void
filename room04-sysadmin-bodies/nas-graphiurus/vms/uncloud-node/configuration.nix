@@ -11,6 +11,9 @@ let
         ))
       ]
     );
+  trusted-ssh-keys = [
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHt8EvWzOBZxA7JEQCnknW+hjEi8Id6dfMtb1ONw1xbw astrid@astrid-lux"
+  ];
 in {
   system.stateVersion = "25.11";
   imports = [] 
@@ -141,7 +144,7 @@ in {
     enable = true;
     ports = [ 8080 ];
     openFirewall = true;
-    allowSFTP = false;
+    allowSFTP = true;
     settings = {
       PermitRootLogin = "without-password";
       PasswordAuthentication = false;
@@ -160,9 +163,8 @@ in {
       TCPKeepAlive no
     '';
   };
-  users.users.root.openssh.authorizedKeys.keys = [
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHt8EvWzOBZxA7JEQCnknW+hjEi8Id6dfMtb1ONw1xbw astrid@astrid-lux"
-  ];
+  users.users.root.openssh.authorizedKeys.keys = trusted-ssh-keys;
+  users.users.podman.openssh.authorizedKeys.keys = trusted-ssh-keys;
 
   # Secure settings
   users.mutableUsers = false;
