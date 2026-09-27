@@ -29,7 +29,7 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.UNCLOUD_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
           echo "${{ secrets.PHLOEOMYS_CONFIG }}" > ~/.ssh/config
-          chmod 600 ~/.ssh/id_ed25519
+          chmod -R 600 ~/.ssh
       - name: Deploy clearnet only
         if: inputs.only-clearnet == true
         run: |
