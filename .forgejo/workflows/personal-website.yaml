@@ -34,8 +34,8 @@ jobs:
         if: inputs.only-clearnet == true
         run: |
           cd room09-chaotic-library
-          ./scripts/build-personal-library.sh
-          ../room08-gist-fleeting-notes/oci-pussh.sh compose2nix/blog-personal-website:latest phloeomys
+          bash ./scripts/build-personal-library.sh
+          bash ../room08-gist-fleeting-notes/oci-pussh.sh compose2nix/blog-personal-website:latest phloeomys
           ssh phloeomys systemctl restart docker-blog-personal-website.service
       - name: Deploy all
         if: inputs.only-clearnet != true
