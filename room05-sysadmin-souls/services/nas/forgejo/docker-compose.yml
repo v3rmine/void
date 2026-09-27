@@ -1,0 +1,44 @@
+name: forgejo
+services:
+  forgejo-runner:
+    image: 'data.forgejo.org/forgejo/runner:11'
+    container_name: 'runner'
+    environment:
+      DOCKER_HOST: unix:///var/run/docker.sock
+    # User without root privileges, but with access to `./data`.
+    user: 1000:1000
+    volumes:
+      - forgejo-data:/data
+      - /run/user/993/podman/podman.sock:/var/run/docker.sock:rw
+    restart: 'unless-stopped'
+    command: '/bin/sh -c "cd /data/gitea; sleep 5; HOME=/tmp forgejo-runner daemon --config /data/gitea/config.yml"'
+    deploy:
+      resources:
+        limits:
+          cpus: "4.0"
+          memory: 2G
+  forgejo:
+    image: codeberg.org/forgejo/forgejo:14
+    # pull_policy: always
+    container_name: forgejo
+    restart: unless-stopped
+    environment:
+      USER_UID: 1000
+      USER_GID: 1000
+      FORGEJO__repository_ENABLE_PUSH_CREATE_USER: true
+      FORGEJO__repository_DISABLE_STARS: true
+      FORGEJO__server_ROOT_URL: https://git.v3rm.in/
+      FORGEJO__server_LANDING_PAGE: explore
+      FORGEJO__server_LFS_START_SERVER: true
+      FORGEJO__database_DB_TYPE: sqlite3
+      FORGEJO__service_DISABLE_REGISTRATION: true
+      FORGEJO__other_SHOW_FOOTER_TEMPLATE_LOAD_TIME: false
+    volumes:
+      - forgejo-data:/data
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - 63003:3000
+      - 222:22/tcp
+
+volumes:
+  forgejo-data:

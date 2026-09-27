@@ -19,19 +19,7 @@ jobs:
           sparse-checkout: |
             room09-chaotic-library
           fetch-depth: 1
-      - name: Cache uncloud
-        id: cache-uncloud
-        uses: actions/cache@v5
-        with:
-          path: /usr/local/bin/docker-pussh
-          key: ${{ runner.os }}-uncloud
-      - name: Install uncloud
-        if: steps.cache-uncloud.outputs.cache-hit != 'true'
-        run: |
-          curl -L https://github.com/psviderski/unregistry/releases/download/v0.4.3/unregistry_0.4.3_linux_amd64.tar.gz | tar xz
-          mv docker-pussh /usr/local/bin/docker-pussh
-          chmod +x /usr/local/bin/docker-pussh
-      - name: Configure uncloud
+      - name: Configure ssh
         run: |
           cd room09-chaotic-library
           mkdir -p ~/.ssh
@@ -43,7 +31,7 @@ jobs:
         run: |
           cd room09-chaotic-library
           ./scripts/build-personal-library.sh
-          docker-pussh compose2nix/blog-personal-website:latest phloeomys
+          ../room08-gist-fleeting-notes/oci-pussh.sh compose2nix/blog-personal-website:latest phloeomys
           ssh phloeomys systemctl restart docker-blog-personal-website.service
       - name: Deploy all
         if: inputs.only-clearnet != true
@@ -51,6 +39,6 @@ jobs:
           cd room09-chaotic-library
           ./scripts/build-personal-library.sh
           ./scripts/build-hidden-library.sh
-          docker-pussh compose2nix/blog-personal-website:latest phloeomys
-          docker-pussh compose2nix/blog-hidden-website:latest phloeomys
+          ../room08-gist-fleeting-notes/oci-pussh.sh compose2nix/blog-personal-website:latest phloeomys
+          ../room08-gist-fleeting-notes/oci-pussh.sh compose2nix/blog-hidden-website:latest phloeomys
           ssh phloeomys systemctl restart docker-compose-blog-root.target
