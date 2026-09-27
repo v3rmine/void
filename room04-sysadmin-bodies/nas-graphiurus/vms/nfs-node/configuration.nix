@@ -1,46 +1,32 @@
 { modulesPath, pkgs, lib, ... }:
 let
-  impermanence = builtins.fetchTarball
-    "https://github.com/nix-community/impermanence/archive/master.tar.gz";
-
-  run-autorestic = pkgs.writeShellScriptBin "run-autorestic.sh" ''
-    autorestic_conf="$(${pkgs.yq-go}/bin/yq eval-all '. as $item ireduce ({}; . * $item)' /etc/autorestic.yml /etc/autorestic-backends.yml | sed 's/"<<"/<</')"
-    echo "$autorestic_conf" > /tmp/.autorestic.yml
-    ${pkgs.autorestic}/bin/autorestic -c /tmp/.autorestic.yml --ci cron > /var/log/autorestic.log 2>&1
-    rm -f /tmp/.autorestic.yml
-  '';
-  prune-autorestic = pkgs.writeShellScriptBin "prune-autorestic.sh" ''
-    # Merge location and backend autorestic confs
-    autorestic_conf="$(${pkgs.yq-go}/bin/yq eval-all '. as $item ireduce ({}; . * $item)' /etc/autorestic.yml /etc/autorestic-backends.yml | sed 's/"<<"/<</')"
-    echo "$autorestic_conf" > /tmp/.autorestic-prune.yml
-
-    sed -i -E 's/(^.*run-autorestic.*$)/#\1/' /etc/crontab
-
-    ${pkgs.autorestic}/bin/autorestic -v -c /tmp/.autorestic-prune.yml forget --all > /var/log/autorestic-prune.log 2>&1
-    ${pkgs.autorestic}/bin/autorestic -v -c /tmp/.autorestic-prune.yml exec --all -- prune >> /var/log/autorestic-prune.log 2>&1
-
-    rm -f /tmp/.autorestic-prune.yml
-    sed -i -E 's/^#(.*run-autorestic.*$)/\1/' /etc/crontab
-  '';
+  get_import_dir =
+    dir:
+    lib.flatten (
+      lib.pipe dir [
+        builtins.readDir
+        (lib.filterAttrs (name: type: type == "directory" || lib.hasSuffix ".nix" name))
+        (lib.mapAttrsToList (
+          name: type: if type == "directory" then get_import_dir (dir + ("/" + name)) else dir + ("/" + name)
+        ))
+      ]
+    );
 in {
   system.stateVersion = "25.11";
-  system.autoUpgrade.channel = "https://nixos.org/channels/nixos-25.11";
+  imports = [] ++ (get_import_dir ./nixos-modules/.);
 
-  networking.firewall.enable = false;
-  networking.firewall.allowedTCPPorts = [
-  ];
-  networking.firewall.allowedUDPPorts = [
-  ];
+  networking.firewall = {
+    enable = false;
+    allowedTCPPorts = [];
+    allowedUDPPorts = [];
+  };
+
   environment.systemPackages = with pkgs; [
     mergerfs
     cryptsetup
     smartmontools
     openseachest
-    restic
-    autorestic
     yq-go
-    run-autorestic
-    prune-autorestic
   ];
 
   boot.kernelModules = [ "dm_crypt" ];
@@ -48,8 +34,8 @@ in {
     mode = "0600";
     text = ''
       # <volume-name> <encrypted-device> [key-file] [options]
-      parity1 UUID=e5e2fa22-6b0d-4516-b5da-ffe826a02736 /var/lib/hdd_key luks,discard,tries=1,noauto
-      disk1 UUID=dbb1e30c-44f3-4541-8941-2452a544b93b /var/lib/hdd_key luks,discard,tries=1,noauto
+      parity1 UUID=e5e2fa22-6b0d-4516-b5da-ffe826a02736 /var/lib/hdd_key luks,discard,tries=1,noauto,nofail
+      disk1 UUID=dbb1e30c-44f3-4541-8941-2452a544b93b /var/lib/hdd_key luks,discard,tries=1,noauto,nofail
     '';
   };
 
@@ -63,6 +49,7 @@ in {
       "x-systemd.idle-timeout=15min"
       "x-systemd.device-timeout=5"
     ];
+    neededForBoot = false;
   };
 
   fileSystems."/media/parity1" = {
@@ -75,12 +62,14 @@ in {
       "x-systemd.idle-timeout=15min"
       "x-systemd.device-timeout=5"
     ];
+    neededForBoot = false;
   };
 
   fileSystems."/media/merged" = {
     fsType = "fuse.mergerfs";
     device = "/media/disk1";
     options = [
+      "nofail"
       "cache.files=auto-full"
       "dropcacheonclose=true"
       "x-systemd.requires=/media/disk1"
@@ -90,6 +79,7 @@ in {
       "category.create=pfrd"
       "func.getattr=newest"
     ];
+    neededForBoot = false;
   };
 
   services.snapraid = {
@@ -178,8 +168,6 @@ in {
   };
 
   services.cron.systemCronJobs = [
-    "0 5 * * * root journalctl --vacuum-size=256M"
-    "0 4 * * * root nix-collect-garbage --delete-older-than 5d"
     "*/5 * * * * root ${run-autorestic}/bin/run-autorestic.sh"
     "3 1 * * * root ${prune-autorestic}/bin/prune-autorestic.sh"
     # Run short SMART test once a day
@@ -195,39 +183,12 @@ in {
   # Impermanence
   environment.persistence."/persist" = {
     files = [
-      "/etc/machine-id"
-      "/etc/adjtime"
-      "/etc/ssh/ssh_host_ed25519_key"
-      "/etc/ssh/ssh_host_ed25519_key.pub"
-      "/etc/ssh/ssh_host_rsa_key"
-      "/etc/ssh/ssh_host_rsa_key.pub"
       "/var/lib/hdd_key"
-      "/etc/autorestic-backends.yml"
     ];
     directories = [
-      "/boot"
-      "/nix"
-      "/tmp"
-      "/var/tmp"
-      "/var/lib/nixos"
-      "/var/log"
       "/var/snapraid"
       "/root/.ssh"
     ];
-  };
-
-  fileSystems = {
-    "/" = {
-      device = "none";
-      fsType = "tmpfs";
-      options = [ "defaults" "size=512M" "mode=755" ];
-      neededForBoot = true;
-    };
-    "/persist" = {
-      device = "/dev/vda1";
-      fsType = "ext4";
-      neededForBoot = true;
-    };
   };
 
   # SSH
@@ -254,14 +215,10 @@ in {
       TCPKeepAlive no
     '';
   };
+
   users.users.root.openssh.authorizedKeys.keys = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHt8EvWzOBZxA7JEQCnknW+hjEi8Id6dfMtb1ONw1xbw astrid@astrid-lux"
   ];
-
-  # Boot
-  boot.supportedFilesystems = [ "nfs" ];
-  services.rpcbind.enable = true;
-  zramSwap.enable = false;
 
   # Secure settings
   users.mutableUsers = false;
@@ -273,35 +230,10 @@ in {
   networking = {
     hostName = "nas-nfs";
     domain = "";
-    nameservers = [ "10.0.0.1" ];
-    defaultGateway = {
-      address = "10.0.0.1";
-      interface = "ens18";
-    };
-    defaultGateway6 = {
-      address = "";
-      interface = "ens18";
-    };
-    dhcpcd.enable = true;
   };
 
   # Remote updates and flakes
   nix.settings.trusted-users = [ "root" "@wheel" ]; # Allow remote updates
-  nix.settings.experimental-features =
-    [ "nix-command" "flakes" ]; # Enable flakes
 
-  # Promox
-  services.qemuGuest.enable = true; # Enable QEMU Guest for Proxmox
-
-  # Hardware configuration
-  imports = [ (modulesPath + "/profiles/qemu-guest.nix") "${impermanence}/nixos.nix" ];
-  boot.loader.grub.enable = lib.mkDefault true; # Use the boot drive for GRUB
-  boot.loader.grub.device = "/dev/vda";
-  boot.loader.grub.storePath = "/persist//nix/store";
   boot.tmp.cleanOnBoot = true;
-  #boot.growPartition = lib.mkDefault true;
-  boot.initrd.availableKernelModules =
-    [ "ata_piix" "uhci_hcd" "xen_blkfront" "vmw_pvscsi" ];
-  boot.initrd.kernelModules = [ "nvme" ];
-  boot.kernelPackages = pkgs.linuxPackages_latest;
 }

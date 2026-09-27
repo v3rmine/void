@@ -1,59 +1,21 @@
 { modulesPath, pkgs, lib, ... }:
 let
-  impermanence = builtins.fetchTarball
-    "https://github.com/nix-community/impermanence/archive/master.tar.gz";
-
-  run-autorestic = pkgs.writeShellScriptBin "run-autorestic.sh" ''
-    autorestic_conf="$(${pkgs.yq-go}/bin/yq eval-all '. as $item ireduce ({}; . * $item)' /etc/autorestic.yml /etc/autorestic-backends.yml | sed 's/"<<"/<</')"
-    echo "$autorestic_conf" > /tmp/.autorestic.yml
-    ${pkgs.autorestic}/bin/autorestic -c /tmp/.autorestic.yml --ci cron > /var/log/autorestic.log 2>&1
-    rm -f /tmp/.autorestic.yml
-  '';
-
-  prune-autorestic = pkgs.writeShellScriptBin "prune-autorestic.sh" ''
-    # Merge location and backend autorestic confs
-    autorestic_conf="$(${pkgs.yq-go}/bin/yq eval-all '. as $item ireduce ({}; . * $item)' /etc/autorestic.yml /etc/autorestic-backends.yml | sed 's/"<<"/<</')"
-    echo "$autorestic_conf" > /tmp/.autorestic-prune.yml
-
-    sed -i -E 's/(^.*run-autorestic.*$)/#\1/' /etc/crontab
-
-    ${pkgs.autorestic}/bin/autorestic -v -c /tmp/.autorestic-prune.yml forget --all > /var/log/autorestic-prune.log 2>&1
-    ${pkgs.autorestic}/bin/autorestic -v -c /tmp/.autorestic-prune.yml exec --all -- prune >> /var/log/autorestic-prune.log 2>&1
-
-    rm -f /tmp/.autorestic-prune.yml
-    sed -i -E 's/^#(.*run-autorestic.*$)/\1/' /etc/crontab
-  '';
-
-  uncloud = pkgs.stdenv.mkDerivation rec {
-    pname = "uncloud";
-    version = "0.20.0";
-    src = builtins.fetchTarball "https://github.com/psviderski/uncloud/releases/download/v${version}/uncloudd_linux_amd64.tar.gz";
-
-    installPhase = ''
-      runHook preInstall
-      mkdir -p $out/bin
-      cp uncloudd $out/bin
-      runHook postInstall
-    '';
-  };
-
-  custom-newt = pkgs.stdenv.mkDerivation rec {
-    pname = "newt";
-    version = "1.12.5";
-    src = builtins.fetchurl "https://github.com/fosrl/newt/releases/download/${version}/newt_linux_amd64";
-    dontUnpack = true;
-
-    installPhase = ''
-      runHook preInstall
-      mkdir -p $out/bin
-      cp $src $out/bin/newt
-      chmod +x $out/bin/newt
-      runHook postInstall
-    '';
-  };
+  get_import_dir =
+    dir:
+    lib.flatten (
+      lib.pipe dir [
+        builtins.readDir
+        (lib.filterAttrs (name: type: type == "directory" || lib.hasSuffix ".nix" name))
+        (lib.mapAttrsToList (
+          name: type: if type == "directory" then get_import_dir (dir + ("/" + name)) else dir + ("/" + name)
+        ))
+      ]
+    );
 in {
   system.stateVersion = "25.11";
-  # system.autoUpgrade.channel = "https://nixos.org/channels/nixos-26.05";
+  imports = [] 
+    ++ (get_import_dir ./nixos-modules/.)
+    ++ (get_import_dir ../../../../room05-sysadmin-souls/services/nas/.);
 
   networking.firewall = {
     enable = false;
@@ -66,14 +28,7 @@ in {
     vim
     iperf
     htop
-    restic
-    autorestic
     yq-go
-    run-autorestic
-    prune-autorestic
-    uncloud
-    iptables
-    custom-newt
   ];
 
   environment.etc."autorestic.yml" = {
@@ -147,114 +102,23 @@ in {
     '';
   };
 
-  services.prometheus.exporters.node = {
-    enable = true;
-    port = 9000;
-    enabledCollectors = [
-      "diskstats"
-      "filesystem"
-      "loadavg"
-      "meminfo"
-      "netdev"
-      "netstat"
-      "processes"
-      "tcpstat"
-    ];
-    extraFlags = [ "--collector.disable-defaults" ];
-  };
-
   users.users = {
     root = {
       hashedPasswordFile = "/persist/etc/shadowRoot";
     };
-    uncloud = {
-      isSystemUser = true;
-      createHome = false;
-      home = "/var/empty";
-      shell = pkgs.shadow;
-      group = "uncloud";
-    };
-  };
-  users.groups = {
-    uncloud = {};
   };
 
-  systemd.services."uncloud" = {
+  services.caddy = {
     enable = true;
-    after = [ "network-online.target" ];
-    wants = [ "network-online.target" ];
-    path = [ pkgs.iptables ];
-    serviceConfig = {
-      Type = "notify";
-      ExecStart = "${uncloud}/bin/uncloudd";
-      TimeoutStartSec = 15;
-      Restart = "always";
-      RestartSec = 2;
-      # Hardening options.
-      NoNewPrivileges = true;
-      ProtectSystem = "full";
-      ProtectControlGroups = true;
-      ProtectHome = "read-only";
-      ProtectKernelTunables = true;
-      PrivateTmp = true;
-      RestrictAddressFamilies = "AF_INET AF_INET6 AF_UNIX AF_NETLINK";
-      RestrictNamespaces = true;
+    httpPort = 80;
+    httpsPort = 0;
+    package = pkgs.caddy.withPlugins {
+      plugins = [ "github.com/caddyserver/cache-handler@v0.16.0" ];
+      hash = "sha256-41uiGaunQpwi2vpK+Kuy4eGpbTqjSdRhekPT1UeT9AY=";
     };
-    wantedBy = [ "multi-user.target" ];
-  };
-
-  systemd.services."reload-daemon-after-boot" = {
-    enable = true;
-    after = [ "persist.mount" ];
-    path = [ pkgs.systemd ];
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart = "/bin/sh -c 'systemctl daemon-reload && systemctl start newt'";
-    };
-    wantedBy = [ "multi-user.target" ];
-  };
-
-  systemd.services."newt" = {
-    enable = true;
-    after = [ "network-online.target" ];
-    wants = [ "network-online.target" ];
-    path = [ custom-newt ];
-    serviceConfig = {
-      Type = "simple";
-      Restart = "always";
-      RestartSec = 2;
-      # Hardening options.
-      NoNewPrivileges = true;
-      PrivateTmp = true;
-      ProtectControlGroups = true;
-      ProtectHome = true;
-      ProtectKernelTunables = true;
-      ProtectSystem = "full";
-      RestrictAddressFamilies = "AF_INET AF_INET6 AF_UNIX AF_NETLINK";
-      RestrictNamespaces = true;
-    };
-    wantedBy = [ "multi-user.target" ];
-  };
-
-  # System
-  services.cron.systemCronJobs = [
-    "0 5 * * * root journalctl --vacuum-size=128M"
-    "*/5 * * * * root ${run-autorestic}/bin/run-autorestic.sh"
-    "3 1 * * * root ${prune-autorestic}/bin/prune-autorestic.sh"
-  ];
-
-  virtualisation = {
-    containerd.enable = true;
-    docker = {
-      enable = true;
-      daemon.settings = {
-        features = {
-          containerd-snapshotter = true;
-        };
-        storage-driver = "overlayfs";
-        live-restore = true;
-      };
-    };
+    globalConfig = ''
+      auto_https off
+    '';
   };
 
   services.tailscale = {
@@ -266,51 +130,11 @@ in {
 
   # Impermanence
   environment.persistence."/persist" = {
-    files = [
-      "/etc/machine-id"
-      "/etc/adjtime"
-      "/etc/ssh/ssh_host_ed25519_key"
-      "/etc/ssh/ssh_host_ed25519_key.pub"
-      "/etc/ssh/ssh_host_rsa_key"
-      "/etc/ssh/ssh_host_rsa_key.pub"
-      "/etc/autorestic-backends.yml"
-    ];
     directories = [
-      "/boot"
-      "/nix"
-      "/tmp"
-      "/var/tmp"
-      "/var/lib/nixos"
       "/var/lib/tailscale"
-      "/var/lib/docker"
-      "/var/lib/containerd"
-      "/var/lib/uncloud"
-      "/var/lib/systemd/system"
-      "/var/log"
-      "/root/.cache/restic"
       "/root/.ssh"
     ];
   };
-
-  fileSystems = {
-    "/" = {
-      device = "none";
-      fsType = "tmpfs";
-      options = [ "defaults" "size=512M" "mode=755" ];
-      neededForBoot = true;
-    };
-    "/persist" = {
-      device = "/dev/vda1";
-      autoResize = true;
-      fsType = "ext4";
-      neededForBoot = true;
-    };
-  };
-
-  swapDevices = [{
-    device = "/persist/var/lib/swapfile";
-    size = 8 * 1024; # 8 GiB
-  }];
 
   # SSH
   services.openssh = {
@@ -340,11 +164,6 @@ in {
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHt8EvWzOBZxA7JEQCnknW+hjEi8Id6dfMtb1ONw1xbw astrid@astrid-lux"
   ];
 
-  # Boot
-  boot.extraSystemdUnitPaths = [ "/var/lib/systemd/system/" ];
-  boot.supportedFilesystems = [ "nfs" ];
-  services.rpcbind.enable = true;
-
   # Secure settings
   users.mutableUsers = false;
   services.lvm.enable = false;
@@ -352,36 +171,17 @@ in {
   # If I disable it I cannot boot anymore
   nix.enable = true;
 
-  # Networking
-  networking = {
-    hostName = "nas-uncloud";
-    domain = "";
-    nameservers = [ "10.0.0.1" ];
-    defaultGateway = "10.0.0.1";
-    defaultGateway6 = {
-      address = "";
-      interface = "eth0";
-    };
-    dhcpcd.enable = true;
-  };
+  # Hostname
+  networking.hostName = "nas-uncloud";
+  networking.domain = "";
 
   # Remote updates and flakes
   nix.settings.trusted-users = [ "root" "@wheel" ]; # Allow remote updates
-  nix.settings.experimental-features =
-    [ "nix-command" "flakes" ]; # Enable flakes
 
-  # Promox
-  services.qemuGuest.enable =
-    lib.mkDefault true; # Enable QEMU Guest for Proxmox
-
-  # Hardware configuration
-  imports = [ (modulesPath + "/profiles/qemu-guest.nix") "${impermanence}/nixos.nix" ];
-  boot.loader.grub.device = "/dev/vda";
-  boot.loader.grub.storePath = "/persist//nix/store";
   boot.tmp.cleanOnBoot = true;
-  boot.growPartition = lib.mkDefault true;
-  boot.initrd.availableKernelModules =
-    [ "ata_piix" "uhci_hcd" "xen_blkfront" "vmw_pvscsi" ];
-  boot.initrd.kernelModules = [ "nvme" ];
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  
+  swapDevices = [{
+    device = "/persist/var/lib/swapfile";
+    size = 8 * 1024; # 8 GiB
+  }];
 }

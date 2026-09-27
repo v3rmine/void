@@ -25,6 +25,10 @@
         system = "x86_64-linux";
         modules = [ ./vps3-phloeomys/configuration.nix ];
       };
+      graphiurus = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [ ./nas-graphiurus/vms/uncloud-node/configuration.nix ];
+      };
     };
 
     colmenaHive = colmena.lib.makeHive {
@@ -59,6 +63,16 @@
           targetUser = "root";
         };
         imports = [ ./vps3-phloeomys/configuration.nix ];
+      };
+      
+      graphiurus = { name, nodes, pkgs, ... }: {
+        deployment = {
+          tags = [ "nas" ];
+          targetHost = "10.0.0.14";
+          targetPort = 8080;
+          targetUser = "root";
+        };
+        imports = [ ./nas-graphiurus/vms/uncloud-node/configuration.nix ];
       };
     };
   };

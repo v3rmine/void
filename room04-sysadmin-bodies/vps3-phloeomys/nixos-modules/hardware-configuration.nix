@@ -5,7 +5,6 @@
   config = {
     services.qemuGuest.enable = true;
 
-    boot.tmp.cleanOnBoot = true;
     boot.kernelPackages = pkgs.linuxPackages_latest;
     boot.loader.grub.device = "/dev/sda";
     boot.loader.grub.storePath = "/persist//nix/store";

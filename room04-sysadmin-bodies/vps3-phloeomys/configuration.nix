@@ -14,12 +14,11 @@ let
 in {
   system.stateVersion = "25.11";
   imports = [
-    ./hardware-configuration.nix
     ../../room09-chaotic-library/caddy-config.nix
     ../../room09-chaotic-library/docker-compose.nix
     ../../room02-trash-pile-of-tools/quick-but-mostly-dirty/addy-smtp-proxy/docker-compose.nix
   ] ++ (get_import_dir ./nixos-modules/.) 
-    ++ (get_import_dir ../../room05-sysadmin-souls/uncloud/phloeomys/.);
+    ++ (get_import_dir ../../room05-sysadmin-souls/services/phloeomys/.);
 
   networking.firewall = {
     enable = true;
@@ -207,11 +206,12 @@ in {
   security.sudo.enable = false;
   nix.enable = true;
 
-  # Hostname
-  networking.hostName = "phloeomys";
-  networking.domain = "";
+  networking = {
+    hostName = "phloeomys";
+    domain = "";
+    nameservers = [ "8.8.8.8" "1.1.1.1" ];
+  };
 
-  # Remote updates and flakes
   nix.settings.trusted-users = [ "root" "@wheel" ]; # Allow remote updates
 
   boot.tmp.cleanOnBoot = true;
@@ -221,7 +221,4 @@ in {
     size = 8 * 1024; # 8 GiB
   }];
 
-  networking = {
-    nameservers = [ "8.8.8.8" "1.1.1.1" ];
-  };
 }

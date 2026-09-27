@@ -1,0 +1,25 @@
+name: bichon
+services:
+  bichon:
+    image: docker.io/rustmailer/bichon:2.0.3
+    #pull_policy: always
+    container_name: bichon
+    user: "1000:1000"
+    #command: tail -f /dev/null
+    volumes:
+      - bichon-config:/config
+      - bichon-data:/data
+    environment:
+      BICHON_ROOT_DIR: /data
+      BICHON_LOG_LEVEL: info
+      BICHON_ENCRYPT_PASSWORD_FILE: /config/key.txt
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+    ports:
+      - 63001:15630
+
+volumes:
+  bichon-config:
+  bichon-data:
