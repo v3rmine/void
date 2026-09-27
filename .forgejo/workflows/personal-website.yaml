@@ -17,7 +17,7 @@ jobs:
       image: code.forgejo.org/oci/docker:29-cli
     steps:
       - name: Add nodejs
-        run: apk add --no-cache bash pv ssh nodejs
+        run: apk add --no-cache bash pv openssh nodejs
       - uses: actions/checkout@v7
         with:
           sparse-checkout: |
