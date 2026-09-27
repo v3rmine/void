@@ -21,11 +21,11 @@ jobs:
       - uses: actions/checkout@v7
         with:
           sparse-checkout: |
+            room08-gist-fleeting-notes
             room09-chaotic-library
           fetch-depth: 1
       - name: Configure ssh
         run: |
-          cd room09-chaotic-library
           mkdir -p ~/.ssh
           echo "${{ secrets.UNCLOUD_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
           echo "${{ secrets.PHLOEOMYS_CONFIG }}" > ~/.ssh/config
@@ -34,8 +34,6 @@ jobs:
         if: inputs.only-clearnet == true
         run: |
           cd room09-chaotic-library
-          apt update -y && apt install -y docker-cli
-          docker info
           ./scripts/build-personal-library.sh
           ../room08-gist-fleeting-notes/oci-pussh.sh compose2nix/blog-personal-website:latest phloeomys
           ssh phloeomys systemctl restart docker-blog-personal-website.service
