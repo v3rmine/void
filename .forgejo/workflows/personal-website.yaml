@@ -13,6 +13,8 @@ on:
 jobs:
   deploy:
     runs-on: docker
+    container:
+      image: docker.io/alpinelinux/docker-cli:latest
     steps:
       - uses: actions/checkout@v7
         with:
