@@ -17,7 +17,7 @@ jobs:
       image: code.forgejo.org/oci/docker:29-cli
     steps:
       - name: Add nodejs
-        run: apk add --no-cache nodejs
+        run: apk add --no-cache bash pv ssh nodejs
       - uses: actions/checkout@v7
         with:
           sparse-checkout: |
@@ -34,15 +34,15 @@ jobs:
         if: inputs.only-clearnet == true
         run: |
           cd room09-chaotic-library
-          bash ./scripts/build-personal-library.sh
-          bash ../room08-gist-fleeting-notes/oci-pussh.sh compose2nix/blog-personal-website:latest phloeomys
+          ./scripts/build-personal-library.sh
+          ../room08-gist-fleeting-notes/oci-pussh.sh compose2nix/blog-personal-website:latest phloeomys
           ssh phloeomys systemctl restart docker-blog-personal-website.service
       - name: Deploy all
         if: inputs.only-clearnet != true
         run: |
           cd room09-chaotic-library
-          bash ./scripts/build-personal-library.sh
-          bash ./scripts/build-hidden-library.sh
-          bash ../room08-gist-fleeting-notes/oci-pussh.sh compose2nix/blog-personal-website:latest phloeomys
-          bash ../room08-gist-fleeting-notes/oci-pussh.sh compose2nix/blog-hidden-website:latest phloeomys
+          ./scripts/build-personal-library.sh
+          ./scripts/build-hidden-library.sh
+          ../room08-gist-fleeting-notes/oci-pussh.sh compose2nix/blog-personal-website:latest phloeomys
+          ../room08-gist-fleeting-notes/oci-pussh.sh compose2nix/blog-hidden-website:latest phloeomys
           ssh phloeomys systemctl restart docker-compose-blog-root.target
