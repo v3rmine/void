@@ -1,4 +1,4 @@
-{ modulesPath, pkgs, lib, ... }:
+{ modulesPath, pkgs, lib, config, ... }:
 let
   get_import_dir =
     dir:
@@ -68,32 +68,32 @@ in {
         garage-hot:
           <<: *standard
           from:
-            - /persist/var/lib/docker/volumes/garage-hot-meta
-            - /persist/var/lib/docker/volumes/garage-hot-data
+            -  /persist/var/lib/rootless-podman/.local/share/docker/volumes/garage-hot-meta
+            -  /persist/var/lib/rootless-podman/.local/share/docker/volumes/garage-hot-data
           cron: '0 * * * *'
         garage-cold:
           <<: *standard
           from:
-            - /persist/var/lib/docker/volumes/garage-cold-meta
+            - /persist/var/lib/rootless-podman/.local/share/docker/volumes/garage-cold-meta
           cron: '0 * * * *'
         grafana:
           <<: *standard
           from:
-            - /persist/var/lib/docker/volumes/grafana-data
+            - /persist/var/lib/rootless-podman/.local/share/docker/volumes/grafana-data
           cron: '0 * * * *'
         suwayomi:
           <<: *standard
           from:
-            - /persist/var/lib/docker/volumes/suwayomi-data
+            - /persist/var/lib/rootless-podman/.local/share/docker/volumes/suwayomi-data
           cron: '0 * * * *'
         forgejo:
           <<: *standard
           from:
-            - /persist/var/lib/docker/volumes/forgejo-data
+            - /persist/var/lib/rootless-podman/.local/share/docker/volumes/forgejo-data
         immich:
           <<: *standard
           from:
-            - /persist/var/lib/docker/volumes/immich-postgres
+            - /persist/var/lib/immich/.local/share/docker/volumes/immich-postgres
         memos:
           <<: *standard
           from:
@@ -101,7 +101,7 @@ in {
         bichon:
           <<: *standard
           from:
-            - /persist/var/lib/docker/volumes/bichon-data
+            - /persist/var/lib/rootless-podman/.local/share/docker/volumes/bichon-data
     '';
   };
 
@@ -164,6 +164,7 @@ in {
     '';
   };
   users.users.root.openssh.authorizedKeys.keys = trusted-ssh-keys;
+  users.users.immich.openssh.authorizedKeys.keys = trusted-ssh-keys;
   users.users.podman.openssh.authorizedKeys.keys = trusted-ssh-keys;
 
   # Secure settings
@@ -186,4 +187,22 @@ in {
     device = "/persist/var/lib/swapfile";
     size = 8 * 1024; # 8 GiB
   }];
+
+  services.nfs.idmapd.settings = {
+    General = {
+      Domain = lib.mkForce "astriiid.fr";
+    };
+  };
+  systemd.services.nfs-idmapd.enable = true;
+
+  fileSystems."/var/lib/immich/.local/share/docker/volumes/immich-uploads" = {
+    fsType = "nfs4";
+    device = "nas-nfs:/uncloud-immich";
+    options = [ "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s" ];
+  };
+  fileSystems."/var/lib/rootless-podman/.local/share/docker/volumes/garage-cold-data" = {
+    fsType = "nfs4";
+    device = "nas-nfs:/uncloud-garage";
+    options = [ "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s" ];
+  };
 }

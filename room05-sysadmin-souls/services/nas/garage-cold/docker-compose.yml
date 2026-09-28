@@ -1,0 +1,23 @@
+name: garage-cold
+services:
+  garage-cold:
+    image: dxflrs/garage:v2.1.0
+    container_name: garage-cold
+    restart: unless-stopped
+    environment:
+      GARAGE_CONFIG_FILE: /var/lib/garage/meta/garage.toml
+    volumes:
+      - garage-cold-meta:/var/lib/garage/meta
+      - /var/lib/rootless-podman/.local/share/docker/volumes/garage-cold-data:/var/lib/garage/data
+    #  - garage-cold-data:/var/lib/garage/data
+    ports:
+      - 63004:3900
+
+volumes:
+  garage-cold-meta:
+  #garage-cold-data:
+  #  driver: local
+  #  driver_opts:
+  #    type: nfs
+  #    o: addr=nas-nfs,rw,vers=4.1
+  #    device: ":/uncloud-garage"

@@ -4,7 +4,7 @@ services:
     image: docker.io/rustmailer/bichon:2.0.3
     #pull_policy: always
     container_name: bichon
-    user: "1000:1000"
+    #user: "1000:1000"
     #command: tail -f /dev/null
     volumes:
       - bichon-config:/config

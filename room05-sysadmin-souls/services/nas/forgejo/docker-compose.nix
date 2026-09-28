@@ -1,12 +1,45 @@
 
-{ pkgs, lib, config, ... }:
+{ pkgs, lib, ... }:
 
 {
 
 
   # Containers
+  virtualisation.oci-containers.containers."docker_dind" = {
+    image = "docker:dind";
+    cmd = [ "dockerd" "-H" "tcp://0.0.0.0:2375" "--tls=false" ];
+    log-driver = "journald";
+    extraOptions = [
+      "--cpus=4"
+      "--memory=2147483648b"
+      "--network-alias=forgejo-docker-in-docker"
+      "--network=forgejo_default"
+      "--privileged"
+    ];
+    rootless = { user = "podman"; };
+  };
+  systemd.services."docker-docker_dind" = {
+    serviceConfig = {
+      Restart = lib.mkOverride 90 "always";
+      RestartMaxDelaySec = lib.mkOverride 90 "1m";
+      RestartSec = lib.mkOverride 90 "100ms";
+      RestartSteps = lib.mkOverride 90 9;
+    };
+    after = [
+      "docker-network-forgejo_default.service"
+    ];
+    requires = [
+      "docker-network-forgejo_default.service"
+    ];
+    partOf = [
+      "docker-compose-forgejo-root.target"
+    ];
+    wantedBy = [
+      "docker-compose-forgejo-root.target"
+    ];
+  };
   virtualisation.oci-containers.containers."forgejo" = {
-    image = "codeberg.org/forgejo/forgejo:14";
+    image = "codeberg.org/forgejo/forgejo:16";
     environment = {
       "FORGEJO__database_DB_TYPE" = "sqlite3";
       "FORGEJO__other_SHOW_FOOTER_TEMPLATE_LOAD_TIME" = "false";
@@ -25,46 +58,47 @@
     ];
     ports = [
       "63003:3000/tcp"
-      "222:22/tcp"
+      "2222:22/tcp"
     ];
     log-driver = "journald";
     extraOptions = [
       "--network-alias=forgejo"
       "--network=forgejo_default"
     ];
-    podman = { user = "podman"; };
+    rootless = { user = "podman"; };
   };
-  systemd.services."podman-forgejo" = {
+  systemd.services."docker-forgejo" = {
     serviceConfig = {
-      User = "podman";
       Restart = lib.mkOverride 90 "always";
+      RestartMaxDelaySec = lib.mkOverride 90 "1m";
+      RestartSec = lib.mkOverride 90 "100ms";
+      RestartSteps = lib.mkOverride 90 9;
     };
     after = [
-      "podman-network-forgejo_default.service"
-      "podman-volume-forgejo_forgejo-data.service"
+      "docker-network-forgejo_default.service"
+      "docker-volume-forgejo_forgejo-data.service"
     ];
     requires = [
-      "podman-network-forgejo_default.service"
-      "podman-volume-forgejo_forgejo-data.service"
+      "docker-network-forgejo_default.service"
+      "docker-volume-forgejo_forgejo-data.service"
     ];
     partOf = [
-      "podman-compose-forgejo-root.target"
+      "docker-compose-forgejo-root.target"
     ];
     wantedBy = [
-      "podman-compose-forgejo-root.target"
+      "docker-compose-forgejo-root.target"
     ];
   };
   virtualisation.oci-containers.containers."runner" = {
-    image = "data.forgejo.org/forgejo/runner:11";
+    image = "data.forgejo.org/forgejo/runner:13";
     environment = {
-      "DOCKER_HOST" = "unix:///var/run/docker.sock";
+      "DOCKER_HOST" = "tcp://forgejo-docker-in-docker:2375";
     };
     volumes = [
-      "/run/user/993/podman/podman.sock:/var/run/docker.sock:rw"
       "forgejo-data:/data:rw"
     ];
-    cmd = [ "/bin/sh" "-c" "cd /data/gitea; sleep 5; HOME=/tmp forgejo-runner daemon --config /data/gitea/config.yml" ];
     user = "1000:1000";
+    cmd = [ "/bin/sh" "-c" "cd /data/gitea; sleep 5; HOME=/tmp forgejo-runner daemon --config /data/gitea/config.yml" ];
     log-driver = "journald";
     extraOptions = [
       "--cpus=4"
@@ -72,64 +106,64 @@
       "--network-alias=forgejo-runner"
       "--network=forgejo_default"
     ];
-    podman = { user = "podman"; };
+    rootless = { user = "podman"; };
   };
-  systemd.services."podman-runner" = {
+  systemd.services."docker-runner" = {
     serviceConfig = {
-      User = "podman";
       Restart = lib.mkOverride 90 "always";
+      RestartMaxDelaySec = lib.mkOverride 90 "1m";
+      RestartSec = lib.mkOverride 90 "100ms";
+      RestartSteps = lib.mkOverride 90 9;
     };
     after = [
-      "podman-network-forgejo_default.service"
-      "podman-volume-forgejo_forgejo-data.service"
+      "docker-network-forgejo_default.service"
+      "docker-volume-forgejo_forgejo-data.service"
     ];
     requires = [
-      "podman-network-forgejo_default.service"
-      "podman-volume-forgejo_forgejo-data.service"
+      "docker-network-forgejo_default.service"
+      "docker-volume-forgejo_forgejo-data.service"
     ];
     partOf = [
-      "podman-compose-forgejo-root.target"
+      "docker-compose-forgejo-root.target"
     ];
     wantedBy = [
-      "podman-compose-forgejo-root.target"
+      "docker-compose-forgejo-root.target"
     ];
   };
 
   # Networks
-  systemd.services."podman-network-forgejo_default" = {
-    path = [ pkgs.podman ];
+  systemd.services."docker-network-forgejo_default" = {
+    path = [ pkgs.docker ];
     serviceConfig = {
-      User = "podman";
       Type = "oneshot";
       RemainAfterExit = true;
-      ExecStop = "podman network rm -f forgejo_default";
+      ExecStop = "docker network rm -f forgejo_default";
     };
     script = ''
-      podman network inspect forgejo_default || podman network create forgejo_default
+      docker network inspect forgejo_default || docker network create forgejo_default
     '';
-    partOf = [ "podman-compose-forgejo-root.target" ];
-    wantedBy = [ "podman-compose-forgejo-root.target" ];
+    partOf = [ "docker-compose-forgejo-root.target" ];
+    wantedBy = [ "docker-compose-forgejo-root.target" ];
   };
 
   # Volumes
-  systemd.services."podman-volume-forgejo_forgejo-data" = {
-    path = [ pkgs.podman ];
+  systemd.services."docker-volume-forgejo_forgejo-data" = {
+    path = [ pkgs.docker ];
     serviceConfig = {
-      User = "podman";
       Type = "oneshot";
       RemainAfterExit = true;
     };
     script = ''
-      podman volume inspect forgejo-data || podman volume create forgejo-data
+      docker volume inspect forgejo-data || docker volume create forgejo-data
     '';
-    partOf = [ "podman-compose-forgejo-root.target" ];
-    wantedBy = [ "podman-compose-forgejo-root.target" ];
+    partOf = [ "docker-compose-forgejo-root.target" ];
+    wantedBy = [ "docker-compose-forgejo-root.target" ];
   };
 
   # Root service
   # When started, this will automatically create all resources and start
   # the containers. When stopped, this will teardown all resources.
-  systemd.targets."podman-compose-forgejo-root" = {
+  systemd.targets."docker-compose-forgejo-root" = {
     unitConfig = {
       Description = "Root target generated by compose2nix.";
     };

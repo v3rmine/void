@@ -124,10 +124,16 @@ in {
       /export/proxmox-backup 10.0.0.0/16(fsid=1,rw,subtree_check,insecure,all_squash)
       # /export/kube 10.0.0.0/16(fsid=2,rw,subtree_check,insecure,root_squash)
       /export/uncloud-garage 10.0.0.0/16(fsid=4,rw,subtree_check,insecure,root_squash)
-      /export/uncloud-immich 10.0.0.0/16(fsid=5,rw,subtree_check,insecure,root_squash)
+       /export/uncloud-immich 10.0.0.0/16(fsid=5,rw,subtree_check,insecure,root_squash)
       /export 10.0.0.0/16(ro,fsid=0,root_squash,no_subtree_check,hide)
     '';
   };
+  services.nfs.idmapd.settings = {
+    General = {
+      Domain = lib.mkForce "astriiid.fr";
+    };
+  };
+  systemd.services.nfs-idmapd.enable = true;
 
   environment.etc."autorestic.yml" = {
     text = ''
@@ -168,8 +174,6 @@ in {
   };
 
   services.cron.systemCronJobs = [
-    "*/5 * * * * root ${run-autorestic}/bin/run-autorestic.sh"
-    "3 1 * * * root ${prune-autorestic}/bin/prune-autorestic.sh"
     # Run short SMART test once a day
     "0 5 * * * root ${pkgs.smartmontools}/bin/smartctl -t short /dev/sdb"
     "0 5 * * * root ${pkgs.smartmontools}/bin/smartctl -t short /dev/sda"

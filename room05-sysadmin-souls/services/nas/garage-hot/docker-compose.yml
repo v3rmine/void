@@ -1,0 +1,18 @@
+name: garage-hot
+services:
+  garage-hot:
+    image: dxflrs/garage:v2.1.0
+    container_name: garage-hot
+    restart: unless-stopped
+    environment:
+      GARAGE_CONFIG_FILE: /var/lib/garage/meta/garage.toml
+    volumes:
+      - garage-hot-meta:/var/lib/garage/meta
+      - garage-hot-data:/var/lib/garage/data
+    ports:
+      - 63005:3900
+      - 63006:3902
+
+volumes:
+  garage-hot-meta:
+  garage-hot-data:

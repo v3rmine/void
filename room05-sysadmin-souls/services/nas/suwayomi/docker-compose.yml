@@ -1,8 +1,9 @@
+name: suwayomi
 services:
   suwayomi:
     image: ghcr.io/suwayomi/suwayomi-server:preview
     pull_policy: always
-    user: 1000:1000
+    user: 0:0
     restart: on-failure:3
     environment:
       TZ: Europe/Paris
@@ -15,10 +16,8 @@ services:
       resources:
         limits:
           memory: 1G
-    x-ports:
-      - suwayomi.serv4.reta.re:4567/http
-    x-machines:
-      - nas
+    ports:
+      - 63009:4567
 
   flaresolverr:
     image: ghcr.io/thephaseless/byparr:latest
@@ -29,8 +28,6 @@ services:
     restart: unless-stopped
     healthcheck: 
       disable: true
-    x-machines:
-      - nas
 
 volumes:
   suwayomi-data:

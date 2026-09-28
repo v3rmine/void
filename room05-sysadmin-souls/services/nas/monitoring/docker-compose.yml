@@ -1,3 +1,4 @@
+name: monitoring
 services:
   vmagent:
     image: victoriametrics/vmagent:latest
@@ -14,8 +15,6 @@ services:
         mode: 0600
     volumes:
       - victoriagent-data:/vmagentdata
-    x-machines:
-      - nas
 
   victoriametrics:
     image: victoriametrics/victoria-metrics:latest
@@ -25,10 +24,8 @@ services:
     command: -storageDataPath=/storage -httpListenAddr=:8428 -retentionPeriod=1w
     volumes:
       - victoriametrics-data:/storage
-    x-ports:
-      - 8428:8428/tcp@host
-    x-machines:
-      - nas
+    ports:
+      - 8428:8428/tcp
 
   victorialogs:
     image: victoriametrics/victoria-logs:latest
@@ -38,10 +35,8 @@ services:
     command: -storageDataPath=victoria-logs-data -retentionPeriod=1w
     volumes:
       - victorialogs-data:/victoria-logs-data
-    x-ports:
-      - 9428:9428/tcp@host
-    x-machines:
-      - nas
+    ports:
+      - 9428:9428/tcp
 
   grafana-image-renderer:
     image: grafana/grafana-image-renderer:latest
@@ -50,8 +45,6 @@ services:
     restart: unless-stopped
     environment:
       - GOMEMLIMIT=1GiB
-    x-machines:
-      - nas
 
   grafana:
     image: grafana/grafana:latest
@@ -89,10 +82,8 @@ services:
         /run.sh
     volumes:
       - grafana-data:/var/lib/grafana
-    x-ports:
-      - grafana.serv4.reta.re:3000/http
-    x-machines:
-      - nas
+    ports:
+      - 63010:3000
 
 configs:
   prom_config:

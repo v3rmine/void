@@ -29,6 +29,10 @@
         system = "x86_64-linux";
         modules = [ ./nas-graphiurus/vms/uncloud-node/configuration.nix ];
       };
+      nfs = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [ ./nas-graphiurus/vms/nfs-node/configuration.nix ];
+      };
     };
 
     colmenaHive = colmena.lib.makeHive {
@@ -73,6 +77,16 @@
           targetUser = "root";
         };
         imports = [ ./nas-graphiurus/vms/uncloud-node/configuration.nix ];
+      };
+
+      nfs = { name, nodes, pkgs, ... }: {
+        deployment = {
+          tags = [ "nfs" ];
+          targetHost = "10.0.0.15";
+          targetPort = 22;
+          targetUser = "root";
+        };
+        imports = [ ./nas-graphiurus/vms/nfs-node/configuration.nix ];
       };
     };
   };
