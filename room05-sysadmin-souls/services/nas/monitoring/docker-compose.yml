@@ -9,12 +9,9 @@ services:
     command:
       - "--promscrape.config=/etc/prometheus/prometheus.yml"
       - "--remoteWrite.url=http://victoriametrics:8428/api/v1/write"
-    configs:
-      - source: prom_config
-        target: /etc/prometheus/prometheus.yml
-        mode: 0600
     volumes:
       - victoriagent-data:/vmagentdata
+      - monitoring-config:/etc/prometheus
 
   victoriametrics:
     image: victoriametrics/victoria-metrics:latest
@@ -45,12 +42,14 @@ services:
     restart: unless-stopped
     environment:
       - GOMEMLIMIT=1GiB
+      - AUTH_TOKEN=fuck-this-shit
 
   grafana:
     image: grafana/grafana:latest
     pull_policy: missing
     container_name: grafana
     restart: unless-stopped
+    user: "0:0"
     environment:
       - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
       - GF_AUTH_ANONYMOUS_ENABLED=true
@@ -58,51 +57,18 @@ services:
       - GF_FEATURE_TOGGLES_NEWLOGSPANEL=false
       - GF_SERVER_ROOT_URL=https://grafana.serv4.reta.re
       - GF_RENDERING_SERVER_URL=http://grafana-image-renderer:8081/render
+      - GF_RENDERING_RENDERER_TOKEN=fuck-this-shit
       - GF_RENDERING_CALLBACK_URL=http://grafana:3000/
       - GF_PLUGINS_PREINSTALL_SYNC=victoriametrics-logs-datasource@0.24.1@https://grafana.com/api/plugins/victoriametrics-logs-datasource/versions/0.24.1/download victoriametrics-metrics-datasource@0.24.0@https://grafana.com/api/plugins/victoriametrics-metrics-datasource/versions/0.24.0/download
-    entrypoint:
-      - sh
-      - -euc
-      - |
-        mkdir -p /etc/grafana/provisioning/datasources
-        cat <<EOF > /etc/grafana/provisioning/datasources/ds.yaml
-        apiVersion: 1
-        datasources:
-        - name: VictoriaLogs
-          type: victoriametrics-logs-datasource
-          access: proxy
-          url: http://victorialogs:9428
-          editable: false
-        - name: VictoriaMetrics
-          type: victoriametrics-metrics-datasource
-          access: proxy
-          url: http://victoriametrics:8428
-          editable: false
-        EOF
-        /run.sh
     volumes:
       - grafana-data:/var/lib/grafana
+      - monitoring-config:/etc/grafana/provisioning
     ports:
       - 63010:3000
-
-configs:
-  prom_config:
-    content: |
-      global:
-        scrape_interval: 10s
-
-      scrape_configs:
-      - job_name: phloeomys
-        static_configs:
-        - targets:
-          - 100.89.156.86:9000
-      - job_name: homelab-uncloud
-        static_configs:
-        - targets:
-          - 10.210.1.1:9000
 
 volumes:
   grafana-data:
   victorialogs-data:
   victoriametrics-data:
   victoriagent-data:
+  monitoring-config:
