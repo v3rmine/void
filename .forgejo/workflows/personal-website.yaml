@@ -36,7 +36,7 @@ jobs:
           cd room09-chaotic-library
           ./scripts/build-personal-library.sh
           ../room08-gist-fleeting-notes/oci-pussh.sh compose2nix/blog-personal-website:latest phloeomys
-          ssh phloeomys systemctl restart docker-blog-personal-website.service
+          ssh -o StrictHostKeyChecking=no phloeomys systemctl restart docker-blog-personal-website.service
       - name: Deploy all
         if: inputs.only-clearnet != true
         run: |
@@ -45,4 +45,4 @@ jobs:
           ./scripts/build-hidden-library.sh
           ../room08-gist-fleeting-notes/oci-pussh.sh compose2nix/blog-personal-website:latest phloeomys
           ../room08-gist-fleeting-notes/oci-pussh.sh compose2nix/blog-hidden-website:latest phloeomys
-          ssh phloeomys systemctl restart docker-compose-blog-root.target
+          ssh -o StrictHostKeyChecking=no phloeomys systemctl restart docker-compose-blog-root.target

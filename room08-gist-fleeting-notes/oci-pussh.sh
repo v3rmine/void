@@ -33,13 +33,13 @@ fi
 
 target_ssh="$target"
 if [ ! -z "$ssh_port" ]; then target_ssh="$target_ssh -p $ssh_port"; fi
-remote_oci="$(ssh $target_ssh sh -c 'false || which podman >/dev/null 2>&1 && echo podman || (which docker >/dev/null 2>&1 && echo docker || echo /dev/null)')"
+remote_oci="$(ssh -o StrictHostKeyChecking=no $target_ssh sh -c 'false || which podman >/dev/null 2>&1 && echo podman || (which docker >/dev/null 2>&1 && echo docker || echo /dev/null)')"
 
 if command -v pv >/dev/null; then
   "$oci" save "$image" |\
     pv --size "$("$oci" image inspect "$image" | jq '.[0].Size')" |\
-    ssh $target_ssh "$remote_oci" load
+    ssh -o StrictHostKeyChecking=no $target_ssh "$remote_oci" load
 else
   "$oci" save "$image" |\
-    ssh $target_ssh "$remote_oci" load
+    ssh -o StrictHostKeyChecking=no $target_ssh "$remote_oci" load
 fi
