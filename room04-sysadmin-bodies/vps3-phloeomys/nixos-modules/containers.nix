@@ -21,14 +21,14 @@
         rootless = {
           enable = true;
           setSocketVariable = true;
-          extraPackages = with pkgs; [ nftables ];
+          # extraPackages = with pkgs; [ nftables ];
           daemon.settings = {
             fixed-cidr-v6 = "fd00::/80";
             ipv6 = true;
           };
         };
-        extraPackages = with pkgs; [nftables];
-        extraOptions = "--firewall-backend=nftables";
+        # extraPackages = with pkgs; [nftables];
+        # extraOptions = "--firewall-backend=nftables";
       };
 
       oci-containers.backend = "docker";

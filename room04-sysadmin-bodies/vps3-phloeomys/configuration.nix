@@ -23,8 +23,6 @@ in {
   ] ++ (get_import_dir ./nixos-modules/.) 
     ++ (get_import_dir ../../room05-sysadmin-souls/services/phloeomys/.);
 
-  services.ipset-autoban.enable = false;
-
   networking.firewall = {
     enable = true;
     interfaces = {
@@ -38,8 +36,6 @@ in {
     };
   };
 
-  networking.nftables.enable = true;
-
   services.fail2ban = {
     enable = true;
     ignoreIP = [
@@ -47,7 +43,14 @@ in {
       "fd8e:820:47f1::1"
     ];
     extraPackages = with pkgs; [ ipset ];
+    banaction = "iptables-ipset[type=multiport]";
+    banaction-allports = "iptables-ipset[type=allports]";
     jails = {
+      "DEFAULT".settings = {
+        action_ = ''
+          %(banaction)s[name=%(__name__)s-inp, port="%(port)s", protocol="tcp,udp", chain="INPUT"]
+                    %(banaction)s[name=%(__name__)s-fwd, port="%(port)s", protocol="tcp,udp", chain="FORWARD"]'';
+      };
       traefik-429.settings = {
         enabled = true;
         filter = "traefik-429";
@@ -71,7 +74,7 @@ in {
         filter = "traefik-wordpress";
         logpath = "/var/log/logs/traefik/access.log";
         maxretry = "1";
-        findtime = "10m";
+        findtime = "5min";
         bantime = "24h";
         backend = "auto";
       };
@@ -79,7 +82,7 @@ in {
         enabled = true;
         filter = "iocaine-garbage";
         journalmatch = "CONTAINER_NAME=pangolin-iocaine";
-        maxretry = "100";
+        maxretry = "50";
         findtime = "10m";
         bantime = "1h";
         backend = "systemd";
@@ -121,6 +124,7 @@ in {
     htop
     yq-go
     cifs-utils
+    ipset
   ];
   
   environment.etc."autorestic.yml" = {
@@ -248,7 +252,6 @@ in {
   environment.persistence."/persist" = {
     directories = [
       "/var/lib/tailscale"
-      "/var/lib/rootless-podman/pangolin"
       "/root/pangolin"
       "/root/.ssh"
       "/var/lib/fail2ban"
