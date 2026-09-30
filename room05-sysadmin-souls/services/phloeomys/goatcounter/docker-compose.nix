@@ -13,12 +13,13 @@
     ports = [
       "63011:8080/tcp"
     ];
-    user = "1000:1000";
+    user = "0:0";
     log-driver = "journald";
     extraOptions = [
       "--network-alias=goatcounter"
       "--network=goatcounter_default"
     ];
+    rootless = { user = "podman"; };
   };
   systemd.services."docker-goatcounter" = {
     serviceConfig = {

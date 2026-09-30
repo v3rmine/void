@@ -3,7 +3,7 @@ services:
   dokuwiki:
     image: dokuwiki/dokuwiki:stable
     pull_policy: always
-    user: 1001:1001
+    #user: 1001:1001
     restart: unless-stopped
     volumes:
       - dokuwiki-data:/storage

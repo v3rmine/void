@@ -22,13 +22,14 @@
       "sharkey-sharkey-meilisearch"
       "sharkey-sharkey-redis"
     ];
-    user = "991:991";
+    user = "0:0";
     log-driver = "journald";
     extraOptions = [
       "--memory=4294967296b"
       "--network-alias=sharkey"
       "--network=sharkey_default"
     ];
+    rootless = { user = "podman"; };
   };
   systemd.services."docker-sharkey-sharkey" = {
     serviceConfig = {
@@ -70,6 +71,7 @@
       "--network-alias=sharkey-db"
       "--network=sharkey_default"
     ];
+    rootless = { user = "podman"; };
   };
   systemd.services."docker-sharkey-sharkey-db" = {
     serviceConfig = {
@@ -106,6 +108,7 @@
       "--network-alias=sharkey-meilisearch"
       "--network=sharkey_default"
     ];
+    rootless = { user = "podman"; };
   };
   systemd.services."docker-sharkey-sharkey-meilisearch" = {
     serviceConfig = {
@@ -142,6 +145,7 @@
       "--network-alias=sharkey-redis"
       "--network=sharkey_default"
     ];
+    rootless = { user = "podman"; };
   };
   systemd.services."docker-sharkey-sharkey-redis" = {
     serviceConfig = {

@@ -17,21 +17,24 @@
     dependsOn = [
       "miniflux-miniflux-db"
     ];
-    user = "1004:1004";
+    user = "0:0";
     log-driver = "journald";
     extraOptions = [
       "--network-alias=miniflux"
       "--network=miniflux_default"
     ];
+    rootless = { user = "podman"; };
   };
   systemd.services."docker-miniflux" = {
     serviceConfig = {
       Restart = lib.mkOverride 90 "no";
     };
     after = [
+      "docker-miniflux-miniflux-db.service"
       "docker-network-miniflux_default.service"
     ];
     requires = [
+      "docker-miniflux-miniflux-db.service"
       "docker-network-miniflux_default.service"
     ];
     partOf = [
@@ -60,6 +63,7 @@
       "--network-alias=miniflux-db"
       "--network=miniflux_default"
     ];
+    rootless = { user = "podman"; };
   };
   systemd.services."docker-miniflux-miniflux-db" = {
     serviceConfig = {

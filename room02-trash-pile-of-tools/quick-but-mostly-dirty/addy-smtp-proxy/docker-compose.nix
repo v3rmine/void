@@ -6,15 +6,19 @@
 
   # Containers
   virtualisation.oci-containers.containers."addy-addy-smtp-proxy" = {
-    image = "compose2nix/addy-addy-smtp-proxy";
+    image = "localhost/compose2nix/addy-addy-smtp-proxy";
     environmentFiles = [
       "/persist/etc/addy.env"
+    ];
+    ports = [
+      "63999:8025"
     ];
     log-driver = "journald";
     extraOptions = [
       "--network-alias=addy-smtp-proxy"
       "--network=addy_default"
     ];
+    rootless = { user = "vaultwarden"; };
   };
   systemd.services."docker-addy-addy-smtp-proxy" = {
     serviceConfig = {

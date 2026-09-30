@@ -6,10 +6,10 @@ services:
     # user: 1001:1001
     restart: unless-stopped
     environment:
-      PUID: 1001
-      PGID: 1001
+      PUID: 0 #1001
+      PGID: 0 #1001
       SB_SPACE_IGNORE: 'room09-chaotic-library/themes/'
-    env_file: .env
+    env_file: /persist/etc/silverbullet.env
     volumes:
       - silverbullet-data:/space
     ports:

@@ -11,6 +11,9 @@ let
         ))
       ]
     );
+  trusted-ssh-keys = [
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHt8EvWzOBZxA7JEQCnknW+hjEi8Id6dfMtb1ONw1xbw astrid@astrid-lux"
+  ];
 in {
   system.stateVersion = "25.11";
   imports = [
@@ -19,6 +22,8 @@ in {
     ../../room02-trash-pile-of-tools/quick-but-mostly-dirty/addy-smtp-proxy/docker-compose.nix
   ] ++ (get_import_dir ./nixos-modules/.) 
     ++ (get_import_dir ../../room05-sysadmin-souls/services/phloeomys/.);
+
+  services.ipset-autoban.enable = false;
 
   networking.firewall = {
     enable = true;
@@ -32,6 +37,82 @@ in {
       };
     };
   };
+
+  networking.nftables.enable = true;
+
+  services.fail2ban = {
+    enable = true;
+    ignoreIP = [
+      "172.19.0.1"
+      "fd8e:820:47f1::1"
+    ];
+    extraPackages = with pkgs; [ ipset ];
+    jails = {
+      traefik-429.settings = {
+        enabled = true;
+        filter = "traefik-429";
+        logpath = "/var/log/logs/traefik/access.log";
+        maxretry = "10";
+        findtime = "10m";
+        bantime = "1h";
+        backend = "auto";
+      };
+      traefik-http.settings = {
+        enabled = true;
+        filter = "traefik-http";
+        logpath = "/var/log/logs/traefik/access.log";
+        maxretry = "20";
+        findtime = "1h";
+        bantime = "24h";
+        backend = "auto";
+      };
+      traefik-wordpress.settings = {
+        enabled = true;
+        filter = "traefik-wordpress";
+        logpath = "/var/log/logs/traefik/access.log";
+        maxretry = "1";
+        findtime = "10m";
+        bantime = "24h";
+        backend = "auto";
+      };
+      iocaine-garbage.settings = {
+        enabled = true;
+        filter = "iocaine-garbage";
+        journalmatch = "CONTAINER_NAME=pangolin-iocaine";
+        maxretry = "100";
+        findtime = "10m";
+        bantime = "1h";
+        backend = "systemd";
+      };
+    };
+  };
+  environment.etc."fail2ban/filter.d/traefik-429.conf".text = ''
+    [INCLUDES]
+    before = common.conf
+    [Definition]
+    failregex = ^\{.*"ClientHost":"<HOST>".*"DownstreamStatus":429.*\}$
+  '';
+  environment.etc."fail2ban/filter.d/traefik-http.conf".text = ''
+    [INCLUDES]
+    before = common.conf
+    [Definition]
+    failregex = ^\{.*"ClientHost":"<HOST>".*"RequestScheme":"http".*\}$
+  '';
+  environment.etc."fail2ban/filter.d/traefik-wordpress.conf".text = ''
+    [INCLUDES]
+    before = common.conf
+    [Definition]
+    failregex = ^\{.*"ClientHost":"<HOST>".*"RequestPath":"/(wp-admin|wp-content|wp-includes)[^"]+".*\}$
+  '';
+  environment.etc."fail2ban/filter.d/iocaine-garbage.conf".text = ''
+    [INCLUDES]
+    before = common.conf
+    [Definition]
+    failregex = ^.*\{.*"x-forwarded-for":"<HOST>".*"verdict\.outcome":"garbage".*\}$
+                ^.*\{.*"verdict\.outcome":"garbage".*"x-forwarded-for":"<HOST>".*\}$
+  '';
+
+  services.autorestic.enableCronJobs = false;
 
   environment.systemPackages = with pkgs; [
     docker-compose
@@ -167,8 +248,10 @@ in {
   environment.persistence."/persist" = {
     directories = [
       "/var/lib/tailscale"
+      "/var/lib/rootless-podman/pangolin"
       "/root/pangolin"
       "/root/.ssh"
+      "/var/lib/fail2ban"
     ];
   };
 
@@ -196,9 +279,9 @@ in {
       TCPKeepAlive no
     '';
   };
-  users.users.root.openssh.authorizedKeys.keys = [
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHt8EvWzOBZxA7JEQCnknW+hjEi8Id6dfMtb1ONw1xbw astrid@astrid-lux"
-  ];
+  users.users.root.openssh.authorizedKeys.keys = trusted-ssh-keys;
+  users.users.podman.openssh.authorizedKeys.keys = trusted-ssh-keys;
+  users.users.vaultwarden.openssh.authorizedKeys.keys = trusted-ssh-keys;
 
   # Secure settings
   users.mutableUsers = false;
@@ -221,4 +304,7 @@ in {
     size = 8 * 1024; # 8 GiB
   }];
 
+  systemd.services."user@".serviceConfig = {
+    Delegate = "pids memory cpu cpuset";
+  };
 }

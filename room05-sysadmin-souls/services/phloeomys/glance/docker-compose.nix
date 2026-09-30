@@ -14,12 +14,13 @@
     ports = [
       "63009:8080/tcp"
     ];
-    user = "1002:1002";
+    user = "0:0";
     log-driver = "journald";
     extraOptions = [
       "--network-alias=glance"
       "--network=glance_default"
     ];
+    rootless = { user = "podman"; };
   };
   systemd.services."docker-glance" = {
     serviceConfig = {

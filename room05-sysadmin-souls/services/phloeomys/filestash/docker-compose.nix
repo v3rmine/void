@@ -14,7 +14,7 @@
     volumes = [
       "filestash-config:/app/data/state:rw"
     ];
-    user = "1000:1000";
+    user = "0:0";
     log-driver = "journald";
     extraOptions = [
       "--health-cmd=curl --silent --fail 127.0.0.1:8334 || exit 1"
@@ -24,6 +24,7 @@
       "--network-alias=filestash"
       "--network=filestash_default"
     ];
+    rootless = { user = "podman"; };
   };
   systemd.services."docker-filestash" = {
     serviceConfig = {

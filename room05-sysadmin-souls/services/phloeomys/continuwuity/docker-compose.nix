@@ -34,12 +34,13 @@
     volumes = [
       "continuwuity-data:/var/lib/continuwuity:rw"
     ];
-    user = "1003:1003";
+    user = "0:0";
     log-driver = "journald";
     extraOptions = [
       "--network-alias=continuwuity"
       "--network=continuwuity_default"
     ];
+    rootless = { user = "podman"; };
   };
   systemd.services."docker-continuwuity-continuwuity" = {
     serviceConfig = {

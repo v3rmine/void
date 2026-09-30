@@ -1,4 +1,4 @@
-{ pkgs, config, ... }:
+{ pkgs, config, lib, ... }:
 let
   run-autorestic = pkgs.writeShellScriptBin "run-autorestic.sh" ''
     # Merge location and backend autorestic confs
@@ -25,9 +25,22 @@ let
   '';
 in {
   imports = [];
-  options = {};
+  options = {
+    services.autorestic = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        description = "Enable autorestic";
+        default = true;
+      };
+      enableCronJobs = lib.mkOption {
+        type = lib.types.bool;
+        description = "Enable autorestic cron jobs";
+        default = true;
+      };
+    };
+  };
 
-  config = {
+  config = lib.mkIf config.services.autorestic.enable {
     environment.persistence."/persist" = {
       files = [
         "/etc/autorestic-backends.yml"
@@ -44,7 +57,7 @@ in {
       prune-autorestic
     ];
 
-    services.cron.systemCronJobs = [
+    services.cron.systemCronJobs = lib.mkIf config.services.autorestic.enableCronJobs [
       "*/5 * * * * root ${run-autorestic}/bin/run-autorestic.sh"
       "3 1 * * * root ${prune-autorestic}/bin/prune-autorestic.sh"
     ];

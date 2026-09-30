@@ -36,8 +36,8 @@
     };
 
     services.vector = {
-      enable = true;
-      journaldAccess = true;
+      enable = false;
+      journaldAccess = false;
       settings = {
         api.enabled = true;
         data_dir = "/var/lib/private/vector";

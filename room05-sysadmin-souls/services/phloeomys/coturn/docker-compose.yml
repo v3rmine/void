@@ -3,7 +3,7 @@ services:
   coturn:
     image: coturn/coturn:4.17.2
     pull_policy: always
-    user: 977:977
+    #user: 977:977
     restart: unless-stopped
     command: --min-port=49160 --max-port=49170
     volumes:

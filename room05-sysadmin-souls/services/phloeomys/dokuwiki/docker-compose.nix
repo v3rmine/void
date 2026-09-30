@@ -13,12 +13,13 @@
     ports = [
       "63003:8080/tcp"
     ];
-    user = "1001:1001";
+    user = "0:0";
     log-driver = "journald";
     extraOptions = [
       "--network-alias=dokuwiki"
       "--network=dokuwiki_default"
     ];
+    rootless = { user = "podman"; };
   };
   systemd.services."docker-dokuwiki-dokuwiki" = {
     serviceConfig = {

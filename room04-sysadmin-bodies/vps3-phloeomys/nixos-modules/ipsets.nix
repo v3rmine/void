@@ -1,4 +1,4 @@
-{ pkgs, config, ... }: 
+{ pkgs, config, lib, ... }: 
 let 
   fill-blocklists-fast = pkgs.writeShellScriptBin "fill-blocklists-fast.sh" ''
     # Ensure lists exists
@@ -123,9 +123,15 @@ let
   '';
 in {
   imports = [];
-  options = {};
+  options = {
+    services.ipset-autoban.enable = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "ipset autoban rules";
+    };
+  };
 
-  config = {
+  config = lib.mkIf config.services.ipset-autoban.enable {
     environment.persistence."/persist".files = [
       "/etc/iptables/ipsets"
     ];

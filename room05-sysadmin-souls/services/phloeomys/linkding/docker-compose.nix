@@ -13,12 +13,13 @@
     ports = [
       "63010:9090/tcp"
     ];
-    user = "82:82";
+    user = "0:0";
     log-driver = "journald";
     extraOptions = [
       "--network-alias=linkding"
       "--network=linkding_default"
     ];
+    rootless = { user = "podman"; };
   };
   systemd.services."docker-linkding-linkding" = {
     serviceConfig = {

@@ -5,7 +5,7 @@ services:
     pull_policy: always
     container_name: vaultwarden
     restart: unless-stopped
-    user: 1000:1000
+    #user: 1000:1000
     environment:
       DOMAIN: "https://vault.reta.re/"
       SIGNUPS_ALLOWED: false

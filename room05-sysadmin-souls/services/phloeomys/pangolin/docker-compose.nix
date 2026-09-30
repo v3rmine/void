@@ -95,7 +95,6 @@
     };
     volumes = [
       "/root/pangolin/iocaine-data:/data:rw"
-      "pangolin_iocaine-state:/run/iocaine:rw"
     ];
     cmd = [ "--config-path" "/data/etc/config.d" ];
     log-driver = "journald";
@@ -114,11 +113,9 @@
     };
     after = [
       "docker-network-pangolin.service"
-      "docker-volume-pangolin_iocaine-state.service"
     ];
     requires = [
       "docker-network-pangolin.service"
-      "docker-volume-pangolin_iocaine-state.service"
     ];
     partOf = [
       "docker-compose-pangolin-root.target"
@@ -128,14 +125,17 @@
     ];
   };
   virtualisation.oci-containers.containers."traefik" = {
-    image = "traefik:v3.6";
+    image = "traefik:v3.7";
     volumes = [
-      "/root/pangolin/config/letsencrypt:/letsencrypt:rw"
       "/root/pangolin/config/traefik:/etc/traefik:ro"
+      "/root/pangolin/letsencrypt:/letsencrypt:rw"
       "/root/pangolin/plugins-local:/plugins-local:rw"
       "/var/log/logs/traefik:/logs:rw"
     ];
     cmd = [ "--configFile=/etc/traefik/traefik_config.yml" ];
+    environment = {
+      GOMAXPROCS = "2";
+    };
     dependsOn = [
       "gerbil"
       "pangolin"
@@ -172,20 +172,6 @@
     };
     script = ''
       docker network inspect pangolin || docker network create pangolin --driver=bridge --ipv6
-    '';
-    partOf = [ "docker-compose-pangolin-root.target" ];
-    wantedBy = [ "docker-compose-pangolin-root.target" ];
-  };
-
-  # Volumes
-  systemd.services."docker-volume-pangolin_iocaine-state" = {
-    path = [ pkgs.docker ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-    };
-    script = ''
-      docker volume inspect pangolin_iocaine-state || docker volume create pangolin_iocaine-state
     '';
     partOf = [ "docker-compose-pangolin-root.target" ];
     wantedBy = [ "docker-compose-pangolin-root.target" ];

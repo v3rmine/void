@@ -6,7 +6,7 @@ services:
     hostname: pangolin
     restart: always
     volumes:
-      - /root/pangolin/config:/app/config
+      - /var/lib/rootless-podman/pangolin/config:/app/config
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3001/api/v1/"]
       interval: "3s"
@@ -32,7 +32,7 @@ services:
       - --generateAndSaveKeyTo=/var/config/key
       - --remoteConfig=http://pangolin:3001/api/v1/
     volumes:
-      - /root/pangolin/config:/var/config
+      - /var/lib/rootless-podman/pangolin/config:/var/config
     cap_add:
       - NET_ADMIN
       - SYS_MODULE
@@ -64,10 +64,10 @@ services:
     command:
       - --configFile=/etc/traefik/traefik_config.yml
     volumes:
-      - /root/pangolin/config/traefik:/etc/traefik:ro # Volume to store the Traefik configuration
-      - /root/pangolin/config/letsencrypt:/letsencrypt # Volume to store the Let's Encrypt certificates
+      - /var/lib/rootless-podman/pangolin/config/traefik:/etc/traefik:ro # Volume to store the Traefik configuration
+      - /var/lib/rootless-podman/pangolin/letsencrypt:/letsencrypt # Volume to store the Let's Encrypt certificates
       - /var/log/logs/traefik:/logs # Volume to store access logs
-      - /root/pangolin/plugins-local:/plugins-local
+      - /var/lib/rootless-podman/pangolin/plugins-local:/plugins-local
     # oom_kill_disable: true
     # mem_limit: 128M
     deploy:
@@ -82,8 +82,10 @@ services:
     restart: always
     hostname: iocaine
     volumes:
-      - /root/pangolin/iocaine-data:/data
-      - iocaine-state:/run/iocaine
+      - /var/lib/rootless-podman/pangolin/iocaine-data:/data
+    #  - iocaine-state:/run/iocaine
+    environment:
+      GOMAXPROCS: 1
     command: --config-path /data/etc/config.d
     environment:
       - RUST_LOG=iocaine=error
@@ -107,8 +109,8 @@ services:
   #    - /var/log/logs/traefik:/var/log/traefik:ro
   #    - /var/log/journal:/var/log/host:ro
 
-volumes:
-  iocaine-state:
+#volumes:
+  # iocaine-state:
   # crowdsec-data:
 
 networks:

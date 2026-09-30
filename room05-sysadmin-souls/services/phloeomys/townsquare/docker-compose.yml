@@ -2,7 +2,7 @@ name: townsquare
 services:
   townsquare:
     build: TownSquare
-    user: 1001:1001
+    #user: 1001:1001
     restart: unless-stopped
     environment:
       HOST: 0.0.0.0

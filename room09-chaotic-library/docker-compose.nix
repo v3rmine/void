@@ -6,12 +6,13 @@
 
   # Containers
   virtualisation.oci-containers.containers."blog-hidden-website" = {
-    image = "compose2nix/blog-hidden-website";
+    image = "localhost/compose2nix/blog-hidden-website";
     log-driver = "journald";
     extraOptions = [
       "--network-alias=hidden-website"
       "--network=blog_default"
     ];
+    rootless = { user = "podman"; };
   };
   systemd.services."docker-blog-hidden-website" = {
     serviceConfig = {
@@ -31,7 +32,7 @@
     ];
   };
   virtualisation.oci-containers.containers."blog-personal-website" = {
-    image = "compose2nix/blog-personal-website";
+    image = "localhost/compose2nix/blog-personal-website";
     ports = [
       "63001:80/tcp"
     ];
@@ -40,6 +41,7 @@
       "--network-alias=personal-website"
       "--network=blog_default"
     ];
+    rootless = { user = "podman"; };
   };
   systemd.services."docker-blog-personal-website" = {
     serviceConfig = {
@@ -63,6 +65,7 @@
     volumes = [
       "tor-data:/var/lib/tor:rw"
     ];
+    user = "0:0";
     cmd = [ "--RunAsDaemon" "0" "--HiddenServiceDir" "/var/lib/tor/onion" "--HiddenServicePort" "80 hidden-website:80" "--HiddenServiceSingleHopMode" "1" "--HiddenServiceNonAnonymousMode" "1" "--SOCKSPort" "0" "--HiddenServiceMaxStreams" "50" "--HiddenServiceMaxStreamsCloseCircuit" "1" "--HiddenServiceNumIntroductionPoints" "6" ];
     dependsOn = [
       "blog-hidden-website"
@@ -72,6 +75,7 @@
       "--network-alias=tor-proxy"
       "--network=blog_default"
     ];
+    rootless = { user = "podman"; };
   };
   systemd.services."docker-blog-tor-proxy" = {
     serviceConfig = {

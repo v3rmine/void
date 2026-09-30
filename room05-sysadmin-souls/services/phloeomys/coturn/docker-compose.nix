@@ -28,12 +28,13 @@
       "49170:49170/udp"
     ];
     cmd = [ "--min-port=49160" "--max-port=49170" ];
-    user = "977:977";
+    user = "0:0";
     log-driver = "journald";
     extraOptions = [
       "--network-alias=coturn"
       "--network=coturn_default"
     ];
+    rootless = { user = "podman"; };
   };
   systemd.services."docker-coturn-coturn" = {
     serviceConfig = {

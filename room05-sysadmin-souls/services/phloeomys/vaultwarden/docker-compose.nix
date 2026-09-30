@@ -18,12 +18,13 @@
     volumes = [
       "vaultwarden-data:/data:rw"
     ];
-    user = "1000:1000";
+    user = "0:0";
     log-driver = "journald";
     extraOptions = [
       "--network-alias=vaultwarden"
       "--network=vaultwarden_default"
     ];
+    rootless = { user = "vaultwarden"; };
   };
   systemd.services."docker-vaultwarden" = {
     serviceConfig = {

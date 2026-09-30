@@ -6,7 +6,7 @@
 
   # Containers
   virtualisation.oci-containers.containers."townsquare-townsquare" = {
-    image = "compose2nix/townsquare-townsquare";
+    image = "localhost/compose2nix/townsquare-townsquare";
     environment = {
       "DATA_DIR" = "/data";
       "HOST" = "0.0.0.0";
@@ -31,12 +31,13 @@
     ports = [
       "63007:8787/tcp"
     ];
-    user = "1001:1001";
+    user = "0:0";
     log-driver = "journald";
     extraOptions = [
       "--network-alias=townsquare"
       "--network=townsquare_default"
     ];
+    rootless = { user = "podman"; };
   };
   systemd.services."docker-townsquare-townsquare" = {
     serviceConfig = {

@@ -3,3 +3,5 @@ services:
   addy-smtp-proxy:
     build: .
     env_file: .env
+    ports:
+      - 63999:8025

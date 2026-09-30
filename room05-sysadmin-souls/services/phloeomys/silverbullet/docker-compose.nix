@@ -21,6 +21,7 @@
       "--network-alias=silverbullet"
       "--network=silverbullet_default"
     ];
+    rootless = { user = "podman"; };
   };
   systemd.services."docker-silverbullet-silverbullet" = {
     serviceConfig = {
