@@ -1,0 +1,32 @@
+name: prosody
+services:
+  prosody:
+    # Change 13.0 to the branch you want to use
+    image: prosodyim/prosody:13.0
+    # Always check for updates when starting
+    pull_policy: always
+    # Automatically start Prosody, e.g. when your system starts, if it was
+    # running previously
+    restart: unless-stopped
+    # Network ports to expose
+    ports:
+      # Client connections
+      - 5222:5222
+      # Server-to-server connections
+      - 5269:5269
+      # HTTP File share
+      - 63013:5280
+
+    # Directories where data will be stored
+    volumes:
+      - prosody-data:/var/lib/prosody
+      - prosody-config:/etc/prosody
+
+    # Set environment variables. See the documentation for all possible options.
+    environment:
+      PROSODY_ADMINS: v3rmine@astriiid.fr
+      PROSODY_VIRTUAL_HOSTS: astriiid.fr
+
+volumes:
+  prosody-data:
+  prosody-config:

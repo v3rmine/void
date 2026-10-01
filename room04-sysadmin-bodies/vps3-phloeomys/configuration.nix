@@ -14,6 +14,18 @@ let
   trusted-ssh-keys = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHt8EvWzOBZxA7JEQCnknW+hjEi8Id6dfMtb1ONw1xbw astrid@astrid-lux"
   ];
+  acme-json-to-certs = pkgs.writeShellScriptBin "acme-json-to-certs.sh" ''
+     DOMAIN="$1"
+     ACME="$2"
+     if [ -z "$DOMAIN" ] || [ -z "$ACME" ]; then
+       echo "Usage: acme-json-to-certs.sh example.com path/to/acme.json"
+       exit 1
+     fi
+
+     mkdir -p "$DOMAIN"
+     ${pkgs.jq}/bin/jq -r --arg d "$DOMAIN" '.[].Certificates[] | select(.domain.main==$d) | .certificate' "$ACME" | base64 -d > "$DOMAIN/fullchain.pem"
+     ${pkgs.jq}/bin/jq -r --arg d "$DOMAIN" '.[].Certificates[] | select(.domain.main==$d) | .key' "$ACME" | base64 -d > "$DOMAIN/privkey.pem" 
+  '';
 in {
   system.stateVersion = "25.11";
   imports = [
@@ -27,7 +39,7 @@ in {
     enable = true;
     interfaces = {
       "eth0" = {
-        allowedTCPPorts = [ 22 80 443 3478 5349 6697 8080 22000 51000 ];
+        allowedTCPPorts = [ 22 80 443 3478 5222 5269 5349 6697 8080 22000 51000 ];
         allowedUDPPorts = [ 53 443 3478 5349 21027 21820 22000 51001 51820 51830 ];
         allowedUDPPortRanges = [
           { from = 49160; to = 49170; }
@@ -115,14 +127,14 @@ in {
                 ^.*\{.*"verdict\.outcome":"garbage".*"x-forwarded-for":"<HOST>".*\}$
   '';
 
-  services.autorestic.enableCronJobs = false;
-
   environment.systemPackages = with pkgs; [
     docker-compose
     git
     vim
     htop
     yq-go
+    jq
+    acme-json-to-certs
     cifs-utils
     ipset
   ];
@@ -168,38 +180,38 @@ in {
         filestash:
           <<: *standard
           from:
-            - /persist/var/lib/docker/volumes/filestash-config
+            - /persist/var/lib/rootless-podman/.local/share/docker/volumes/filestash-config
           cron: '0 * * * *'
         goatcounter:
           <<: *standard
           from:
-            - /persist/var/lib/docker/volumes/goatcounter-data
+            - /persist/var/lib/rootless-podman/.local/share/docker/volumes/goatcounter-data
           cron: '0 * * * *'
         miniflux:
           <<: *standard
           from:
-            - /persist/var/lib/docker/volumes/miniflux-data
+            - /persist/var/lib/rootless-podman/.local/share/docker/volumes/miniflux-data
           cron: '0 * * * *'
         linkding:
           <<: *standard
           from:
-            - /persist/var/lib/docker/volumes/linkding-data
+            - /persist/var/lib/rootless-podman/.local/share/docker/volumes/linkding-data
           cron: '0 * * * *'
         continuwuity:
           <<: *standard
           from:
-            - /persist/var/lib/docker/volumes/continuwuity-data
+            - /persist/var/lib/rootless-podman/.local/share/docker/volumes/continuwuity-data
           cron: '0 * * * *'
         sharkey:
           <<: *standard
           from:
-            - /persist/var/lib/docker/volumes/sharkey-files
-            - /persist/var/lib/docker/volumes/sharkey-db
+            - /persist/var/lib/rootless-podman/.local/share/docker/volumes/sharkey-files
+            - /persist/var/lib/rootless-podman/.local/share/docker/volumes/sharkey-db
           cron: '0 * * * *'
         vaultwarden:
           <<: *standard
           from:
-            - /persist/var/lib/docker/volumes/vaultwarden-data
+            - /persist/var/lib/vaultwarden/.local/share/docker/volumes/vaultwarden-data
           cron: '0 * * * *'
         drive:
           <<: *backblaze
@@ -216,8 +228,8 @@ in {
         personal-website:
           <<: *standard
           from:
-            - /persist/var/lib/docker/volumes/tor-data
-            - /persist/var/lib/docker/volumes/townsquare-data
+            - /persist/var/lib/rootless-podman/.local/share/docker/volumes/tor-data
+            - /persist/var/lib/rootless-podman/.local/share/docker/volumes/townsquare-data
           cron: '0 * * * *'
     '';
   };
@@ -286,6 +298,10 @@ in {
   users.users.podman.openssh.authorizedKeys.keys = trusted-ssh-keys;
   users.users.vaultwarden.openssh.authorizedKeys.keys = trusted-ssh-keys;
 
+  services.cron.systemCronJobs = [
+    "0 * * * * root ${pkgs.bash}/bin/bash -c 'cd /var/lib/rootless-podman/.local/share/docker/volumes/prosody_prosody-data/_data && ${acme-json-to-certs}/bin/acme-json-to-certs.sh astriiid.fr /root/pangolin/letsencrypt/acme.json && ${acme-json-to-certs}/bin/acme-json-to-certs.sh files.astriiid.fr /root/pangolin/letsencrypt/acme.json && ${acme-json-to-certs}/bin/acme-json-to-certs.sh muc.astriiid.fr /root/pangolin/letsencrypt/acme.json && chown -R 100099:100101 * && DOCKER_HOST=unix:///run/user/993/docker.sock ${pkgs.docker}/bin/docker exec -it prosody-prosody prosodyctl --root cert import /var/lib/prosody/letsencrypt'"
+  ];
+
   # Secure settings
   users.mutableUsers = false;
   services.lvm.enable = false;
@@ -310,4 +326,5 @@ in {
   systemd.services."user@".serviceConfig = {
     Delegate = "pids memory cpu cpuset";
   };
+
 }

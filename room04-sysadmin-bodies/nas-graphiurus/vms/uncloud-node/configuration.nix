@@ -62,8 +62,8 @@ in {
         syncthing:
           <<: *standard
           from:
-            - /persist/var/lib/docker/volumes/syncthing-config
-            - /persist/var/lib/docker/volumes/syncthing-data
+            - /persist/var/lib/rootless-podman/.local/share/docker/volumes/syncthing-config
+            - /persist/var/lib/rootless-podman/.local/share/docker/volumes/syncthing-data
           cron: '0 * * * *'
         garage-hot:
           <<: *standard
